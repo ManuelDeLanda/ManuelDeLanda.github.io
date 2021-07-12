@@ -14,6 +14,15 @@
 //
 window.addEventListener('DOMContentLoaded', (event) => {
    $("td").click(function(e) { console.log(e.target) })
+
+$("td").hover(function(){
+    $(this).addClass('animated animate__animated animate__heartBeat');
+});
+$("td").bind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd",function(){
+    $(this).removeClass('animated animate__animated animate__heartBeat');
+});
+
+
 });
 
 </script>
