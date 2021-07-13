@@ -12,19 +12,19 @@
 
 <script>
 
-function addAnimateCSS(sSelector, sClass) { 
+function addAnimateCSSToHover(sSelector, sClass) { 
    sClass = 'animated animate__animated animate_ ' + sClass; 
-   $("td").hover(function(){
-       $(this).addClass();
+   $(sSelector).hover(function(){
+       $(this).addClass(sClass);
    });
-   $("td").bind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd",function(){
+   $(sSelector).bind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd",function(){
       $(this).removeClass(sClass);
    });
 }
 
 window.addEventListener('DOMContentLoaded', (event) => {
    // $("td").click(function(e) { console.log(e.target) })
-   addAnimateCSS("td", "heartBeat");
+   addAnimateCSSToHover("td", "heartBeat");
 });
 
 </script>
