@@ -11,18 +11,20 @@
 </head><body>
 
 <script>
-//
+
+function addAnimateCSS(sSelector, sClass) { 
+   sClass = 'animated animate__animated animate_ ' + sClass; 
+   $("td").hover(function(){
+       $(this).addClass();
+   });
+   $("td").bind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd",function(){
+      $(this).removeClass(sClass);
+   });
+}
+
 window.addEventListener('DOMContentLoaded', (event) => {
-   $("td").click(function(e) { console.log(e.target) })
-
-$("td").hover(function(){
-    $(this).addClass('animated animate__animated animate__heartBeat');
-});
-$("td").bind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd",function(){
-    $(this).removeClass('animated animate__animated animate__heartBeat');
-});
-
-
+   // $("td").click(function(e) { console.log(e.target) })
+   addAnimateCSS("td", "heartBeat");
 });
 
 </script>
