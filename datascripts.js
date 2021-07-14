@@ -4,7 +4,7 @@
 
 /* prototype altering functions */
 //Array.prototype.toDelimited ="";
-function JSONObjectify(sString) {
+JSONObjectify = function(sString) {
   // JSONObjectify("branch:main,folder:datascripts");
   // JSONObjectify('{"branch":"main","folder":'datascripts"}';
   try {
