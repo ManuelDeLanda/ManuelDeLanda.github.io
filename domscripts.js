@@ -729,5 +729,5 @@ function addAnimateCSSToHover(sSelector, sClass) {  // jQuery-dependent
 oGetAllParameters_CLIENT = function() {
     if (location.search.substring(1)) {
         return oGetAllParametersCLIENT = JSON.parse('{"' + location.search.substring(1).replace(/&/g, '","').replace(/=/g,'":"') + '"}', function(key, value) { return key===""?value:decodeURIComponent(value) })
-    }
+    } else { return {}; }
 }
