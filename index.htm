@@ -48,7 +48,7 @@ catch(e) { console.log(e); }
 })
 window.addEventListener('DOMContentLoaded', (event) => { 
 
-try { if (oGetAllParameters_CLIENT().menu == "philosophy") {
+try { if (oGetAllParameters_CLIENT().philosophy != undefined) {
     document.body.innerHTML = "<br />Welcome to the philosophy menu.  This page is a placeholder for being able to discourse with philosophical texts.<br />";
 }
 
