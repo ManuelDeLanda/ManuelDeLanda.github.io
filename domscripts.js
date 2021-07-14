@@ -714,3 +714,14 @@ domTableToValuesOrientedDomTDs = function(domTable) { // domTableToValuesOriente
 
     }
 }
+
+
+function addAnimateCSSToHover(sSelector, sClass) {  // jQuery-dependent
+   sClass = 'animated animate__animated animate__' + sClass; 
+   $(sSelector).hover(function(){
+       $(this).addClass(sClass);
+   });
+   $(sSelector).bind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd",function(){
+      $(this).removeClass(sClass);
+   });
+}
