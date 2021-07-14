@@ -4,7 +4,23 @@
 
 /* prototype altering functions */
 //Array.prototype.toDelimited ="";
-
+function JSONObjectify(sString) {
+  // JSONObjectify("branch:main,folder:datascripts");
+  // JSONObjectify('{"branch":"main","folder":'datascripts"}';
+  try {
+    return JSON.parse(sString);
+  } catch(e) {
+    aReturn = sString.trim().replace(/\n/g, ",").split(",").map(function(oEl) {
+      return oEl;
+    })
+    return aReturn.reduce(function(oAg, oEl) {
+      sKey = oEl.split(":")[0].trim();
+      sValue = oEl.split(":")[1].trim();
+      oAg[sKey] = sValue;
+      return oAg;
+    }, {})
+  }
+}
 String.prototype.count=function(c) { var result = 0, i = 0; for(i;i<this.length;i++)if(this[i]==c)result++; return result; };
 //Array.prototype.unique = function() { var a = []; for (var i=0, l=this.length; i<l; i++) if (a.indexOf(this[i]) === -1) a.push(this[i]); return a; };
 // count=function(c) { var result = 0, i = 0; for(i;i<this.length;i++)if(this[i]==c)result++; return result; };
