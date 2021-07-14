@@ -50,12 +50,16 @@ window.addEventListener('DOMContentLoaded', (event) => {
 
 try { if (oGetAllParameters_CLIENT().philosophy != undefined) {
     document.body.innerHTML = "<br />Welcome to the philosophy menu.  This page is a placeholder for being able to discourse with philosophical texts.<br />";
+} else if (oGetAllParameters_CLIENT().news != undefined) {
+    document.body.innerHTML = "";
+} else if (oGetAllParameters_CLIENT().about != undefined) {
+    document.body.innerHTML = "";
 }
 
 document.body.prependHTML(`<div style="padding:10px;" class="topnav">
   <a href="/">Home</a>
-  <a href="?philosophy">News</a>
-  <a href="?news">Contact</a>
+  <a href="?philosophy">Philosophy</a>
+  <a href="?news">News</a>
   <a href="?about">About</a>
 </div>`);
 }
