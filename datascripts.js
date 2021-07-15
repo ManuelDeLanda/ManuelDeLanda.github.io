@@ -1,4 +1,4 @@
-/* THESE SCRIPTS ARE FOR BOTH SERVER AND CLIENT-SIDE (in other words, DON'T try to throw document.getElementById scripts to be run on server!!)  */
+/* THESE SCRIPTS NEED REFACTORING  */
 // function consolelog(sReturn) {   setTimeout (console.log.bind(console, sReturn)); }
 // function dumpCSSText(element){ var s = ''; var o = getComputedStyle(element); for(var i = 0; i < o.length; i++){ s+=o[i] + ':' + o.getPropertyValue(o[i])+';'; } return s; }
 
@@ -644,3 +644,14 @@ function convertaRecordsOrientedToInputBoxesForm(oICIResponse, aFields) {
         return agg009;
     }, "<table>") + "</table>"
 }
+
+getRange3 = function(n,r){for(var e=[],t=n;t<=r;t++)e.push(t);return e}
+combineArraysRecursivelyCartesian=function(array_of_arrays){if(!array_of_arrays){return[]}
+if(!Array.isArray(array_of_arrays)){return[]}
+if(array_of_arrays.length==0){return[]}
+for(var i=0;i<array_of_arrays.length;i++){if(!Array.isArray(array_of_arrays[i])||array_of_arrays[i].length==0){return[]}}
+var outputs=[];function permute(arrayOfArrays){var whichArray=arguments.length>1&&arguments[1]!==undefined?arguments[1]:0;var output=arguments.length>2&&arguments[2]!==undefined?arguments[2]:"";arrayOfArrays[whichArray].forEach(function(array_element){if(whichArray==array_of_arrays.length-1){outputs.push([output.toString(),array_element.toString()])}else{permute(arrayOfArrays,whichArray+1,output+array_element)}})}
+permute(array_of_arrays);return outputs}
+
+// dataGSscripts.minified.js
+function convertCellToArray(e){return[letterToColumn(e.replace(/[0-9]*$/g,"")),parseInt(e.replace(/^[A-Z]*/g,""))]}function convertArrayToCell(e){return columnToLetter(e[0])+e[1]}function columnToLetter(e){for(var r,t="";e>0;)r=(e-1)%26,t=String.fromCharCode(r+65)+t,e=(e-r-1)/26;return t}function letterToColumn(e){for(var r=0,t=e.length,n=0;n<t;n++)r+=(e.charCodeAt(n)-64)*Math.pow(26,t-n-1);return r}sortAlphaNum=function(e,r){return e.localeCompare(r,"en",{numeric:!0})},getGoogleSheetRange=function(e){return aReturn=[],e.replace(/;/,",").split(",").forEach(function(e){if(e.indexOf(":")>-1){var r=convertCellToArray(e.toString().split(":")[0]),t=convertCellToArray(e.toString().split(":")[1]);aReturn=aReturn.concat(combineArraysRecursivelyCartesian([getRange3(r[0],t[0]),getRange3(r[1],t[1])]).map(function(e){return convertArrayToCell(e)}))}else aReturn.push(e)}),aReturn},getGoogleSheetRangeValuesOriented=function(e){return aArray=getGoogleSheetRange(e).filter(function(e){return e.match(/[A-Z]+[0-9]+/)}).reduce(function(e,r,t){return 0==t?(e[0].push(r),e):(bCompletedMatrixingTask=!1,e.forEach(function(t,n){t[0].match(/[0-9]+/)[0]==r.match(/[0-9]+/)[0]&&(e[n].push(r),bCompletedMatrixingTask=!0)}),bCompletedMatrixingTask||e.push([r]),e)},[[]]),aArray};
