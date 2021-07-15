@@ -4,54 +4,23 @@
 
 /* prototype altering functions */
 //Array.prototype.toDelimited ="";
-JSONObjectify = function(sString) {
-  // JSONObjectify("branch:main,folder:datascripts");
-  // JSONObjectify('{"branch":"main","folder":'datascripts"}';
-  try {
-    return JSON.parse(sString);
-  } catch(e) {
-    aReturn = sString.trim().replace(/\n/g, ",").split(",").map(function(oEl) {
-      return oEl;
-    })
-    return aReturn.reduce(function(oAg, oEl) {
-      sKey = oEl.split(":")[0].trim();
-      sValue = oEl.split(":")[1].trim();
-      oAg[sKey] = sValue;
-      return oAg;
-    }, {})
-  }
-}
+
+/* BEGIN no brainers / polyfills for es5 */
+function padArray(array, length, fill) { return length > array.length ? array.concat(Array(length - array.length).fill(fill)) : array; }
 String.prototype.count=function(c) { var result = 0, i = 0; for(i;i<this.length;i++)if(this[i]==c)result++; return result; };
 //Array.prototype.unique = function() { var a = []; for (var i=0, l=this.length; i<l; i++) if (a.indexOf(this[i]) === -1) a.push(this[i]); return a; };
 // count=function(c) { var result = 0, i = 0; for(i;i<this.length;i++)if(this[i]==c)result++; return result; };
 // Array.prototype.unique = function() { var a = []; for (var i=0, l=this.length; i<l; i++) if (a.indexOf(this[i]) === -1) a.push(this[i]); return a; };
 unique = function(aArray) { var a = []; for (var i=0, l=aArray.length; i<l; i++) if (a.indexOf(aArray[i]) === -1) a.push(aArray[i]); return a; };
 //Object.prototype.toArray = function () { var _this = this; var array = []; Object.keys(this).map(function (key) { array.push(_this[key]); }); return array; };
+/* END no brainer / polyfilles for es5 */
 
+/* BEGIN values oriented / records oriented / tab delimited converter functions */
 function convertTabDelimitedToRecordsOriented(sText) {
     return sText.split("\n").map(function(oElement) { return oElement.split("\t"); });
 }
 
 // toValuesOriented = function(aInputArray) { var aArrayOfAllPossibleColumnTitles = aInputArray.reduce(function(agg123, oElement123) { Object.keys(oElement123).forEach(function(oElement751) { if (!agg123.includes(oElement751)) { agg123.push(oElement751); } else {} }); return agg123; }, Object.keys(aInputArray[0])); var aValuesOrientation = aInputArray.map(function(oElement123, iIndex123) { return aArrayOfAllPossibleColumnTitles.reduce(function(agg751, oElement751) { if (oElement123[oElement751] == undefined) { agg751.push(); } else { agg751.push(oElement123[oElement751]); } return agg751; }, []) }); aValuesOrientation.unshift(aArrayOfAllPossibleColumnTitles); return aValuesOrientation; }
-cartesian = function(args) { // args = aArrayOfArarys
-          // permutations / combinations?
-    // aArrays = [[0,1], [0,1,2,3], [0,1,2]]; cartesian(aArrays);
-    // aArrays = [["a","b","c"], ["d","e"], ["f", "g", "h"], ["i"] ]; cartesian(aArrays);
-    var r = [], max = args.length-1;
-    function helper(arr, i) {
-        for (var j=0, l=args[i].length; j<l; j++) {
-            var a = arr.slice(0); // clone arr
-            a.push(args[i][j]);
-            if (i==max)
-                r.push(a);
-            else
-                helper(a, i+1);
-        }
-    }
-    helper([], 0);
-    return r;
-}
-
 toValuesOriented = function(aInputArray, aColumns) {
     var aArrayOfAllPossibleColumnTitles = aInputArray.reduce(function(agg123, oElement123) {
         Object.keys(oElement123).forEach(function(oElement751) {
@@ -76,14 +45,10 @@ toValuesOriented = function(aInputArray, aColumns) {
     aValuesOrientation.unshift(aColumns);
     return aValuesOrientation;
 }
-sanitizeValuesOrientedData = function(aValuesOriented) { return aValuesOriented.map(function(oElement) { return oElement.map(function(oElement0) { if (oElement0 == null || oElement == undefined || oElement == NaN ) { return ""; } else { return oElement0; } }) }) }
 
 toRecordsOriented = function(aInputArray) { var aValuesOrientation = JSON.parse(JSON.stringify(aInputArray)); aValuesOrientation[0] = aValuesOrientation[0].slice().reverse().map(function(oElement, iIndex, aArray) { if ( aValuesOrientation[0].indexOf(oElement) == aValuesOrientation[0].length - aArray.indexOf(oElement) - 1 ) { return oElement.toString().trim(); } else { return oElement.toString().trim() + "_" + (aValuesOrientation[0].length - iIndex) } }).reverse(); return aValuesOrientation.reduce(function(agg, oElement, iIndex, aArray) { return (iIndex != 0) ? agg.concat(aArray[0].reduce(function(oagg0, oElement0, iIndex0) { oagg0[oElement0] = oElement[iIndex0]; return oagg0 }, {})) : [] }, []) }
-
 toXXXOrientated = function (aInputArray, sXXX) { var aRecordsOrientation = JSON.parse(JSON.stringify(aInputArray)); return aRecordsOrientation.reduce(function (agg, oElement) { if (agg[oElement[sXXX]]==undefined) { agg[oElement[sXXX]] = oElement; } else { if (!Array.isArray(agg[oElement[sXXX]])) { agg[oElement[sXXX]] = [agg[oElement[sXXX]]].concat(oElement) } else { agg[oElement[sXXX]] = agg[oElement[sXXX]].concat(oElement) } } return agg; }, {}); }
-
 toXXXOrientatedDEDUPED = function(aInputArray, sXXX)  { var aRecordsOrientation = JSON.parse(JSON.stringify(aInputArray)); var o_XXX_Orientation = aRecordsOrientation.reduce(function (agg, oElement) { if (agg[oElement[sXXX]]==undefined) { agg[oElement[sXXX]] = oElement; } else { if (!Array.isArray(agg[oElement[sXXX]])) { agg[oElement[sXXX]] = [agg[oElement[sXXX]]].concat(oElement) } else { agg[oElement[sXXX]] = agg[oElement[sXXX]].concat(oElement) } } return agg; }, {}); return Object.keys(o_XXX_Orientation).reduce(function(agg777, oElement777) { if (Array.isArray(o_XXX_Orientation[oElement777])) { agg777[oElement777] = o_XXX_Orientation[oElement777].reduce(function(agg778, oElement778) { return Object.keys(oElement778).reduce(function(agg779, oElement779) { if (agg778[oElement779] == undefined) { agg778[oElement779] = oElement778[oElement779]; } else { agg778[oElement779] = agg778[oElement779] + ";" + oElement778[oElement779]; } return agg778; }, "") }, {}) } else { agg777[oElement777] = o_XXX_Orientation[oElement777]; } return agg777; }, {}) }
-
 toTabDelimited = function (aInputArray, sDelimiter, sQualifier) {
   // get rid of stray tabs in array so it doesn't create duplciate tabs in tab delimited data
   Object.keys(normalizeRecordsOriented(aInputArray)[0]).forEach(function(oElement) {
@@ -101,9 +66,13 @@ toTabDelimited = function (aInputArray, sDelimiter, sQualifier) {
 }
 toDelimited = function(aInputArray, sDelimiter, sQualifier) { function returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented) { return aRecordsOriented.reduce(function(agg, oElement313) { agg = agg.concat(Object.keys(oElement313)); agg = unique(agg); return agg; }, []) } var aColumns = returnAllKeysAmongAllObjectsInRecordsOrientedArray(aInputArray); return aInputArray.reduce(function(agg, oElement) { return agg + "\n" + aColumns.filter(function(oElement777) { return oElement777.trim() != "" }).reduce(function(agg001, oElement001, iIndex001) { return agg001 + ((iIndex001 == 0) ? "" : sDelimiter) + sQualifier + ((oElement[oElement001] == undefined ? "" : oElement[oElement001])).toString().replace(/\r\n/g, "<br>").replace(/\n/g, "<br>") + sQualifier; }, "") }, aColumns.map(function(oElement002) { return sQualifier + oElement002 + sQualifier; }).join(sDelimiter)) }
 convertTabDelimitedToRecordsOriented = function(sText) { return sText.split("\n").map(function(oElement) { return oElement.split("\t"); }); }
+/* END values oriented / records oriented / tab delimited converter functions */
 
 
-function normalizeRecordsOriented(aRecordsOriented) { // AOT toRecordsOriented(toValuesOriented(aRecordsOrientation));
+
+/* END CLEANER/NORMALIZER/SANITIZER FUNCTIONS */
+sanitizeValuesOrientedData = function(aValuesOriented) { return aValuesOriented.map(function(oElement) { return oElement.map(function(oElement0) { if (oElement0 == null || oElement == undefined || oElement == NaN ) { return ""; } else { return oElement0; } }) }) }
+normalizeRecordsOriented = function(aRecordsOriented) { // AOT toRecordsOriented(toValuesOriented(aRecordsOrientation));
     function returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented) { return aRecordsOriented.reduce(function(agg, oElement313) { agg = agg.concat(Object.keys(oElement313)); agg = unique(agg); return agg; }, []) }
          var aColumns = returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented);
     aRecordsOriented.forEach(function(oElement3245) {
@@ -115,8 +84,6 @@ function normalizeRecordsOriented(aRecordsOriented) { // AOT toRecordsOriented(t
     })
     return aRecordsOriented;
 }
-function padArray(array, length, fill) { return length > array.length ? array.concat(Array(length - array.length).fill(fill)) : array; }
-
 normalizeValuesOriented = function (aValuesOriented) {
     // normalizeValuesOriented([["a", "b", "c"], ["e", "f"], ["t", "h", {"blah": "hello" } ]])
     iMaxLength = aValuesOriented.reduce(function(oAg, oEl, iIn) {
@@ -129,7 +96,7 @@ normalizeValuesOriented = function (aValuesOriented) {
         return oEl;
     })
 }
-// lolololol
+// overkill?
 replaceColumnNameInRecordsOrientedArray = function(aRecordsOriented, sMatchingString, sReplacementString) {
 // vs function renameColumnNameInRecordsOrientedArray(aRecordsOriented, sMatchingString, sReplacementString) {
     // SAMPLE CALL:
@@ -146,7 +113,10 @@ replaceColumnNameInRecordsOrientedArray = function(aRecordsOriented, sMatchingSt
     })
     return toRecordsOriented(aValuesOriented);
 }
+/* END CLEANER/NORMALIZER/SANITIZER FUNCTIONS */
 
+/* BEGIN DATE-RELATED FUNCTIONS */
+// MUCH REFACTORING AND CLEANING REQUIRED
 function convertIntToDate(sDate, sWhatDo) {
     // SAMPLE: convertIntToDate(new Date(), "YYYYMMDDHHMMSS")
     // SAMPLE: convertIntToDate(1593442444000, "mm/dd/yyyy")
@@ -170,163 +140,16 @@ function convertIntToDate(sDate, sWhatDo) {
             break;
     }
 }
+/* END SOME DATE-RELATED FUNCTIONS */
 
 getYYYYMMDDHHMMSS = function(sDate) {
     if (sDate) { var date = new Date(sDate); } else { var date = new Date(); }    
     return date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2) + ("0" + date.getHours() + 1 ).slice(-2) + ("0" + date.getMinutes()).slice(-2) + ("0" + date.getSeconds()).slice(-2)
 }
 
-getRanges2 = function(aArray) {
-  // eg getRanges2([0,2.1,1,"blah",100,101,2,3,56]) returns ["0-3", "56", "100-101"]
-  // converts an array of ints to a list of ranges they are represented by
-  uniqueArray=function(arrArg){return arrArg.filter(function(elem,pos,arr){return arr.indexOf(elem)==pos})}
-  aArray = aArray.filter(function(oElement) { return !isNaN(parseInt(oElement)); }).map(function(oElement) { return parseInt(oElement) }).sort(function (a, b) {  return a - b;  });
-  aArray = uniqueArray(aArray);
-  var ranges = [], rstart, rend;
-  for (var i = 0; i < aArray.length; i++) {
-    rstart = aArray[i];
-    rend = rstart;
-    while (aArray[i + 1] - aArray[i] == 1) {
-      rend = aArray[i + 1]; // increment the index if the numbers sequential
-      i++;
-    }
-    ranges.push(rstart == rend ? rstart+'' : rstart + '-' + rend);
-  }
-  return ranges;
-}
-
-/* // refractored 12/16
-convertRecordsOrientedArrayToHTMLTable = function (aRecordsOriented, aColumns) {
-    // var aColumns = ["entityid ];
-    //aColumns = aColumns || undefined;
-    //if (aColumns == undefined) {
-    //    var aColumns = Object.keys(aRecordsOriented[0]);
-    //}
-  
-    function returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented) { return aRecordsOriented.reduce(function(agg, oElement313) { agg = agg.concat(Object.keys(oElement313)); agg = unique(agg); return agg; }, []) }
-    if (aColumns == undefined) {
-        // var aColumns = Object.keys(aRecordsOriented[0]);
-                 aColumns = returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented);
-    }
-  
-    sHTMLTable = "<table class='RecordsOrientedArrayToHTML' style='margin: 0 auto; text-align: center;'>" + aRecordsOriented.reduce(function(agg, oElement) {
-        agg = agg + "<tr>" + aColumns.reduce(function(agg000, oElement000) {
-            agg000 = agg000 + "<td style='text-align:left'>" + oElement[oElement000] + "</td>";
-            return agg000;
-        }, "") + "</tr>";
-        return agg;
-    }, 
-        "<tr>" + aColumns.reduce(function(agg001, oElement001) {
-            return agg001 + "<th style='border-right: 1px solid black; border-left: 1px solid black;'>" + oElement001 + "</th>";
-        }, "") + "</tr>"
-    ) + "</table>";
-        return sHTMLTable;
-}
-*/
-
-convertRecordsOrientedArrayToHTMLTable = function (aRecordsOriented, aColumns, sTableID) {
-    // convertRecordsOrientedArrayToHTMLTable(aRecordsOriented)
-    function columnToLetter(r){for(var o,t="";r>0;)o=(r-1)%26,t=String.fromCharCode(o+65)+t,r=(r-o-1)/26;return t}function letterToColumn(r){for(var o=0,t=r.length,n=0;n<t;n++)o+=(r.charCodeAt(n)-64)*Math.pow(26,t-n-1);return o}
-    function returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented) { return aRecordsOriented.reduce(function(agg, oElement313) { agg = agg.concat(Object.keys(oElement313)); agg = unique(agg); return agg; }, []) }
-    if (sTableID == undefined) { sTableID = ""; }
-
-    if (aColumns == undefined) {
-        // var aColumns = Object.keys(aRecordsOriented[0]);
-                 aColumns = returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented);
-    }
-    // gsws gsws_SDJOWholeForm A4 gscell columnA row4
-    sHTMLTable = "<table id='" + sTableID + "' class='RecordsOrientedArrayToHTML gsws gsws_" + sTableID + "' style='margin: 0 auto; text-align: center;'>" + aRecordsOriented.reduce(function(agg, oElement, iIndex) {
-        agg = agg + "<tr>" + aColumns.reduce(function(agg000, oElement000, iIndex000) {
-            var sCell = columnToLetter(iIndex000+1) + (iIndex+2);
-            var sClasses = "gsws gscell gsws_" + sTableID + " " + sCell + " row" + (iIndex+2) + " column" + columnToLetter(iIndex000+1) + " cellcolumn" + iIndex000;
-            agg000 = agg000 + "<td title='" + sCell + "' class='" + sClasses + "'>" + oElement[oElement000] + "</td>"; // style='text-align:left'
-            return agg000;
-        }, "") + "</tr>";
-        return agg;
-    }, 
-        "<tr>" + aColumns.reduce(function(agg001, oElement001, iIndex001) {
-            var sCell = columnToLetter(iIndex001+1) + "1";
-            var sClasses = "gsws gscell gsws_" + sTableID + " " + sCell + " row1 column" + columnToLetter(iIndex001+1) + " cellcolumn" + iIndex001;
-            // var sClasses = "gsws row1 column" + columnToLetter(iIndex001+1) + " cellcolumn" + iIndex001;
-            return agg001 + "<th title='" + sCell + "' class='" + sClasses + "'>" + oElement001 + "</th>"; // style='border-right: 1px solid black; border-left: 1px solid black;'
-        }, "") + "</tr>"
-    ) + "</table>";
-        return sHTMLTable;
-}
-convertValuesOrientedToHTMLTable = function(aValuesOriented, aColumns, sTableID) {
-    /// convertValuesOrientedToHTMLTable([[1,2,3,4],[0,0,0,0],[9,9,9,9]], undefined, "gswsvo")
-    function columnToLetter(r){for(var o,t="";r>0;)o=(r-1)%26,t=String.fromCharCode(o+65)+t,r=(r-o-1)/26;return t}function letterToColumn(r){for(var o=0,t=r.length,n=0;n<t;n++)o+=(r.charCodeAt(n)-64)*Math.pow(26,t-n-1);return o}
-    function returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented) { return aRecordsOriented.reduce(function(agg, oElement313) { agg = agg.concat(Object.keys(oElement313)); agg = unique(agg); return agg; }, []) }
-    if (sTableID == undefined) { sTableID = ""; }
-
-    if (aColumns == undefined) {
-        // var aColumns = Object.keys(aRecordsOriented[0]);
-                 // aColumns = returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented);
-    }
-    // gsws gsws_SDJOWholeForm A4 gscell columnA row4
-    sHTMLTable = "<table id='" + sTableID + "' class='convertValuesOrientedToHTMLTable gsws gsws_" + sTableID + "' style='margin: 0 auto; text-align: center;'>" + aValuesOriented.reduce(function(agg, oElement, iIndex) {
-        agg = agg + "<tr>" + oElement.reduce(function(agg000, oElement000, iIndex000) {
-            //console.log(oElement);
-            var sCell = columnToLetter(iIndex000+1) + (iIndex+1);
-            var sClasses = "gsws gscell gsws_" + sTableID + " " + sCell + " row" + (iIndex+1) + " column" + columnToLetter(iIndex000+1) + " cellcolumn" + iIndex000;
-            agg000 = agg000 + "<td title='" + sCell + "' class='" + sClasses + "'>" + oElement000 + "</td>"; // style='text-align:left'
-            return agg000;
-        }, "") + "</tr>";
-        return agg;
-    }, "") + "</table>";
-    return sHTMLTable.replace(/ id=''/g, "");
-}
-/* refractored with gsws on 1/18
-
-convertRecordsOrientedArrayToHTMLTable = function (aRecordsOriented, aColumns) {
-    function returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented) { return aRecordsOriented.reduce(function(agg, oElement313) { agg = agg.concat(Object.keys(oElement313)); agg = unique(agg); return agg; }, []) }
-    if (aColumns == undefined) {
-        // var aColumns = Object.keys(aRecordsOriented[0]);
-                 aColumns = returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented);
-    }
-  
-    sHTMLTable = "<table class='RecordsOrientedArrayToHTML' style='margin: 0 auto; text-align: center;'>" + aRecordsOriented.reduce(function(agg, oElement) {
-        agg = agg + "<tr>" + aColumns.reduce(function(agg000, oElement000, iIndex000) {
-            agg000 = agg000 + "<td class='cellcolumn" + iIndex000 + "'>" + oElement[oElement000] + "</td>"; // style='text-align:left'
-            return agg000;
-        }, "") + "</tr>";
-        return agg;
-    }, 
-        "<tr>" + aColumns.reduce(function(agg001, oElement001, iIndex001) {
-            return agg001 + "<th class='cellcolumn" + iIndex001 + "'>" + oElement001 + "</th>"; // style='border-right: 1px solid black; border-left: 1px solid black;'
-        }, "") + "</tr>"
-    ) + "</table>";
-        return sHTMLTable;
-}
-*/
-
-convertRecordsOrientedArrayToExcelXML = function(aArray, aColumns) {
-  // convertRecordsOrientedArrayToExcelXML
-  // normalize aRecordsOriented
-  var aRecordsOriented = toRecordsOriented(toValuesOriented(aArray));
-  aColumns = aColumns || undefined;
-  if (aColumns == undefined) {
-    var aColumns = Object.keys(aArray[0]);
-  }
-  function convertSingleArrayToExcelRow(aSingleArray) {
-    return "<Row>" + aSingleArray.reduce(function(agg000, oElement000, iIndex000) {
-      if (Array.isArray(oElement000)) { oElement000 = JSON.stringify(oElement000) }
-      oElement000 = oElement000.toString();
-      agg000 = agg000 + "<Cell><Data ss:Type=\"String\">" + oElement000.replace(/</g, "").replace(/>/g, "").replace(/\"/g, "").replace(/\n/g, " ") + "</Data></Cell>";
-      return agg000;
-    }, "") + "</Row>";
-  }
-  return '<?xml version="1.0"?><?mso-application progid="Excel.Sheet"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet" xmlns:html="http://www.w3.org/TR/REC-html40"><Worksheet ss:Name="Sheet1"><Table>' + aArray.reduce(function(agg, oElement, iIndex) { // Object.keys(oElement).map vs aColumns.map
-    return agg + convertSingleArrayToExcelRow(aColumns.map(function(oElement007){ return oElement[oElement007]}) );
-  }, convertSingleArrayToExcelRow(aColumns) ) + "</Table></Worksheet></Workbook>";
-}
-
-
 superhtmlEntities = function(str) {
   // superhtmlEntities=function(e){return String(e).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&apos;").replace(/`/,"&#96;")};
-  
-  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;').replace(/`/g, '&#96;').replace(/?/g, '&#xB4;');
-
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;').replace(/`/g, '&#96;'); //.replace(/?/g, '&#xB4;');
 }
 
 /*
@@ -343,6 +166,25 @@ superencode = function (str){ // superencode("~!.*()-_") is the same, consider r
   // superencode = function (str){  return encodeURIComponent(str).replace(/'/g, "%27"); }
   // return w.replace(/[^]/g,function(w){return '%'+w.charCodeAt(0).toString(16)})
   return encodeURIComponent(str).replace(/'/g, "%27");
+}
+
+/* BEGIN PANDAS-INSPIRED FUNCTIONS */
+JSONObjectify = function(sString) {
+  // JSONObjectify("branch:main,folder:datascripts");
+  // JSONObjectify('{"branch":"main","folder":'datascripts"}';
+  try {
+    return JSON.parse(sString);
+  } catch(e) {
+    aReturn = sString.trim().replace(/\n/g, ",").split(",").map(function(oEl) {
+      return oEl;
+    })
+    return aReturn.reduce(function(oAg, oEl) {
+      sKey = oEl.split(":")[0].trim();
+      sValue = oEl.split(":")[1].trim();
+      oAg[sKey] = sValue;
+      return oAg;
+    }, {})
+  }
 }
 
 melt = function (aInputArray, aColumns) {
@@ -419,11 +261,6 @@ explode = function (aInputArray, aColumns, sDelimiter) {
         } else { return oElement999 }
     })); // .flat()
 }
-
-
-
-
-
 
 pivottable = function (aInputArray, aPivotInstructions) {
     function parseFloatForSUM(sString) {
@@ -556,7 +393,6 @@ pivottable = function (aInputArray, aPivotInstructions) {
     return pivot_table(aInputArray, aPivotInstructions);
 }
 
-
 pivottable.generateRandomPivotInstructions = function(aThis) {
     var aPivotFunctions = ['sum', 'listagg', 'listaggU', 'listagg-len', 'listagg-sum', 'intersection'];
     var iRandomIndex;
@@ -587,6 +423,32 @@ pivottable.generateRandomPivotInstructions = function(aThis) {
     return "var aPivotInstructions = " + JSON.stringify(aRandomPivotInstructions);
 
 }
+/* END PANDAS-INSPIRED FUNCTIONS */
+
+cartesian = function(args) { // args = aArrayOfArarys
+          // permutations / combinations?
+    // aArrays = [[0,1], [0,1,2,3], [0,1,2]]; cartesian(aArrays);
+    // aArrays = [["a","b","c"], ["d","e"], ["f", "g", "h"], ["i"] ]; cartesian(aArrays);
+    var r = [], max = args.length-1;
+    function helper(arr, i) {
+        for (var j=0, l=args[i].length; j<l; j++) {
+            var a = arr.slice(0); // clone arr
+            a.push(args[i][j]);
+            if (i==max)
+                r.push(a);
+            else
+                helper(a, i+1);
+        }
+    }
+    helper([], 0);
+    return r;
+}
+combineArraysRecursivelyCartesian=function(array_of_arrays){if(!array_of_arrays){return[]} // refactor this with cartesian()?  same thing?
+if(!Array.isArray(array_of_arrays)){return[]}
+if(array_of_arrays.length==0){return[]}
+for(var i=0;i<array_of_arrays.length;i++){if(!Array.isArray(array_of_arrays[i])||array_of_arrays[i].length==0){return[]}}
+var outputs=[];function permute(arrayOfArrays){var whichArray=arguments.length>1&&arguments[1]!==undefined?arguments[1]:0;var output=arguments.length>2&&arguments[2]!==undefined?arguments[2]:"";arrayOfArrays[whichArray].forEach(function(array_element){if(whichArray==array_of_arrays.length-1){outputs.push([output.toString(),array_element.toString()])}else{permute(arrayOfArrays,whichArray+1,output+array_element)}})}
+permute(array_of_arrays);return outputs}
 
 chunkize = function(aArray, iChunkSize) {
     // eg chunkize([1,2,3,4,5,6,7,8,9,0], 3)
@@ -618,6 +480,27 @@ range = function(start, end) {
   return myArray;
 };
 
+getRanges2 = function(aArray) {
+  // eg getRanges2([0,2.1,1,"blah",100,101,2,3,56]) returns ["0-3", "56", "100-101"]
+  // converts an array of ints to a list of ranges they are represented by
+  uniqueArray=function(arrArg){return arrArg.filter(function(elem,pos,arr){return arr.indexOf(elem)==pos})}
+  aArray = aArray.filter(function(oElement) { return !isNaN(parseInt(oElement)); }).map(function(oElement) { return parseInt(oElement) }).sort(function (a, b) {  return a - b;  });
+  aArray = uniqueArray(aArray);
+  var ranges = [], rstart, rend;
+  for (var i = 0; i < aArray.length; i++) {
+    rstart = aArray[i];
+    rend = rstart;
+    while (aArray[i + 1] - aArray[i] == 1) {
+      rend = aArray[i + 1]; // increment the index if the numbers sequential
+      i++;
+    }
+    ranges.push(rstart == rend ? rstart+'' : rstart + '-' + rend);
+  }
+  return ranges;
+}
+
+getRange3 = function(n,r){for(var e=[],t=n;t<=r;t++)e.push(t);return e}
+
 getRandomArbitrary = function (min, max) {
   return Math.random() * (max - min) + min;
 }
@@ -628,30 +511,8 @@ getRandomInt = function (min, max) {
   return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
 }
 
-    
-// DOM manipulation or HTML-creation scripts (yes i'm break my first rule at the top but whatevs lol)
-function convertaRecordsOrientedToInputBoxesForm(oICIResponse, aFields) {
-    if (aFields == undefined) { aFields = Object.keys(oICIResponse); }
-    return aFields.reduce(function(agg009, oElement009, iIndex009) {
-        if (oICIResponse[oElement009] == undefined) { oICIResponse[oElement009] = ""; }
-        sValue = oICIResponse[oElement009];
-        if (typeof(sValue) != "string") { sValue = JSON.stringify(sValue) }
-        if (oICIResponse[oElement009].toString().indexOf("\n") > -1) {
-            agg009 = agg009 + "<tr><td><b>" + oElement009 + ": </b></td><td><textarea rows='10' cols='30' class='inputtedObject' id='label_" + oElement009 + "' name='label_" + oElement009 + "' />" +  superhtmlEntities(sValue) + "</textarea></td>";
-        } else {
-            agg009 = agg009 + "<tr><td><b>" + oElement009 + ": </b></td><td><input style='width:100%' class='inputtedObject' type='text' id='label_" + oElement009 + "' name='label_" + oElement009 + "' value='" + superhtmlEntities(sValue) + "' /><td>";
-        }
-        return agg009;
-    }, "<table>") + "</table>"
-}
-
-getRange3 = function(n,r){for(var e=[],t=n;t<=r;t++)e.push(t);return e}
-combineArraysRecursivelyCartesian=function(array_of_arrays){if(!array_of_arrays){return[]}
-if(!Array.isArray(array_of_arrays)){return[]}
-if(array_of_arrays.length==0){return[]}
-for(var i=0;i<array_of_arrays.length;i++){if(!Array.isArray(array_of_arrays[i])||array_of_arrays[i].length==0){return[]}}
-var outputs=[];function permute(arrayOfArrays){var whichArray=arguments.length>1&&arguments[1]!==undefined?arguments[1]:0;var output=arguments.length>2&&arguments[2]!==undefined?arguments[2]:"";arrayOfArrays[whichArray].forEach(function(array_element){if(whichArray==array_of_arrays.length-1){outputs.push([output.toString(),array_element.toString()])}else{permute(arrayOfArrays,whichArray+1,output+array_element)}})}
-permute(array_of_arrays);return outputs}
+// domscripts.serversafe.minified.js (DOM manipulation or HTML-creation scripts (yes i'm break my first rule at the top but whatevs lol))
+oGetAllParameters_CLIENT=function(){return location.search.substring(1)?JSON.parse('{"'+location.search.substring(1).split("&").map(function(e){return-1==e.indexOf("=")?e+"=":e}).join("&").replace(/&/g,'","').replace(/=/g,'":"')+'"}',function(e,t){return""===e?t:decodeURIComponent(t)}):{}},convertRecordsOrientedArrayToHTMLTable=function(e,t,r){function n(e){for(var t,r="";e>0;)t=(e-1)%26,r=String.fromCharCode(t+65)+r,e=(e-t-1)/26;return r}return null==r&&(r=""),null==t&&(t=function(e){return e.reduce(function(e,t){return e=e.concat(Object.keys(t)),e=unique(e)},[])}(e)),sHTMLTable="<table id='"+r+"' class='RecordsOrientedArrayToHTML gsws gsws_"+r+"' style='margin: 0 auto; text-align: center;'>"+e.reduce(function(e,s,l){return e=e+"<tr>"+t.reduce(function(e,t,o){var c=n(o+1)+(l+2);return e=e+"<td title='"+c+"' class='"+("gsws gscell gsws_"+r+" "+c+" row"+(l+2)+" column"+n(o+1)+" cellcolumn"+o)+"'>"+s[t]+"</td>"},"")+"</tr>"},"<tr>"+t.reduce(function(e,t,s){var l=n(s+1)+"1";return e+"<th title='"+l+"' class='"+("gsws gscell gsws_"+r+" "+l+" row1 column"+n(s+1)+" cellcolumn"+s)+"'>"+t+"</th>"},"")+"</tr>")+"</table>",sHTMLTable},convertValuesOrientedToHTMLTable=function(e,t,r){function n(e){for(var t,r="";e>0;)t=(e-1)%26,r=String.fromCharCode(t+65)+r,e=(e-t-1)/26;return r}return null==r&&(r=""),sHTMLTable="<table id='"+r+"' class='convertValuesOrientedToHTMLTable gsws gsws_"+r+"' style='margin: 0 auto; text-align: center;'>"+e.reduce(function(e,t,s){return e=e+"<tr>"+t.reduce(function(e,t,l){var o=n(l+1)+(s+1);return e=e+"<td title='"+o+"' class='"+("gsws gscell gsws_"+r+" "+o+" row"+(s+1)+" column"+n(l+1)+" cellcolumn"+l)+"'>"+t+"</td>"},"")+"</tr>"},"")+"</table>",sHTMLTable.replace(/ id=''/g,"")},convertRecordsOrientedArrayToExcelXML=function(e,t){toRecordsOriented(toValuesOriented(e));if(null==(t=t||void 0))t=Object.keys(e[0]);function r(e){return"<Row>"+e.reduce(function(e,t,r){return Array.isArray(t)&&(t=JSON.stringify(t)),e=e+'<Cell><Data ss:Type="String">'+(t=t.toString()).replace(/</g,"").replace(/>/g,"").replace(/\"/g,"").replace(/\n/g," ")+"</Data></Cell>"},"")+"</Row>"}return'<?xml version="1.0"?><?mso-application progid="Excel.Sheet"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet" xmlns:html="http://www.w3.org/TR/REC-html40"><Worksheet ss:Name="Sheet1"><Table>'+e.reduce(function(e,n,s){return e+r(t.map(function(e){return n[e]}))},r(t))+"</Table></Worksheet></Workbook>"},convertaRecordsOrientedToInputBoxesForm=function(e,t){return null==t&&(t=Object.keys(e)),t.reduce(function(t,r,n){return null==e[r]&&(e[r]=""),sValue=e[r],"string"!=typeof sValue&&(sValue=JSON.stringify(sValue)),t=e[r].toString().indexOf("\n")>-1?t+"<tr><td><b>"+r+": </b></td><td><textarea rows='10' cols='30' class='inputtedObject' id='label_"+r+"' name='label_"+r+"' />"+superhtmlEntities(sValue)+"</textarea></td>":t+"<tr><td><b>"+r+": </b></td><td><input style='width:100%' class='inputtedObject' type='text' id='label_"+r+"' name='label_"+r+"' value='"+superhtmlEntities(sValue)+"' /><td>"},"<table>")+"</table>"};
 
 // dataGSscripts.minified.js
 function convertCellToArray(e){return[letterToColumn(e.replace(/[0-9]*$/g,"")),parseInt(e.replace(/^[A-Z]*/g,""))]}function convertArrayToCell(e){return columnToLetter(e[0])+e[1]}function columnToLetter(e){for(var r,t="";e>0;)r=(e-1)%26,t=String.fromCharCode(r+65)+t,e=(e-r-1)/26;return t}function letterToColumn(e){for(var r=0,t=e.length,n=0;n<t;n++)r+=(e.charCodeAt(n)-64)*Math.pow(26,t-n-1);return r}sortAlphaNum=function(e,r){return e.localeCompare(r,"en",{numeric:!0})},getGoogleSheetRange=function(e){return aReturn=[],e.replace(/;/,",").split(",").forEach(function(e){if(e.indexOf(":")>-1){var r=convertCellToArray(e.toString().split(":")[0]),t=convertCellToArray(e.toString().split(":")[1]);aReturn=aReturn.concat(combineArraysRecursivelyCartesian([getRange3(r[0],t[0]),getRange3(r[1],t[1])]).map(function(e){return convertArrayToCell(e)}))}else aReturn.push(e)}),aReturn},getGoogleSheetRangeValuesOriented=function(e){return aArray=getGoogleSheetRange(e).filter(function(e){return e.match(/[A-Z]+[0-9]+/)}).reduce(function(e,r,t){return 0==t?(e[0].push(r),e):(bCompletedMatrixingTask=!1,e.forEach(function(t,n){t[0].match(/[0-9]+/)[0]==r.match(/[0-9]+/)[0]&&(e[n].push(r),bCompletedMatrixingTask=!0)}),bCompletedMatrixingTask||e.push([r]),e)},[[]]),aArray};
