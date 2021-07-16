@@ -189,6 +189,7 @@ melt = function (aInputArray, aColumns) {
         return oElement; 
     }) 
 }
+melt.sample=function() { return 'var aArray=[{"blank":0,"car_model":"Tesla Model S P100D","Sept 1 9am":2.5,"Sept 1 10am":2.51,"Sept 1 11am":2.54},{"blank":1,"car_model":"Tesla Model X P100D","Sept 1 9am":2.92,"Sept 1 10am":2.91,"Sept 1 11am":2.93},{"blank":2,"car_model":"Tesla Model 3 AWD Dual Motor","Sept 1 9am":3.33,"Sept 1 10am":3.31,"Sept 1 11am":3.35}];\nmelt(aArray, [1,2,3]);' }
 
 flatten = function(aArray) {
     // this = aArray;
@@ -362,11 +363,11 @@ pivottable = function (aInputArray, aPivotInstructions) {
             return [eError, sToEval];
         }
     }
-
     return pivot_table(aInputArray, aPivotInstructions);
 }
 
 pivottable.sample = function(aThis) {
+  if (!aThis) { aThis = [{"Account":714466,"Name":"Trantow-Barrows","Rep":"Craig Booker","Manager":"Debra Henley","Product":"CPU","Quantity":1,"Price":30000,"Status":"presented"},{"Account":714466,"Name":"Trantow-Barrows","Rep":"Craig Booker","Manager":"Debra Henley","Product":"Software","Quantity":1,"Price":10000,"Status":"presented"},{"Account":714466,"Name":"Trantow-Barrows","Rep":"Craig Booker","Manager":"Debra Henley","Product":"Maintenance","Quantity":2,"Price":5000,"Status":"pending"},{"Account":737550,"Name":"Fritsch, Russel and Anderson","Rep":"Craig Booker","Manager":"Debra Henley","Product":"CPU","Quantity":1,"Price":35000,"Status":"declined"},{"Account":146832,"Name":"Kiehn-Spinka","Rep":"Daniel Hilton","Manager":"Debra Henley","Product":"CPU","Quantity":2,"Price":65000,"Status":"won"},{"Account":218895,"Name":"Kulas Inc","Rep":"Daniel Hilton","Manager":"Debra Henley","Product":"CPU","Quantity":2,"Price":40000,"Status":"pending"},{"Account":218895,"Name":"Kulas Inc","Rep":"Daniel Hilton","Manager":"Debra Henley","Product":"Software","Quantity":1,"Price":10000,"Status":"presented"},{"Account":412290,"Name":"Jerde-Hilpert","Rep":"John Smith","Manager":"Debra Henley","Product":"Maintenance","Quantity":2,"Price":5000,"Status":"pending"},{"Account":740150,"Name":"Barton LLC","Rep":"John Smith","Manager":"Debra Henley","Product":"CPU","Quantity":1,"Price":35000,"Status":"declined"},{"Account":141962,"Name":"Herman LLC","Rep":"Cedric Moss","Manager":"Fred Anderson","Product":"CPU","Quantity":2,"Price":65000,"Status":"won"},{"Account":163416,"Name":"Purdy-Kunde","Rep":"Cedric Moss","Manager":"Fred Anderson","Product":"CPU","Quantity":1,"Price":30000,"Status":"presented"},{"Account":239344,"Name":"Stokes LLC","Rep":"Cedric Moss","Manager":"Fred Anderson","Product":"Maintenance","Quantity":1,"Price":5000,"Status":"pending"},{"Account":239344,"Name":"Stokes LLC","Rep":"Cedric Moss","Manager":"Fred Anderson","Product":"Software","Quantity":1,"Price":10000,"Status":"presented"},{"Account":307599,"Name":"Kassulke, Ondricka and Metz","Rep":"Wendy Yule","Manager":"Fred Anderson","Product":"Maintenance","Quantity":3,"Price":7000,"Status":"won"},{"Account":688981,"Name":"Keeling LLC","Rep":"Wendy Yule","Manager":"Fred Anderson","Product":"CPU","Quantity":5,"Price":100000,"Status":"won"},{"Account":729833,"Name":"Koepp Ltd","Rep":"Wendy Yule","Manager":"Fred Anderson","Product":"CPU","Quantity":2,"Price":65000,"Status":"declined"},{"Account":729833,"Name":"Koepp Ltd","Rep":"Wendy Yule","Manager":"Fred Anderson","Product":"Monitor","Quantity":2,"Price":5000,"Status":"presented"},{"Account":101010,"Name":"Dipshit Corp","Rep":"Daniel Hilton","Manager":"Debra Henley","Product":"Software","Quantity":5,"Price":350000,"Status":"presented"}]; try { console.log("aRecordsOriented = " + JSON.stringify(aThis)); } catch(e) {}  }
     var aPivotFunctions = ['sum', 'listagg', 'listaggU', 'listagg-len', 'listagg-sum', 'intersection'];
     var iRandomIndex;
     var aRandomPivotInstructions = Object.keys(aThis[0]).reduce(function(agg, oElement, iIndex) {
