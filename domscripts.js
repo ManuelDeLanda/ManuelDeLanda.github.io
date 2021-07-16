@@ -688,15 +688,17 @@ SubmitSuperNinjaForm.sample = function() {
     `)
 }; fetch_XMLHttpRequest.sample = SubmitSuperNinjaForm.sample;
 
-} catch(e) {}
 
-// domscripts.serversafe
 oGetAllParameters_CLIENT = function() {
     if (location.search.substring(1)) {
         return JSON.parse('{"' + location.search.substring(1).split("&").map(function(oEl) { return (oEl.indexOf("=")==-1 ? oEl + "=" : oEl) }).join("&").replace(/&/g, '","').replace(/=/g,'":"') + '"}', function(key, value) { return key===""?value:decodeURIComponent(value) })
     } else { return {}; }
 }
 
+
+} catch(e) {}
+
+// domscripts.serversafe
 /* // refractored 12/16
 convertRecordsOrientedArrayToHTMLTable = function (aRecordsOriented, aColumns) {
     // var aColumns = ["entityid ];
