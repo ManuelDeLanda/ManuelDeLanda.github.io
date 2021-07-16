@@ -1,27 +1,9 @@
 try { // domscripts.serverUNsafe and ES5_UNsafe
     var $$$ = document.querySelectorAll.bind(document); 
-    /* ADD THESE FUNCTIONS TO datascripts.js? */
-    getRange3 = function(n,r){for(var e=[],t=n;t<=r;t++)e.push(t);return e}
-    // getRange3(0, 4);
-    combineArrays = function(r){function n(r,n){return r.reduce(function(r,e,t){return""+r+n[t][e]},"")}function e(r,n){for(let e=r.length-1;e>=0;e--){let t=n[e].length-1;if(r[e]+1<=t)return r[e]++,!0;if(e-1<0)return!1;r[e]=0}}if(!r)return[];if(!Array.isArray(r))return[];if(0==r.length)return[];for(let n=0;n<r.length;n++)if(!Array.isArray(r[n])||0==r[n].length)return[];let t=new Array(r.length);t.fill(0);let u=[],f=n(t,r);for(u.push(f);e(t,r);)f=n(t,r),u.push(f);return u}
-    // combineArrays([ ["A","B","C"], ["+", "-", "*", "/"], ["1","2"] ] )
-    combineArraysRecursivelyCartesian = function(array_of_arrays){if(!array_of_arrays){return[]}
-    if(!Array.isArray(array_of_arrays)){return[]}
-    if(array_of_arrays.length==0){return[]}
-    for(var i=0;i<array_of_arrays.length;i++){if(!Array.isArray(array_of_arrays[i])||array_of_arrays[i].length==0){return[]}}
-    var outputs=[];function permute(arrayOfArrays){var whichArray=arguments.length>1&&arguments[1]!==undefined?arguments[1]:0;var output=arguments.length>2&&arguments[2]!==undefined?arguments[2]:"";arrayOfArrays[whichArray].forEach(function(array_element){if(whichArray==array_of_arrays.length-1){outputs.push([output.toString(),array_element.toString()])}else{permute(arrayOfArrays,whichArray+1,output+array_element)}})}
-    permute(array_of_arrays);return outputs}
-    function letterToColumn(t){for(var o=0,r=t.length,e=0;e<r;e++)o+=(t.charCodeAt(e)-64)*Math.pow(26,r-e-1);return o}
-    function columnToLetter(r){for(var o,n="";r>0;)o=(r-1)%26,n=String.fromCharCode(o+65)+n,r=(r-o-1)/26;return n}
-    function convertArrayToCell(aArray) { return columnToLetter(aArray[0]) + aArray[1]; }
-    function convertCellToArray(sCell) { return [letterToColumn(sCell.replace(/[0-9]*$/g, "")), parseInt(sCell.replace(/^[A-Z]*/g, ""))]; }
-    /* END - ADD THESE FUNCTIONS TO datascripts.js? */
-
     /* BEGIN - THESE FUNCTIONS SHOULD NEVER BE ADDED TO datascripts.js? */
     // random vanilla DOM manipulation scripts
     // // replace body tag's innerHTML with div
     // document.getElementsByTagName('body')[0].innerHTML = "<div id='my'>blahHTML<div>"
-
     function dom_lookupvalueHTMLTable(sTable, sRowValue, iColumn) {
         // sTable = "cualquierPotencialidad"; sRowValue = "pdf dump"; iColumn = 1;
         // dom_lookupvalueHTMLTable("cualquierPotencialidad", "pdf dump", 1);
@@ -50,8 +32,6 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
             //console.log(Array.from(oElement.children))
         })
     }
-
-
     // remove first column, consider refractoring to something cooler
     function removeHTMLTableColumn(sTable, iColumn) {
         // removeHTMLTableColumn('cualquierPotencialidad', 0);
@@ -59,8 +39,6 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
             oElement.children[iColumn].style.display = "none"
         })
     }
-
-
     // Excel-like dom manipulation functions on html tables
     domTableToEXCELRANGE = function(domTable, sRange) { // domTableToEXCELRANGE("table.gsws", "C2:G4").row("3");
         // domTableToEXCELRANGE("A1:B2,C4:D7")
@@ -123,7 +101,6 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
         return oReturn;
     }
 
-
     // domTableToEXCELFULLRANGE = function(domTable) { return domTableToEXCELObject(domTable); }
     domTableToEXCELObject = function(domTable) { // domTableToEXCELObject("table")
         oReturn = domTableToValuesOrientedDomTDs(domTable).reduce(function(oAgg122, oElement122, iIndex122) {
@@ -152,21 +129,12 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
         }
     }
 
-
-
     function toHTMLSelect(aArray, sClassList) { // refractor this to accept array of values vs array of objects (select id?)
         // aArray = JSON.parse(JSON.stringify(aArray)); aArray.unshift
         if (sClassList == undefined) { sClassList = "aArraySelect"; }
         return "<select class='" + sClassList + "'><option></option>" + aArray.map(function(oElement) { return "<option>" + oElement + "</option>"; }).join("");
     }
-
-    function strip_tags(str) {
-        // sample usage:
-        // strip_tags("<table><tr><td>blah</td></tr><tr><td>blah2</td></tr></table");
-        str = str.toString();
-        return str.replace(/<\/?[^>]+>/gi, '');
-    }
-
+  
     convertHTMLTableToValuesOriented = function(sHTMLTable) {
         // convertHTMLTableToValuesOriented(".convertValuesOrientedToHTMLTable");
         // sHTMLTable = ".convertValuesOrientedToHTMLTable";
@@ -180,7 +148,6 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
             });
         })
     }
-
 
     HTMLElement.prototype.prependHtml = function (element) {
         const div = document.createElement('div');
@@ -204,7 +171,6 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
         theadify.remove()
         $(sTable)[0].querySelectorAll("thead")[0].appendChild(theadify)
     }
-
 
     /* BEGIN getElementsByInnerText vs contains */
     function contains(selector, text) {
@@ -242,12 +208,7 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
         return result[0];
     }
     document.getElementByInnerText = HTMLElement.prototype.getElementByInnerText;
-
     /* END getElementsByInnerText vs contains */
-
-
-
-
     // GoogleSheets / HTML scripts - in order of flexibility 02/06 MASTER COPY
     GSTDINSERT = function(sTable, sColumnOrRow, aValues) {
         //console.log(isNaN(parseInt(sColumnOrRow)));
@@ -350,74 +311,6 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
             oElement.innerHTML = "<input style='padding: 0 0 0 0 !important; margin: 0 0 0 0 !important;' value='" + superhtmlEntities(oElement.innerHTML) + "'></input>";
         })
     }
-
-    function subtractCells(sCell1, sCell2) { if (typeof(sCell1) == "string") { var aCell1 = convertCellToArray(sCell1) } else { aCell1
-    = sCell1; }  if (typeof(sCell2) == "string") { var aCell2 = convertCellToArray(sCell2) } else { aCell2
-    = sCell2; }  return aCell1.map(function(oElement, iIndex) { return oElement - parseInt(aCell2[iIndex]) }) }
-    // subtractCells("B1", "A1")
-    function addCells(sCell1, sCell2) { if (typeof(sCell1) == "string") { var aCell1 = convertCellToArray(sCell1) } else { aCell1
-    = sCell1; }  if (typeof(sCell2) == "string") { var aCell2 = convertCellToArray(sCell2) } else { aCell2
-    = sCell2; }  return aCell1.map(function(oElement, iIndex) { return oElement + parseInt(aCell2[iIndex]) }) }
-    getGoogleSheetRange = function (sCells) {
-        // getGoogleSheetRange("C3:E6")
-        // getGoogleSheetRange("C3:D3")
-        // getGoogleSheetRange("A3:G3,H5,H7")
-        aReturn = []
-        sCells.replace(/;/, ",").split(",").forEach(function(oElement343) {
-            if (oElement343.indexOf(":") > -1) {
-                var aCell1Array = convertCellToArray(oElement343.toString().split(":")[0]);
-                var aCell2Array = convertCellToArray(oElement343.toString().split(":")[1]);
-
-                aReturn = aReturn.concat(combineArraysRecursivelyCartesian([getRange3(aCell1Array[0],aCell2Array[0]), getRange3(aCell1Array[1],aCell2Array[1])]).map(function(oElement) {
-                    return convertArrayToCell(oElement);
-                }))
-            } else {
-                aReturn.push(oElement343);
-            }
-        })
-        return aReturn;
-    }
-    getGoogleSheetRangeValuesOriented = function(sCells) {
-        // getGoogleSheetRangeValuesOriented("C4:G5");
-        aArray = getGoogleSheetRange(sCells).filter(function(oElement) {
-            return oElement.match(/[A-Z]+[0-9]+/);
-        }).reduce(function(oAgg, oElement, iIndex) {
-            // if (oElement.match(/[A-Z]+/)[0] != oAgg[iIndex].match(/[A-Z]+/)[0])
-            if (iIndex == 0) {
-                oAgg[0].push(oElement);
-                return oAgg;
-            } else {
-                //console.log("iIndex =" + iIndex);
-                //console.log("oAgg = " + JSON.stringify(oAgg));
-                //console.log("oElement = " + oElement);
-                // console.log("---");
-                bCompletedMatrixingTask = false;
-                //if (oAgg[oAgg.length-1][0].match(/[0-9]+/)[0] == oElement.match(/[0-9]+/)[0]) {
-                // if (oAgg[oAgg.length-1][0].match(/[A-Z]+/)[0] == oElement.match(/[A-Z]+/)[0]) {
-                oAgg.forEach(function(oElement345, iIndex) {
-                    if(oElement345[0].match(/[0-9]+/)[0] == oElement.match(/[0-9]+/)[0]) {
-                        // oAgg[oAgg.length-1].push(oElement);
-                        // oAgg[oAgg.length-iIndex].push(oElement);
-                        oAgg[iIndex].push(oElement);
-                        bCompletedMatrixingTask = true;
-                    }
-                })
-                    // return oAgg;
-                //} else {
-                if (!bCompletedMatrixingTask) {
-                    oAgg.push([oElement]);
-                } 
-                return oAgg;
-                //oAgg[0].push([oElement]);
-                //return oAgg;
-
-            }
-        }, [[]])
-        return aArray; // don't need lodash anymore now that i've done the bCompletedMatrixingTask method
-        // return _.zip.apply(_, aArray); // transposes data
-    }
-
-
     GSSUM = function(sCells) { // GSSUM("C3:H7") GSRANGE("G1:H2")
         // return getGoogleSheetRange(sCells).reduce(function(oAgg, oElement) {
         return GSRANGE(sCells).reduce(function(oAgg, oElement) {
@@ -726,6 +619,64 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
           $(this).removeClass(sClass);
        });
     }
+
+fetch_XMLHttpRequest=function(oTypeURLPayload) {
+    // var oTypeURLPayload = { type:"POST", url: "https://collegediscgolf.com/wp-json/api/v1/author/2", payload: {filter: "2asdf"}};
+    superencode = function (str){  return encodeURIComponent(str).replace(/'/g, "%27"); }
+
+    var sXMLHttpRequestResponseText = "";
+    var xmlhttp = new XMLHttpRequest();
+    return new Promise(function (resolve, reject) {
+        xmlhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            sXMLHttpRequestResponseText = this.responseText;
+            // console.log(sXMLHttpRequestResponseText);
+            /* my solution currently responds with html, so I need to parse out the body's innerText */
+            var parser = new DOMParser();
+            var domXMLHttpRequestResponseText = parser.parseFromString(sXMLHttpRequestResponseText, "text/html");
+            //sXMLHttpRequestResponseText = domXMLHttpRequestResponseText.getElementsByTagName('body')[0].innerText;
+
+            resolve(sXMLHttpRequestResponseText);
+          } else {}
+        };
+        xmlhttp.open(oTypeURLPayload.type, oTypeURLPayload.url, true);
+        var sParams;
+        if (oTypeURLPayload.payload != undefined) {
+            sParams = Object.keys(oTypeURLPayload.payload).map(function(oElement) {
+                return superencode(oElement) + "=" + superencode(oTypeURLPayload.payload[oElement]);
+            }).join("&");
+        }
+
+        xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        // JSON SENDING DOESN'T WORK!  HELP!
+        //xmlhttp.setRequestHeader("Content-type","application/json;charset=UTF-8");
+
+        xmlhttp.send(sParams);
+    })
+// }.then(function(sResponse) {  console.log(sResponse.trim());  })
+} 
+
+SubmitSuperNinjaForm=function (oTypeURLPayload, sTarget) {
+    superencode = function (str){  return encodeURIComponent(str).replace(/'/g, "%27"); }
+    if ((oTypeURLPayload == null) || (oTypeURLPayload == undefined) || (oTypeURLPayload == "")) {
+       var oTypeURLPayload = { type:"POST", payload: {script: 84, deploy: 1, context: "llave", payload: "just testing" } }; 
+       var sURL = "https://acct138579.app.netsuite.com/app/site/hosting/scriptlet.nl?script=84&deploy=1&context=llave";
+       oTypeURLPayload.url = sURL;
+    } 
+    var dom_form = document.createElement('form');
+    dom_form.setAttribute("target",sTarget);
+    dom_form.name = 'superninjaform';
+    dom_form.id = 'superninjaform';
+    dom_form.method = oTypeURLPayload.type;
+    dom_form.action = ((oTypeURLPayload.url != undefined) ? oTypeURLPayload.url : window.location.href.split("?")[0] ); 
+    document.body.appendChild(dom_form);
+    dom_form.innerHTML = Object.keys(oTypeURLPayload.payload).reduce(function(agg, oElement) {
+        agg += '<input type="hidden" name="' + oElement + '" id="' + oElement + '" value="' + superencode(oTypeURLPayload.payload[oElement]) + '" />' + String.fromCharCode(10) + String.fromCharCode(13);
+        return agg;
+    }, "")
+    dom_form.submit();
+}
+
 
 } catch(e) {}
 
