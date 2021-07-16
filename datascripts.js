@@ -430,8 +430,8 @@ pivottable.sample = function(aThis) {
      aRandomPivotInstructions[3][i] = aPivotFunctions[iRandomIndex]
     }
     // return aRandomPivotInstructions;
-    sSample += "var aPivotInstructions = " + JSON.stringify(aRandomPivotInstructions);
-    sSample += 'pivottable(aRecordsOriented, aPivotInstructions)';
+    sSample += "var aPivotInstructions = " + JSON.stringify(aRandomPivotInstructions) + ";";
+    sSample += '\npivottable(aRecordsOriented, aPivotInstructions);';
     sSample += "\n\n// also this - \n// pivottable(aRecordsOriented, '2 4,5 7 listaggU');";
     return sSample;
 }
