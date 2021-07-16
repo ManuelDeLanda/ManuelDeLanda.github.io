@@ -48,20 +48,25 @@ catch(e) { console.log(e); }
 })
 window.addEventListener('DOMContentLoaded', (event) => { 
 
-try { if (oGetAllParameters_CLIENT().philosophy != undefined) {
-    document.body.innerHTML = "<br />Welcome to the philosophy menu.  This page is a placeholder for being able to discourse with philosophical texts.<br />";
-} else if (oGetAllParameters_CLIENT().news != undefined) {
-    document.body.innerHTML = "";
-} else if (oGetAllParameters_CLIENT().about != undefined) {
-    document.body.innerHTML = "";
-}
+try { var oMenu = {};
+oMenu["philosophy"] = "<br />From Decartes to Deleuze, more than grids you can peruse..<br />";
+oMenu["links"] = "pending..";
 
-document.body.prependHTML(`<div style="padding:10px;" class="topnav">
-  <a href="/">Home</a>
-  <a href="?philosophy">Philosophy</a>
-  <a href="?news">News</a>
-  <a href="?about">About</a>
-</div>`);
+// generate innerHTML from oMenu
+Object.keys(oGetAllParameters_CLIENT()).forEach(function(oEl) {
+    if (oMenu[oEl] != undefined) {
+        // oGetAllParameters_CLIENT()[oEl] // do I need to do anything with this value?
+        document.body.innerHTML = oMenu[oEl];
+    } 
+})
+
+// generate top menu from oMenu
+document.body.prependHTML(
+    '<div style="padding:10px;" class="topnav"><a href="/">Home</a>' + Object.keys(oMenu).reduce(function(oAg, oEl) {
+        oAg += '<a href="?' + oEl + '">' + oEl + "</a>";
+        return oAg;
+    }, "") + "</div>"
+);
 }
 catch(e) { console.log(e); }
 })
