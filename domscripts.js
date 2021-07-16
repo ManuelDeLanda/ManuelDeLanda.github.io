@@ -122,7 +122,7 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
         if (domTable == undefined) { domTable = document.querySelectorAll("table")[0]; }
         if (domTable != undefined) {
             return Array.prototype.slice.call((domTable).querySelectorAll("tr")).map(function(oElement) {
-                return Array.prototype.slice.call(oElement.querySelectorAll("td"));
+                return Array.prototype.slice.call(oElement.querySelectorAll("th,td"));
             })
         } else {
 
