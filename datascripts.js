@@ -432,7 +432,7 @@ pivottable.sample = function(aThis) {
     // return aRandomPivotInstructions;
     sSample += "var aPivotInstructions = " + JSON.stringify(aRandomPivotInstructions);
     sSample += 'pivottable(aRecordsOriented, aPivotInstructions)';
-    sSample += "// also don't forget to include this in sample one day - aPivotInstructions = '2 4,5 7 listaggU';";
+    sSample += "\n\n// also this - \n// pivottable(aRecordsOriented, '2 4,5 7 listaggU');";
     return sSample;
 }
 /* END PANDAS-INSPIRED FUNCTIONS */
