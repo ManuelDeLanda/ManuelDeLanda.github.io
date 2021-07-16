@@ -7,7 +7,7 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>?</text></svg>"> 
 <title>Bienvenidos!</title>
 
-<style>
+<style> // .topnav cheap js menu
 
 .topnav {
   overflow: hidden;
@@ -37,6 +37,14 @@
 //manueldelanda.github.io:
 var oTest = {};
 </script><script>
+//.topnav%20cheap%20js%20menu:
+var oMenu = {};
+oMenu["philosophy"] = "<br />From Decartes to Deleuze, more than grids you can peruse..<br />";
+oMenu["scripts"] = "scripts=<br />gists=<br />libraries=<br />frameworks=<br />kaggle=<br />firebase=";
+oMenu["diffchecker"] = "";
+oMenu["links"] = "pending..";
+
+</script><script>
 
 window.addEventListener('DOMContentLoaded', (event) => { 
 
@@ -48,18 +56,12 @@ catch(e) { console.log(e); }
 })
 window.addEventListener('DOMContentLoaded', (event) => { 
 
-try { var oMenu = {};
-oMenu["philosophy"] = "<br />From Decartes to Deleuze, more than grids you can peruse..<br />";
-oMenu["scripts"] = "scripts=<br />gists=<br />libraries=<br />frameworks=<br />kaggle=<br />firebase=";
-oMenu["diffchecker"] = "";
-oMenu["links"] = "pending..";
-
-// generate innerHTML from oMenu
+try { // generate innerHTML from oMenu
 Object.keys(oGetAllParameters_CLIENT()).forEach(function(oEl) {
     if (oMenu[oEl] != undefined) {
         // oGetAllParameters_CLIENT()[oEl] // do I need to do anything with this value?
         document.body.innerHTML = oMenu[oEl];
-    } 
+    }
 })
 
 // generate top menu from oMenu
@@ -67,7 +69,7 @@ document.body.prependHTML(
     '<div style="padding:10px;" class="topnav"><a href="/">home</a>' + Object.keys(oMenu).reduce(function(oAg, oEl) {
         oAg += '<a href="?' + oEl + '">' + oEl + "</a>";
         return oAg;
-    }, "") + "</div>"
+    }, "") + "</div><br />"
 );
 }
 catch(e) { console.log(e); }
