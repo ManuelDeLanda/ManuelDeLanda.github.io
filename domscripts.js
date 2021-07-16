@@ -676,7 +676,17 @@ SubmitSuperNinjaForm=function (oTypeURLPayload, sTarget) {
     }, "")
     dom_form.submit();
 }
+SubmitSuperNinjaForm.sample = function() { 
+    console.log(`
 
+    var oTypeURLPayload = { type:"POST", url: "https://collegediscgolf.com/wp-json/api/v1/author/2", payload: {filter: "2asdf"}};
+
+    SubmitSuperNinjaForm(oTypeURLPayload);
+    fetch_XMLHttpRequest(oTypeURLPayload).then(function(sResponse) { console.log(sResponse.trim()); });
+    sResponse = await fetch_XMLHttpRequest(oTypeURLPayload);
+
+    `)
+}; fetch_XMLHttpRequest.sample = SubmitSuperNinjaForm.sample;
 
 } catch(e) {}
 
