@@ -1,4 +1,4 @@
-try { // domscripts.serverUNsafe
+try { // domscripts.serverUNsafe and ES5_UNsafe
     var $$$ = document.querySelectorAll.bind(document); 
     /* ADD THESE FUNCTIONS TO datascripts.js? */
     getRange3 = function(n,r){for(var e=[],t=n;t<=r;t++)e.push(t);return e}
