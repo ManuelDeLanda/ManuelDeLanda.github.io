@@ -7,6 +7,8 @@
 
 /* BEGIN no brainers / polyfills for es5 */
 function padArray(array, length, fill) { return length > array.length ? array.concat(Array(length - array.length).fill(fill)) : array; }
+padArray.sample=function(e){return "padArray([1,2,3]), 5, 'end');";}
+
 String.prototype.count=function(c) { var result = 0, i = 0; for(i;i<this.length;i++)if(this[i]==c)result++; return result; };
 //Array.prototype.unique = function() { var a = []; for (var i=0, l=this.length; i<l; i++) if (a.indexOf(this[i]) === -1) a.push(this[i]); return a; };
 // count=function(c) { var result = 0, i = 0; for(i;i<this.length;i++)if(this[i]==c)result++; return result; };
@@ -18,6 +20,7 @@ unique = function(aArray) { var a = []; for (var i=0, l=aArray.length; i<l; i++)
 /* BEGIN values oriented / records oriented / tab delimited converter functions */
 // toValuesOriented = function(aInputArray) { var aArrayOfAllPossibleColumnTitles = aInputArray.reduce(function(agg123, oElement123) { Object.keys(oElement123).forEach(function(oElement751) { if (!agg123.includes(oElement751)) { agg123.push(oElement751); } else {} }); return agg123; }, Object.keys(aInputArray[0])); var aValuesOrientation = aInputArray.map(function(oElement123, iIndex123) { return aArrayOfAllPossibleColumnTitles.reduce(function(agg751, oElement751) { if (oElement123[oElement751] == undefined) { agg751.push(); } else { agg751.push(oElement123[oElement751]); } return agg751; }, []) }); aValuesOrientation.unshift(aArrayOfAllPossibleColumnTitles); return aValuesOrientation; }
 toValuesOriented = function(aInputArray, aColumns) {
+    // REFACTOR: replace aArrayOfAllPossibleColumnTitles now that there's a normalizeRecordsOriented function?
     var aArrayOfAllPossibleColumnTitles = aInputArray.reduce(function(agg123, oElement123) {
         Object.keys(oElement123).forEach(function(oElement751) {
             if (agg123.indexOf(oElement751) == -1) {
@@ -41,7 +44,6 @@ toValuesOriented = function(aInputArray, aColumns) {
     aValuesOrientation.unshift(aColumns);
     return aValuesOrientation;
 }
-
 toRecordsOriented = function(aInputArray) { var aValuesOrientation = JSON.parse(JSON.stringify(aInputArray)); aValuesOrientation[0] = aValuesOrientation[0].slice().reverse().map(function(oElement, iIndex, aArray) { if ( aValuesOrientation[0].indexOf(oElement) == aValuesOrientation[0].length - aArray.indexOf(oElement) - 1 ) { return oElement.toString().trim(); } else { return oElement.toString().trim() + "_" + (aValuesOrientation[0].length - iIndex) } }).reverse(); return aValuesOrientation.reduce(function(agg, oElement, iIndex, aArray) { return (iIndex != 0) ? agg.concat(aArray[0].reduce(function(oagg0, oElement0, iIndex0) { oagg0[oElement0] = oElement[iIndex0]; return oagg0 }, {})) : [] }, []) }
 toXXXOriented = function (aInputArray, sXXX) { var aRecordsOrientation = JSON.parse(JSON.stringify(aInputArray)); return aRecordsOrientation.reduce(function (agg, oElement) { if (agg[oElement[sXXX]]==undefined) { agg[oElement[sXXX]] = oElement; } else { if (!Array.isArray(agg[oElement[sXXX]])) { agg[oElement[sXXX]] = [agg[oElement[sXXX]]].concat(oElement) } else { agg[oElement[sXXX]] = agg[oElement[sXXX]].concat(oElement) } } return agg; }, {}); }
 toXXXOrientedDEDUPED = function(aInputArray, sXXX)  { var aRecordsOrientation = JSON.parse(JSON.stringify(aInputArray)); var o_XXX_Orientation = aRecordsOrientation.reduce(function (agg, oElement) { if (agg[oElement[sXXX]]==undefined) { agg[oElement[sXXX]] = oElement; } else { if (!Array.isArray(agg[oElement[sXXX]])) { agg[oElement[sXXX]] = [agg[oElement[sXXX]]].concat(oElement) } else { agg[oElement[sXXX]] = agg[oElement[sXXX]].concat(oElement) } } return agg; }, {}); return Object.keys(o_XXX_Orientation).reduce(function(agg777, oElement777) { if (Array.isArray(o_XXX_Orientation[oElement777])) { agg777[oElement777] = o_XXX_Orientation[oElement777].reduce(function(agg778, oElement778) { return Object.keys(oElement778).reduce(function(agg779, oElement779) { if (agg778[oElement779] == undefined) { agg778[oElement779] = oElement778[oElement779]; } else { agg778[oElement779] = agg778[oElement779] + ";" + oElement778[oElement779]; } return agg778; }, "") }, {}) } else { agg777[oElement777] = o_XXX_Orientation[oElement777]; } return agg777; }, {}) }
@@ -132,12 +134,11 @@ function convertIntToDate(sDate, sWhatDo) {
             break;
     }
 }
-/* END SOME DATE-RELATED FUNCTIONS */
-
 getYYYYMMDDHHMMSS = function(sDate) {
     if (sDate) { var date = new Date(sDate); } else { var date = new Date(); }    
     return date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2) + ("0" + date.getHours() + 1 ).slice(-2) + ("0" + date.getMinutes()).slice(-2) + ("0" + date.getSeconds()).slice(-2)
 }
+/* END SOME DATE-RELATED FUNCTIONS */
 
 /* BEGIN PANDAS-INSPIRED FUNCTIONS */
 JSONObjectify = function(sString, sDelimiter, sColon) {
@@ -163,6 +164,7 @@ JSONObjectify = function(sString, sDelimiter, sColon) {
 JSONObjectify.sample=function() { return 'JSONObjectify("branch:main,folder:datascripts");'; }
 
 melt = function (aInputArray, aColumns) {
+// REFACTOR OUT .flat() in favor of flatten() to make this friendly with es5 servers?
     // aColumns = ["COUNT(*)", "matrix_child", "matrix_child_2"];
     // aColumns = [0,1,2];
     aRecordsOrientedArray = JSON.parse(JSON.stringify(aInputArray));
@@ -235,6 +237,7 @@ explode = function (aInputArray, aColumns, sDelimiter) {
         } else { return oElement999 }
     })); // .flat()
 }
+explode.sample=function() { return "Please put in a sample from wikipedia 'Directed By'..where was this?"; }
 
 pivottable = function (aInputArray, aPivotInstructions) {
     function parseFloatForSUM(sString) {
@@ -418,6 +421,7 @@ cartesian = function(args) { // args = aArrayOfArarys
     return r;
 }
 cartesian.sample=function() { return 'aArrays = [["a","b","c"], ["d","e"], ["f", "g", "h"], ["i"] ]; cartesian(aArrays);'; }
+
 combineArraysRecursivelyCartesian=function(array_of_arrays){if(!array_of_arrays){return[]} // refactor this with cartesian()?  same thing?
 if(!Array.isArray(array_of_arrays)){return[]}
 if(array_of_arrays.length==0){return[]}
@@ -490,7 +494,7 @@ function strip_tags(str) {
 strip_tags.sample=function() { return '"<table><tr><td>blah</td></tr><tr><td>blah2</td></tr></table"'; }
 /* END string cleanup functions */
 
-// minifed superhtmlEntities and superencode
+// superhtmlEntities/superencode.minified.js
 superhtmlEntities=function(e){return String(e).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&apos;").replace(/`/g,"&#96;")},superencode=function(e){return encodeURIComponent(e).replace(/'/g,"%27")};
 
 // domscripts.serversafe.minified.js
