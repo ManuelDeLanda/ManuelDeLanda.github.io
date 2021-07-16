@@ -179,7 +179,7 @@ JSONObjectify = function(sString, sDelimiter, sColon) {
   if (!sDelimiter) { sDelimiter = ","; } // for now, assume , or \n as delimiters
   if (!sColon) { sColon = ":";} // for now, assume : or = as colons
   // JSONObjectify("branch:main,folder:datascripts");
-  // JSONObjectify('{"branch":"main","folder":'datascripts"}';
+  // JSONObjectify('{"branch":"main","folder":"datascripts"}');
   try {
     return JSON.parse(sString);
   } catch(e) {
