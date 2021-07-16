@@ -64,7 +64,7 @@ Object.keys(oGetAllParameters_CLIENT()).forEach(function(oEl) {
 
 // generate top menu from oMenu
 document.body.prependHTML(
-    '<div style="padding:10px;" class="topnav"><a href="/">Home</a>' + Object.keys(oMenu).reduce(function(oAg, oEl) {
+    '<div style="padding:10px;" class="topnav"><a href="/">home</a>' + Object.keys(oMenu).reduce(function(oAg, oEl) {
         oAg += '<a href="?' + oEl + '">' + oEl + "</a>";
         return oAg;
     }, "") + "</div>"
