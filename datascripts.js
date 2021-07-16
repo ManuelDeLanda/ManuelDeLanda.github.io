@@ -170,12 +170,27 @@ melt = function (aInputArray, aColumns) {
 // REFACTOR OUT .flat() in favor of flatten() to make this friendly with es5 servers?
     // aColumns = ["COUNT(*)", "matrix_child", "matrix_child_2"];
     // aColumns = [0,1,2];
-    aRecordsOrientedArray = JSON.parse(JSON.stringify(aInputArray));
+  aRecordsOrientedArray = JSON.parse(JSON.stringify(aInputArray));
+  
+  sColumnsChecker = aColumns;
+
+  if (sColumnsChecker[0] == "-") { // then inverse list of columns
+    sColumnsChecker = sColumnsChecker.slice(1, sColumnsChecker.length);
+    aColumns = Object.keys(aRecordsOrientedArray[0]).map(function(oElement098, iIndex098) { return iIndex098.toString() })
+    sColumnsChecker.split(",").forEach(function(oElement098) {
+      aColumns.splice( aColumns.indexOf(oElement098), 1)
+    })
+  } else { if (!Array.isArray(aColumns)) { aColumns = sColumnsChecker.split(","); } }
+
+  sColumns = aColumns.join(",")
+  
+  
     if (typeof(aColumns[0])=="number") {
         aColumns = aColumns.map(function(oElement) { return Object.keys(aRecordsOrientedArray[0])[oElement] })
     } else {}
 
     return aRecordsOrientedArray.map(function(oElement) {
+    // return flatten(aRecordsOrientedArray.map(function(oElement) {
         oElement = JSON.parse(JSON.stringify(oElement));
         return aColumns.map(function(oElement000) {
             //console.log(oElement000)
@@ -186,6 +201,7 @@ melt = function (aInputArray, aColumns) {
             return JSON.parse(JSON.stringify(oElement));
         })
     }).flat().map(function(oElement) {
+    // }) ).map(function(oElement) {
         oElement = JSON.parse(JSON.stringify(oElement));
         aColumns.forEach(function(oElement000) {
             delete oElement[oElement000];
@@ -194,7 +210,7 @@ melt = function (aInputArray, aColumns) {
         return oElement; 
     }) 
 }
-melt.sample=function() { return 'var aArray=[{"blank":0,"car_model":"Tesla Model S P100D","Sept 1 9am":2.5,"Sept 1 10am":2.51,"Sept 1 11am":2.54},{"blank":1,"car_model":"Tesla Model X P100D","Sept 1 9am":2.92,"Sept 1 10am":2.91,"Sept 1 11am":2.93},{"blank":2,"car_model":"Tesla Model 3 AWD Dual Motor","Sept 1 9am":3.33,"Sept 1 10am":3.31,"Sept 1 11am":3.35}];\nmelt(aArray, [1,2,3]);' }
+melt.sample=function() { return 'var aArray=[{"blank":0,"car_model":"Tesla Model S P100D","Sept 1 9am":2.5,"Sept 1 10am":2.51,"Sept 1 11am":2.54},{"blank":1,"car_model":"Tesla Model X P100D","Sept 1 9am":2.92,"Sept 1 10am":2.91,"Sept 1 11am":2.93},{"blank":2,"car_model":"Tesla Model 3 AWD Dual Motor","Sept 1 9am":3.33,"Sept 1 10am":3.31,"Sept 1 11am":3.35}];\nmelt(aArray, [2,3,4]);melt(aArray, "-0,1")' }
 
 flatten = function(aArray) {
     // this = aArray;
