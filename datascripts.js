@@ -1,4 +1,4 @@
-/* THESE SCRIPTS NEED REFACTORING  */
+/* A BIT MORE REFACTORING REQUIRED BUT THIS IS MOSTLY PRODUCTION-READY  */
 // function consolelog(sReturn) {   setTimeout (console.log.bind(console, sReturn)); }
 // function dumpCSSText(element){ var s = ''; var o = getComputedStyle(element); for(var i = 0; i < o.length; i++){ s+=o[i] + ':' + o.getPropertyValue(o[i])+';'; } return s; }
 
@@ -64,7 +64,7 @@ toTabDelimited = function (aInputArray, sDelimiter, sQualifier) {
 }
 toDelimited = function(aInputArray, sDelimiter, sQualifier) { function returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented) { return aRecordsOriented.reduce(function(agg, oElement313) { agg = agg.concat(Object.keys(oElement313)); agg = unique(agg); return agg; }, []) } var aColumns = returnAllKeysAmongAllObjectsInRecordsOrientedArray(aInputArray); return aInputArray.reduce(function(agg, oElement) { return agg + "\n" + aColumns.filter(function(oElement777) { return oElement777.trim() != "" }).reduce(function(agg001, oElement001, iIndex001) { return agg001 + ((iIndex001 == 0) ? "" : sDelimiter) + sQualifier + ((oElement[oElement001] == undefined ? "" : oElement[oElement001])).toString().replace(/\r\n/g, "<br>").replace(/\n/g, "<br>") + sQualifier; }, "") }, aColumns.map(function(oElement002) { return sQualifier + oElement002 + sQualifier; }).join(sDelimiter)) }
 convertTabDelimitedToValuesOriented = function(sText) { return sText.split("\n").map(function(oElement) { return oElement.split("\t"); }); }
-convertTabDelimitedToRecordsOriented = function(sText) { return toRecordsOriented(convertTabDelimitedToValuesOriented); }
+convertTabDelimitedToRecordsOriented = function(sText) { return toRecordsOriented(convertTabDelimitedToValuesOriented(sText)); }
 toXXXOrientated=toXXXOriented;toXXXOrientatedDEDUPED=toXXXOrientedDEDUPED;
 /* END values oriented / records oriented / tab delimited converter functions */
 
@@ -440,7 +440,6 @@ chunkize = function(aArray, iChunkSize) {
 chunkize.sample=function() { return "chunkize([1,2,3,4,5,6,7,8,9,0,'A','B','C'], 3)"; }
 
 intersperse = function(arr, el) {
-    // SAMPLE: intersperse(["a", "b", "c", "d"], "0"); -> ["a", "0", "b", "0", "c", "0", "d"]
     var res = [], i=0;
     if (i < arr.length)
         res.push(arr[i++]);
@@ -473,8 +472,6 @@ range = function(n,r){for(var e=[],t=n;t<=r;t+=1)e.push(t);return e};
 getRange3 = getRange; getRanges2 = getRanges;
 getRanges.sample=function() { return 'getRanges([0,2.1,1,"blah",100,101,2,3,56])'; }
 getRange.sample=function() { return "getRange(1,5)"; }
-// convert two values (eg 1,5) to an array of [1,2,3,4,5]
-// getRange(1,5); getRanges([0,2.1,1,"blah",100,101,2,3,56])
 
 getRandomInt = function (min, max) {
   if (!min) { min = 1;}; if (!max) { max = 10;};
@@ -486,8 +483,6 @@ getRandomArbitrary=getRandomInt;
 
 /* string cleanup functions */
 function strip_tags(str) {
-    // sample usage:
-    // strip_tags("<table><tr><td>blah</td></tr><tr><td>blah2</td></tr></table");
     str = str.toString();
     return str.replace(/<\/?[^>]+>/gi, '');
 }
@@ -502,4 +497,3 @@ convertRecordsOrientedArrayToHTMLTable=function(e,t,r){function n(e){for(var t,r
 
 // dataGSscripts.minified.js
 function convertCellToArray(e){return[letterToColumn(e.replace(/[0-9]*$/g,"")),parseInt(e.replace(/^[A-Z]*/g,""))]}function convertArrayToCell(e){return columnToLetter(e[0])+e[1]}sortAlphaNum=function(e,r){return e.localeCompare(r,"en",{numeric:!0})},columnToLetter=function(e){for(var r,t="";e>0;)r=(e-1)%26,t=String.fromCharCode(r+65)+t,e=(e-r-1)/26;return t},letterToColumn=function(e){for(var r=0,t=e.length,n=0;n<t;n++)r+=(e.charCodeAt(n)-64)*Math.pow(26,t-n-1);return r},subtractCells=function(e,r){if("string"==typeof e)var t=convertCellToArray(e);else t=e;if("string"==typeof r)var n=convertCellToArray(r);else n=r;return t.map(function(e,r){return e-parseInt(n[r])})},addCells=function(e,r){if("string"==typeof e)var t=convertCellToArray(e);else t=e;if("string"==typeof r)var n=convertCellToArray(r);else n=r;return t.map(function(e,r){return e+parseInt(n[r])})},getGoogleSheetRange=function(e){return aReturn=[],e.replace(/;/,",").split(",").forEach(function(e){if(e.indexOf(":")>-1){var r=convertCellToArray(e.toString().split(":")[0]),t=convertCellToArray(e.toString().split(":")[1]);aReturn=aReturn.concat(combineArraysRecursivelyCartesian([getRange3(r[0],t[0]),getRange3(r[1],t[1])]).map(function(e){return convertArrayToCell(e)}))}else aReturn.push(e)}),aReturn},getGoogleSheetRangeValuesOriented=function(e){return aArray=getGoogleSheetRange(e).filter(function(e){return e.match(/[A-Z]+[0-9]+/)}).reduce(function(e,r,t){return 0==t?(e[0].push(r),e):(bCompletedMatrixingTask=!1,e.forEach(function(t,n){t[0].match(/[0-9]+/)[0]==r.match(/[0-9]+/)[0]&&(e[n].push(r),bCompletedMatrixingTask=!0)}),bCompletedMatrixingTask||e.push([r]),e)},[[]]),aArray};
-
