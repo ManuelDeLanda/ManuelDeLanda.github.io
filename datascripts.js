@@ -1,4 +1,10 @@
 /* THESE SCRIPTS NEED REFACTORING  */
+function strip_tags(str) {
+    // sample usage:
+    // strip_tags("<table><tr><td>blah</td></tr><tr><td>blah2</td></tr></table");
+    str = str.toString();
+    return str.replace(/<\/?[^>]+>/gi, '');
+}
 // function consolelog(sReturn) {   setTimeout (console.log.bind(console, sReturn)); }
 // function dumpCSSText(element){ var s = ''; var o = getComputedStyle(element); for(var i = 0; i < o.length; i++){ s+=o[i] + ':' + o.getPropertyValue(o[i])+';'; } return s; }
 
