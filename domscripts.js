@@ -128,6 +128,8 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
 
         }
     }
+    convertHTMLTableToValuesOriented = function(domTable) { return domTableToValuesOrientedDomTDs(domTable).map(function(oEl) { return oEl.map(function(oEl2) { return oEl2.innerText; }) }) }
+    domTableToValuesOriented = convertHTMLTableToValuesOriented;
 
     function toHTMLSelect(aArray, sClassList) { // refractor this to accept array of values vs array of objects (select id?)
         // aArray = JSON.parse(JSON.stringify(aArray)); aArray.unshift
@@ -135,6 +137,7 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
         return "<select class='" + sClassList + "'><option></option>" + aArray.map(function(oElement) { return "<option>" + oElement + "</option>"; }).join("");
     }
   
+    /* refactored this on 7/16/2021 in favor of
     convertHTMLTableToValuesOriented = function(sHTMLTable) {
         // convertHTMLTableToValuesOriented(".convertValuesOrientedToHTMLTable");
         // sHTMLTable = ".convertValuesOrientedToHTMLTable";
@@ -147,7 +150,7 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
                 }
             });
         })
-    }
+    } */
 
     HTMLElement.prototype.prependHtml = function (element) {
         const div = document.createElement('div');
@@ -512,8 +515,6 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
                 }
         }
 
-
-
         // eg domTableToEXCELRANGE("table.gsws", "A1:D2,G4")
         oReturn = {};
         sRange.split(",").forEach(function(oElement362) {
@@ -657,43 +658,41 @@ fetch_XMLHttpRequest=function(oTypeURLPayload) {
 } 
 
 SubmitSuperNinjaForm=function (oTypeURLPayload, sTarget) {
-    superencode = function (str){  return encodeURIComponent(str).replace(/'/g, "%27"); }
-    if ((oTypeURLPayload == null) || (oTypeURLPayload == undefined) || (oTypeURLPayload == "")) {
-       var oTypeURLPayload = { type:"POST", payload: {script: 84, deploy: 1, context: "llave", payload: "just testing" } }; 
-       var sURL = "https://acct138579.app.netsuite.com/app/site/hosting/scriptlet.nl?script=84&deploy=1&context=llave";
-       oTypeURLPayload.url = sURL;
-    } 
-    var dom_form = document.createElement('form');
-    dom_form.setAttribute("target",sTarget);
-    dom_form.name = 'superninjaform';
-    dom_form.id = 'superninjaform';
-    dom_form.method = oTypeURLPayload.type;
-    dom_form.action = ((oTypeURLPayload.url != undefined) ? oTypeURLPayload.url : window.location.href.split("?")[0] ); 
-    document.body.appendChild(dom_form);
-    dom_form.innerHTML = Object.keys(oTypeURLPayload.payload).reduce(function(agg, oElement) {
-        agg += '<input type="hidden" name="' + oElement + '" id="' + oElement + '" value="' + superencode(oTypeURLPayload.payload[oElement]) + '" />' + String.fromCharCode(10) + String.fromCharCode(13);
-        return agg;
-    }, "")
-    dom_form.submit();
+  superencode = function (str){  return encodeURIComponent(str).replace(/'/g, "%27"); }
+  if ((oTypeURLPayload == null) || (oTypeURLPayload == undefined) || (oTypeURLPayload == "")) {
+    var oTypeURLPayload = { type:"POST", payload: {script: 84, deploy: 1, context: "llave", payload: "just testing" } }; 
+    var sURL = "https://acct138579.app.netsuite.com/app/site/hosting/scriptlet.nl?script=84&deploy=1&context=llave";
+    oTypeURLPayload.url = sURL;
+  } 
+  var dom_form = document.createElement('form');
+  dom_form.setAttribute("target",sTarget);
+  dom_form.name = 'superninjaform';
+  dom_form.id = 'superninjaform';
+  dom_form.method = oTypeURLPayload.type;
+  dom_form.action = ((oTypeURLPayload.url != undefined) ? oTypeURLPayload.url : window.location.href.split("?")[0] ); 
+  document.body.appendChild(dom_form);
+  dom_form.innerHTML = Object.keys(oTypeURLPayload.payload).reduce(function(agg, oElement) {
+    agg += '<input type="hidden" name="' + oElement + '" id="' + oElement + '" value="' + superencode(oTypeURLPayload.payload[oElement]) + '" />' + String.fromCharCode(10) + String.fromCharCode(13);
+    return agg;
+  }, "")
+  dom_form.submit();
 }
 SubmitSuperNinjaForm.sample = function() { 
-    console.log(`
-
-    var oTypeURLPayload = { type:"POST", url: "https://collegediscgolf.com/wp-json/api/v1/author/2", payload: {filter: "2asdf"}};
-
-    SubmitSuperNinjaForm(oTypeURLPayload);
-    fetch_XMLHttpRequest(oTypeURLPayload).then(function(sResponse) { console.log(sResponse.trim()); });
-    sResponse = await fetch_XMLHttpRequest(oTypeURLPayload);
-
-    `)
+  console.log(`
+              var oTypeURLPayload = { type:"POST", url: "https://collegediscgolf.com/wp-json/api/v1/author/2", payload: {filter: "2asdf"}};
+              
+              SubmitSuperNinjaForm(oTypeURLPayload);
+  fetch_XMLHttpRequest(oTypeURLPayload).then(function(sResponse) { console.log(sResponse.trim()); });
+  sResponse = await fetch_XMLHttpRequest(oTypeURLPayload);
+  `)
 }; fetch_XMLHttpRequest.sample = SubmitSuperNinjaForm.sample;
-
-
-oGetAllParameters_CLIENT = function() {
+  
+  
+  oGetAllParameters_CLIENT = function() {
     if (location.search.substring(1)) {
-        return JSON.parse('{"' + location.search.substring(1).split("&").map(function(oEl) { return (oEl.indexOf("=")==-1 ? oEl + "=" : oEl) }).join("&").replace(/&/g, '","').replace(/=/g,'":"') + '"}', function(key, value) { return key===""?value:decodeURIComponent(value) })
+      return JSON.parse('{"' + location.search.substring(1).split("&").map(function(oEl) { return (oEl.indexOf("=")==-1 ? oEl + "=" : oEl) }).join("&").replace(/&/g, '","').replace(/=/g,'":"') + '"}', function(key, value) { return key===""?value:decodeURIComponent(value) })
     } else { return {}; }
-}
+  }
 
 
 } catch(e) {}
