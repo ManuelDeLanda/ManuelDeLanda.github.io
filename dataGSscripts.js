@@ -3,7 +3,7 @@ function convertArrayToCell(aArray) { return columnToLetter(aArray[0]) + aArray[
 sortAlphaNum = function (a, b) { // converts ["A10", "A1", "A20"] to ["A1", "A10", "A20"]
   return a.localeCompare(b, 'en', { numeric: true });
 };
-function columnToLetter(column) {
+columnToLetter = function(column) {
   // columnToLetter(12)
   var temp, letter = '';
   while (column > 0) {
@@ -13,14 +13,23 @@ function columnToLetter(column) {
   }
   return letter;
 }
-
-function letterToColumn(letter) {
+letterToColumn = function(letter) {
   var column = 0, length = letter.length;
   for (var i = 0; i < length; i++) {
     column += (letter.charCodeAt(i) - 64) * Math.pow(26, length - i - 1);
   }
   return column;
-} 
+}
+
+subtractCells = function (sCell1, sCell2) { if (typeof(sCell1) == "string") { var aCell1 = convertCellToArray(sCell1) } else { aCell1
+= sCell1; }  if (typeof(sCell2) == "string") { var aCell2 = convertCellToArray(sCell2) } else { aCell2
+= sCell2; }  return aCell1.map(function(oElement, iIndex) { return oElement - parseInt(aCell2[iIndex]) }) }
+// subtractCells("B1", "A1")
+addCells = function (sCell1, sCell2) { if (typeof(sCell1) == "string") { var aCell1 = convertCellToArray(sCell1) } else { aCell1
+= sCell1; }  if (typeof(sCell2) == "string") { var aCell2 = convertCellToArray(sCell2) } else { aCell2
+= sCell2; }  return aCell1.map(function(oElement, iIndex) { return oElement + parseInt(aCell2[iIndex]) }) }
+// addCells("B1", "A1"); addCells("B1", [1,'1']); addCells("B1", [1,1])
+
 getGoogleSheetRange = function (sCells) {
     // getGoogleSheetRange("A3:G3,H5,H7")
     aReturn = []
