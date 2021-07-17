@@ -49,7 +49,7 @@ body {
     font-family: Bangers;
 }
 .big { font-size: 500%; }
-.biggest { font-size:725%; }
+.biggest { font-size:825%; }
 </style>
 
 <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Bangers" />
@@ -96,7 +96,7 @@ aElementsToDisplay = [
 ];
 
 aElementsToDisplay.forEach(function(oEl) {
-    document.body.appendHTML(oEl);
+    $$$("#bodydiv")[0].appendHTML(oEl);
 })
 }
 catch(e) { console.log(e); }
@@ -104,4 +104,8 @@ catch(e) { console.log(e); }
 
 
 </script></head>
-<body></body></html>
+<body>
+<!-- load%20philosophers-->
+<div style="background-color:white;opacity:0.7;" id="bodydiv"></div>
+<br />
+</body></html>
