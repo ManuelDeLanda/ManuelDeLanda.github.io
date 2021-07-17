@@ -101,19 +101,17 @@ aElementsToDisplay.forEach(function(oEl) {
     $$$("#bodydiv")[0].appendHTML(oEl);
 })
 
+}
+catch(e) { console.log(e); }
+})
+window.addEventListener('DOMContentLoaded', (event) => { 
 
+try { domGetRandomBorderRadius = function() {
+    return getRange(1,4).map(function(oEl) { return getRandomInt(0,100) + "%" }).join(" ") + " / " + getRange(1,4).map(function(oEl) { return getRandomInt(0,100) + "%" }).join(" ");
+}
 
-$$$("#bodydiv")[0].style.borderRadius = "50% 50% 30% 25% / 60% 40% 40% 20%"
-
-
-$$$("#bodydiv")[0].style.borderRadius = getRandomInt(0,100).toString()+"% " +
-getRandomInt(0,100).toString()+"% " +
-getRandomInt(0,100).toString()+"% " +
-getRandomInt(0,100).toString()+"% / " +
-getRandomInt(0,100).toString()+"% " +
-getRandomInt(0,100).toString()+"% " +
-getRandomInt(0,100).toString()+"% " +
-getRandomInt(0,100).toString()+"%";
+$$$("#bodydiv")[0].style.borderRadius = domGetRandomBorderRadius();
+$$$("#bodydivinner")[0].style.borderRadius = domGetRandomBorderRadius();
 
 }
 catch(e) { console.log(e); }
@@ -123,6 +121,10 @@ catch(e) { console.log(e); }
 </script></head>
 <body>
 <!-- load%20philosophers-->
-<div style="background-color:white;opacity:0.7;" id="bodydiv"></div>
+<div style="background-color:white;opacity:0.7;" id="bodydiv">
+
+<div style="width: 74%;height: 75%;background-color: #ffd800;opacity: 0.8;position: absolute;margin-left: 10%;margin-top: 5%;" id="bodydiv_inner"></div>
+
+</div>
 <br />
 </body></html>
