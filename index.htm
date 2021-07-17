@@ -37,14 +37,6 @@
 //manueldelanda.github.io:
 var oTest = {};
 </script><script>
-//.topnav%20cheap%20js%20menu:
-var oMenu = {};
-oMenu["philosophy"] = "<br />From Decartes to Deleuze, more than grids you can peruse..<br />";
-oMenu["scripts"] = "scripts=<br />gists=<br />libraries=<br />frameworks=<br />kaggle=<br />firebase=";
-oMenu["diffchecker"] = "";
-oMenu["links"] = "pending..";
-
-</script><script>
 
 window.addEventListener('DOMContentLoaded', (event) => { 
 
@@ -56,7 +48,14 @@ catch(e) { console.log(e); }
 })
 window.addEventListener('DOMContentLoaded', (event) => { 
 
-try { // generate innerHTML from oMenu
+try { var oMenu = {};
+oMenu["/philosophy/philosophersfued.htm|philosophy"] = "<br />From Decartes to Deleuze, more than grids you can peruse..<br />";
+oMenu["/?scripts|scripts"] = "scripts=<br />gists=<br />libraries=<br />frameworks=<br />kaggle=<br />firebase=";
+oMenu["/?diffchecker|diffchecker"] = "";
+oMenu["/?links|links"] = "pending..";
+
+
+// generate innerHTML from oMenu
 Object.keys(oGetAllParameters_CLIENT()).forEach(function(oEl) {
     if (oMenu[oEl] != undefined) {
         // oGetAllParameters_CLIENT()[oEl] // do I need to do anything with this value?
@@ -67,7 +66,10 @@ Object.keys(oGetAllParameters_CLIENT()).forEach(function(oEl) {
 // generate top menu from oMenu
 document.body.prependHTML(
     '<div style="padding:10px;" class="topnav"><a href="/">home</a>' + Object.keys(oMenu).reduce(function(oAg, oEl) {
-        oAg += '<a href="?' + oEl + '">' + oEl + "</a>";
+        if (oEl.indexOf("|")>-1) { sURL = oEl.split("|")[0]; sURLName = oEl.split("|")[1]; } else {
+           sURL = "?" + oEl; sURLName = oEl;
+        }
+        oAg += '<a href="' + sURL + '">' + sURLName + "</a>";
         return oAg;
     }, "") + "</div><br />"
 );
