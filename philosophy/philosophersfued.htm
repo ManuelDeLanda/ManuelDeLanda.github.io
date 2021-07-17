@@ -43,6 +43,14 @@ body {
 }
 </style>
 
+<style>
+.animate__animated {
+    font-size: 500%;
+    text-align: center;
+    font-family: Bangers;
+}
+</style>
+
 <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Bangers" />
 <script>
 //.topnav%20cheap%20js%20menu:
@@ -80,10 +88,10 @@ try { var aPhilosophers = [{"PHI A":"Adorno","PHI B":"Deleuze"},{"PHI A":"Adorno
 
 aRandomPhilosophers = aPhilosophers[getRandomInt(0, aPhilosophers.length)];
 aElementsToDisplay = [
-    "<div animate__delay-2s animate__slower animate__animated animate__slideInLeft>WHO WOULD WIN?</div>",
-    "<div animate__delay-3s animate__slower animate__animated animate__slideInRight>" + aRandomPhilosophers["PHI A"] + "</div>",
-    "<div animate__delay-4s animate__slower animate__animated animate__slideInRight> VS </div>",
-    "<div animate__delay-5s animate__slower animate__animated animate__slideInLeft>" + aRandomPhilosophers["PHI B"] + "</div>",
+    "<div class='animate__delay-2s animate__slower animate__animated animate__slideInLeft' >WHO WOULD WIN?</div>",
+    "<div class='animate__delay-3s animate__slower animate__animated animate__slideInRight' >" + aRandomPhilosophers["PHI A"] + "</div>",
+    "<div class='animate__delay-4s animate__slower animate__animated animate__slideInRight' > VS </div>",
+    "<div class='animate__delay-5s animate__slower animate__animated animate__slideInLeft'>" + aRandomPhilosophers["PHI B"] + "</div>",
 ];
 
 aElementsToDisplay.forEach(function(oEl) {
