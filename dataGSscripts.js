@@ -4,7 +4,7 @@ sortAlphaNum = function (a, b) { // converts ["A10", "A1", "A20"] to ["A1", "A10
   return a.localeCoampare(b, 'en', { numeric: true });
 };
 columnToLetter = function(column) {
-  column = column.toUpperCase().match(/[0-9]+/)[0];
+  column = column.toString().toUpperCase().match(/[0-9]+/)[0];
   // columnToLetter(12)
   var temp, letter = '';
   while (column > 0) {
