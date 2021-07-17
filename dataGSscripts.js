@@ -3,8 +3,11 @@ function convertArrayToCell(aArray) { return columnToLetter(aArray[0]) + aArray[
 sortAlphaNum = function (a, b) { // converts ["A10", "A1", "A20"] to ["A1", "A10", "A20"]
   return a.localeCompare(b, 'en', { numeric: true });
 };
+cellToColumn = function(sCell) { return sCell.toUpperCase().match(/^[A-Z]+/g)[0] }
+cellToRow = function(sCell) { return sCell.toUpperCase().match(/[0-9]+$/g)[0] }
+// cellToRow("AH378"); cellToColumn("AH378")
 columnToLetter = function(column) {
-  column = column.toString().toUpperCase().match(/[0-9]+/)[0];
+  // column = column.toUpperCase().match(/[A-Z]+/)[0];
   // columnToLetter(12)
   var temp, letter = '';
   while (column > 0) {
@@ -15,7 +18,7 @@ columnToLetter = function(column) {
   return letter;
 }
 letterToColumn = function(letter) {
-  letter = letter.toUpperCase().match(/[A-Z]+/)[0];
+  // letter = letter.toString().toUpperCase().match(/[0-9]+/)[0];;
   var column = 0, length = letter.length;
   for (var i = 0; i < length; i++) {
     column += (letter.charCodeAt(i) - 64) * Math.pow(26, length - i - 1);
