@@ -100,6 +100,21 @@ aElementsToDisplay = [
 aElementsToDisplay.forEach(function(oEl) {
     $$$("#bodydiv")[0].appendHTML(oEl);
 })
+
+
+
+$$$("#bodydiv")[0].style.borderRadius = "50% 50% 30% 25% / 60% 40% 40% 20%"
+
+
+$$$("#bodydiv")[0].style.borderRadius = getRandomInt(0,100).toString()+"% " +
+getRandomInt(0,100).toString()+"% " +
+getRandomInt(0,100).toString()+"% " +
+getRandomInt(0,100).toString()+"% / " +
+getRandomInt(0,100).toString()+"% " +
+getRandomInt(0,100).toString()+"% " +
+getRandomInt(0,100).toString()+"% " +
+getRandomInt(0,100).toString()+"%";
+
 }
 catch(e) { console.log(e); }
 })
