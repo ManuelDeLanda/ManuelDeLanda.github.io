@@ -240,7 +240,8 @@ GSDS_getTDRANGE = function(domTable, sA1Notation) {
 }
 
 GSDS_inputifyTDRANGE = function(domTable, sA1Notation, sElementType, sWidth) { // REFACTOR THIS - change to removeChild and appendChildHTML instead of hardcoding the html strings!
-  if (!(sElementType) || ((sElementType != "textarea") || (sElementType != "select"))) { sElementType=="input"; }
+  if ((sElementType == undefined) || ((sElementType != "textarea") && (sElementType != "select") && (sElementType != "button")) ) { sElementType="input"; }
+  console.log(sElementType);
   GSDS_getTDRANGE(domTable, sA1Notation).flat().forEach(function(domTD) {
         //if (domTD.querySelectorAll("input, select, textarea") == undefined) {
             domTD.style = "padding: 0 0 0 0 !important";
@@ -625,3 +626,7 @@ GSDS_evalifyTDRANGE("table!D6");
 GSDS_eval(decodeURIComponent(sGSEVAL));
 GSDS_disjointedRangeToAVO("A2;A2:B4;D4,E5:F5;G1:H2,H1-H9,L8")
 */
+// GSDS_inputifyTDRANGE("table!A1:*", undefined, "textarea")
+//GSDS_inputifyTDRANGE("table!A1:*", undefined, "textarea");
+//GSDS_evalifyTDRANGE("table!A1:*")
+// GSDS_inputifyTDRANGE("table!A1:*", undefined, "button")
