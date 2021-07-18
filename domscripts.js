@@ -196,7 +196,7 @@ domReplaceAsterisksInA1Notation = function(domTable, sA1Notation) {
     var sLastColumn = columnToLetter(domTableAVO[0].length);
     sA1Notation = sA1Notation.replace(/\-/g, ":").replace(/,/g, ";"); // sanitize
     sA1Notation = sA1Notation.split(";").map(function(oEl0) {
-        if (oEl0.match("^:")) { oEl0 = oEl0 + "A1";  }
+        if (oEl0.match("^:")) { oEl0 = "A1" + oEl0;  }
         if (oEl0.match(":$")) { oEl0 = oEl0 + "*";  }
         return oEl0.split(":").map(function(oEl) {
           if (oEl=="*") { oEl = sLastColumn+sLastRow.toString(); }
