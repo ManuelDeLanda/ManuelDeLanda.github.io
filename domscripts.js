@@ -633,7 +633,8 @@ GSDS_disjointedRangeToAVO = function(sA1Notation) { // this function is NOT FOR 
     }) }); 
   }
 }
-GSDS_disjointedRangeToAVO.sample = function() { return 'GSDS_disjointedRangeToAVO("A2;A2:B4;D4,E5:F5;G1:H2,H1-H9,L8")' }
+GSDS_disjointedRangeToArray = function(sA1Notation) { return GSDS_disjointedRangeToAVO(sA1Notation).flat().filter(function(oEl) { return oEl; }) }
+GSDS_disjointedRangeToAVO.sample = function() { return 'GSDS_disjointedRangeToAVO("-A2;A2:B4; D4,E5:F5;G1:H2,H1-H9,L8,:B2, G8")' }
 toHTMLSelect=function(aArray, sClassList) { // refractor this to accept array of values vs array of objects (select id?)
   // aArray = JSON.parse(JSON.stringify(aArray)); aArray.unshift
   if (sClassList == undefined) { sClassList = "aArraySelect"; }
@@ -658,7 +659,7 @@ GSDS_disjointedRangeToAVO("A2:B4;D4,E5:F5;H1-H9");
 GSDS_getTDRANGE("table!D6")[0][0].dataset.gseval = superencode("=A1:A2");
 GSDS_evalifyTDRANGE("table!D6");
 GSDS_eval(decodeURIComponent(sGSEVAL));
-GSDS_disjointedRangeToAVO("A2;A2:B4;D4,E5:F5;G1:H2,H1-H9,L8")
+GSDS_disjointedRangeToAVO("A2;A2:B4;D4,E5:F5;G1:H2,H1-H9,L8,:B2, G8")
 */
 // GSDS_inputifyTDRANGE("table!A1:*", undefined, "textarea")
 //GSDS_inputifyTDRANGE("table!A1:*", undefined, "textarea");
