@@ -141,6 +141,10 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
 GSDS_CELL = function(sA1Notation) { return GSDS_getTDRANGE(sA1Notation)[0][0]; }
 GSDS_RANGE1D = function(sA1Notation) { return GSDS_getTDRANGE(sA1Notation).flat().filter(function(oEl) { return oEl }); }
 GSDS_RANGE2D = function(sA1Notation) { return GSDS_getTDRANGE(sA1Notation); }
+GSDS_GSDSifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes, fOptionsFunction) {
+    GSDS_inputifyTDRANGE(domTable, sA1Notation, sElementType, sAttributes, fOptionsFunction);
+    GSDS_evalifyTDRANGE(domTable, sA1Notation);
+}
 GSDS_disjointedRangeToAVOdomTDs = function(domTable, sA1Notation) { // this function IS FOR DOM-ONLY.
   var oDomTableAndA1Notation=distinguishDomTableAndA1Notation(domTable, sA1Notation); domTable = oDomTableAndA1Notation["domTable"]; sA1Notation = oDomTableAndA1Notation["sA1Notation"];
   // console.log(sA1Notation);
@@ -203,14 +207,15 @@ GSDS_getOSR = function(domTable, sA1Notation) {
     var domTableAVO = Array.from(domTable.querySelectorAll("tr")).map(oEl => Array.from(oEl.querySelectorAll("th,td")) );
     // sA1Notation = domReplaceAsterisksInA1Notation(domTable, sA1Notation);
     // aVirtualRange = getGoogleSheetRangeValuesOriented(sRange);
-    aVirtualRange = GSDS_disjointedRangeToAVO(sA1Notation);
+    // aVirtualRange = GSDS_disjointedRangeToAVO(sA1Notation);
 
     oSmartRange = {};
     oSmartRange.range = sA1Notation;
-    oSmartRange.allcells_valuesoriented = getGoogleSheetRangeValuesOriented(oSmartRange.range);
+    oSmartRange.allcells_valuesoriented = GSDS_disjointedRangeToAVO(sA1Notation); // getGoogleSheetRangeValuesOriented(oSmartRange.range);
     oSmartRange.height = oSmartRange.allcells_valuesoriented.length;
     oSmartRange.width = oSmartRange.allcells_valuesoriented[0].length;
-    getGoogleSheetRange(oSmartRange.range).forEach(function(oEl) {
+    oSmartRange.allcells_valuesoriented.flat().filter(function(oEl) { return oEl; }).forEach(function(oEl) {
+    // getGoogleSheetRange(oSmartRange.range).forEach(function(oEl) {
         iCurrentColumn = letterToColumn(oEl.match(/[A-Z]+/g)[0]);
         iCurrentRow = parseInt(oEl.match(/[0-9]+/g)[0]);
         // console.log(iCurrentColumn)
@@ -390,7 +395,7 @@ domGetTDTextOrValue = function(domTD) {
     // random vanilla DOM manipulation scripts
     // // replace body tag's innerHTML with div
     // document.getElementsByTagName('body')[0].innerHTML = "<div id='my'>blahHTML<div>"
-    function theadify(sTable) {
+    function theadify(sTable) { // USES JQUERY
         // sTable = "table.RecordsOrientedArrayToHTML";
         // theadify(table.RecordsOrientedArrayToHTML);
         theadify = $(sTable)[0].querySelectorAll("tr th, tr td")[0].parentNode;
@@ -398,7 +403,7 @@ domGetTDTextOrValue = function(domTD) {
         theadify.remove()
         $(sTable)[0].querySelectorAll("thead")[0].appendChild(theadify)
     }
-    function dom_lookupvalueHTMLTable(sTable, sRowValue, iColumn) {
+    function dom_lookupvalueHTMLTable(sTable, sRowValue, iColumn) { // WARNING USES JQUERY
         // sTable = "cualquierPotencialidad"; sRowValue = "pdf dump"; iColumn = 1;
         // dom_lookupvalueHTMLTable("cualquierPotencialidad", "pdf dump", 1);
         return Array.from( $("#" + sTable)[0].children[0].children ).reduce(function(agg, oElement) {
@@ -412,7 +417,7 @@ domGetTDTextOrValue = function(domTD) {
         }, "")
     }
 
-    function filterHTMLTable(sTable, iColumn, aAcceptableValues) {
+    function filterHTMLTable(sTable, iColumn, aAcceptableValues) { // WARNING USES JQUERY
         // aAcceptableValues = ["aOrderItemsALL", "POST daterange", "buttons"]; filterHTMLTable("cualquierPotencialidad", 0, aAcceptableValues);
         iColumn = 0; //first column
         //Array.from($("#cualquierPotencialidad")[0].children[iColumn].children).forEach(function(oElement) {
@@ -427,7 +432,7 @@ domGetTDTextOrValue = function(domTD) {
         })
     }
     // remove first column, consider refractoring to something cooler
-    function removeHTMLTableColumn(sTable, iColumn) {
+    function removeHTMLTableColumn(sTable, iColumn) { // WARNING USES JQUERY
         // removeHTMLTableColumn('cualquierPotencialidad', 0);
         Array.from($("#" + sTable + "")[0].children[0].children).forEach(function(oElement) {
             oElement.children[iColumn].style.display = "none"
