@@ -240,12 +240,12 @@ GSDS_getTDRANGE = function(domTable, sA1Notation) {
 }
 
 GSDS_inputifyTDRANGE = function(domTable, sA1Notation, sElementType, sWidth) { // REFACTOR THIS - change to removeChild and appendChildHTML instead of hardcoding the html strings!
-  if (!(sElementType) || (sElementType != "textarea") || (sElementType != "select")) { sElementType=="input"; }
+  if (!(sElementType) || ((sElementType != "textarea") || (sElementType != "select"))) { sElementType=="input"; }
   GSDS_getTDRANGE(domTable, sA1Notation).flat().forEach(function(domTD) {
         //if (domTD.querySelectorAll("input, select, textarea") == undefined) {
             domTD.style = "padding: 0 0 0 0 !important";
             // oElement.innerHTML = "<input style='width:100%; height:100%; padding: 0 0 0 0 !important; margin: 0 0 0 0 !important;' value='" + superhtmlEntities(oElement.innerHTML) + "'></input>";
-            domTD.innerHTML = "<" + sElementType + " style='padding: 0 0 0 0 !important; margin: 0 0 0 0 !important;' value='" + superhtmlEntities(domGetTDTextOrValue(domTD)) + "'></"+sElementType+">";
+            domTD.innerHTML = "<" + sElementType + " onClick='this.select();' style='padding: 0 0 0 0 !important; margin: 0 0 0 0 !important;' value='" + superhtmlEntities(domGetTDTextOrValue(domTD)) + "'></"+sElementType+">";
         //}
     })
 }
