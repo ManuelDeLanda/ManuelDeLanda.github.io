@@ -196,9 +196,11 @@ domReplaceAsterisksInA1Notation = function(domTable, sA1Notation) {
     var sLastColumn = columnToLetter(domTableAVO[0].length);
     sA1Notation = sA1Notation.replace(/\-/g, ":").replace(/,/g, ";"); // sanitize
     sA1Notation = sA1Notation.split(";").map(function(oEl0) {
+        oEl0=oEl0.trim();
         if (oEl0.match("^:")) { oEl0 = "A1" + oEl0;  }
         if (oEl0.match(":$")) { oEl0 = oEl0 + "*";  }
         return oEl0.split(":").map(function(oEl) {
+          oEl=oEl.trim();
           if (oEl=="*") { oEl = sLastColumn+sLastRow.toString(); }
           oEl = oEl.replace(/^\*/, sLastColumn).replace(/\*$/, sLastRow);
           return oEl;
@@ -601,6 +603,7 @@ GSDS_disjointedRangeToAVO = function(sA1Notation) { // this function is NOT FOR 
     // this function single-handledly dismantles getGoogleSheetRange and getGoogleSheetRangeValuesOriented
     sA1Notation = sA1Notation.replace(/\-/g, ":").replace(/,/g, ";"); // sanitize
     a1DCells = unique(sA1Notation.split(";").map(function(oEl) {
+      oEl=oEl.trim();
       if (oEl.match("^:")) { oEl = "A1" + oEl; }
       if (oEl.match(":$")) { return "ERROR - ASTERISK IS ASSUMED HERE.";  }
       if (oEl.indexOf("\:") > -1) { return getGoogleSheetRange(oEl); } else { return oEl; }
