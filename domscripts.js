@@ -1,9 +1,14 @@
 try { // domscripts.serverUNsafe and ES5_UNsafe
-    var $$$ = document.querySelectorAll.bind(document); 
-    /* BEGIN - THESE FUNCTIONS SHOULD NEVER BE ADDED TO datascripts.js? */
-    // random vanilla DOM manipulation scripts
-    // // replace body tag's innerHTML with div
-    // document.getElementsByTagName('body')[0].innerHTML = "<div id='my'>blahHTML<div>"
+  /* BEGIN - THESE FUNCTIONS SHOULD NEVER BE ADDED TO datascripts.js? */
+  var $$$ = document.querySelectorAll.bind(document);
+  // SubmitSuperNinjaForm,fetch_XMLHttpRequest,oGetAllParameters_CLIENT()
+  fetch_XMLHttpRequest=function(e){superencode=function(e){return encodeURIComponent(e).replace(/'/g,"%27")};var t="",n=new XMLHttpRequest;return new Promise(function(o,r){var a;n.onreadystatechange=function(){if(4==this.readyState&&200==this.status){t=this.responseText;(new DOMParser).parseFromString(t,"text/html");o(t)}},n.open(e.type,e.url,!0),null!=e.payload&&(a=Object.keys(e.payload).map(function(t){return superencode(t)+"="+superencode(e.payload[t])}).join("&")),n.setRequestHeader("Content-type","application/x-www-form-urlencoded"),n.send(a)})},SubmitSuperNinjaForm=function(e,t){if(superencode=function(e){return encodeURIComponent(e).replace(/'/g,"%27")},null==e||null==e||""==e){(e={type:"POST",payload:{script:84,deploy:1,context:"llave",payload:"just testing"}}).url="https://acct138579.app.netsuite.com/app/site/hosting/scriptlet.nl?script=84&deploy=1&context=llave"}var n=document.createElement("form");n.setAttribute("target",t),n.name="superninjaform",n.id="superninjaform",n.method=e.type,n.action=null!=e.url?e.url:window.location.href.split("?")[0],document.body.appendChild(n),n.innerHTML=Object.keys(e.payload).reduce(function(t,n){return t+='<input type="hidden" name="'+n+'" id="'+n+'" value="'+superencode(e.payload[n])+'" />'+String.fromCharCode(10)+String.fromCharCode(13)},""),n.submit()},SubmitSuperNinjaForm.sample=function(){console.log('\n              var oTypeURLPayload = { type:"POST", url: "https://collegediscgolf.com/wp-json/api/v1/author/2", payload: {filter: "2asdf"}};\n              \n              SubmitSuperNinjaForm(oTypeURLPayload);\n  fetch_XMLHttpRequest(oTypeURLPayload).then(function(sResponse) { console.log(sResponse.trim()); });\n  sResponse = await fetch_XMLHttpRequest(oTypeURLPayload);\n  ')},fetch_XMLHttpRequest.sample=SubmitSuperNinjaForm.sample,oGetAllParameters_CLIENT=function(){return location.search.substring(1)?JSON.parse('{"'+location.search.substring(1).split("&").map(function(e){return-1==e.indexOf("=")?e+"=":e}).join("&").replace(/&/g,'","').replace(/=/g,'":"')+'"}',function(e,t){return""===e?t:decodeURIComponent(t)}):{}};  
+
+// random vanilla DOM manipulation scripts
+// // replace body tag's innerHTML with div
+// document.getElementsByTagName('body')[0].innerHTML = "<div id='my'>blahHTML<div>"
+
+    // UNORGANIZED HTML TABLE LOOKUPS/FILTERS/MANIPULATIONS
     function dom_lookupvalueHTMLTable(sTable, sRowValue, iColumn) {
         // sTable = "cualquierPotencialidad"; sRowValue = "pdf dump"; iColumn = 1;
         // dom_lookupvalueHTMLTable("cualquierPotencialidad", "pdf dump", 1);
@@ -39,82 +44,8 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
             oElement.children[iColumn].style.display = "none"
         })
     }
-    // Excel-like dom manipulation functions on html tables
-    domTableToEXCELRANGE = function(domTable, sRange) { // domTableToEXCELRANGE("table.gsws", "C2:G4").row("3");
-        // domTableToEXCELRANGE("A1:B2,C4:D7")
-        function oEXCELRANGE() {};
-        if (domTable == undefined) { domTable = document.querySelectorAll("table.gsws")[0]; sRange="A1:Z26" }
-        if (sRange == undefined) { sRange = domTable; domTable = document.querySelectorAll("table.gsws")[0]; }
-        // eg domTableToEXCELRANGE("table.gsws", "A1:D2,G4")
-        oReturn = {};
-        sRange.split(",").forEach(function(oElement362) {
-            oReturn = getGoogleSheetRange(oElement362).reduce(function(oAgg, oElement) {
-                oAgg[oElement] = domTableToEXCELObject(domTable)[oElement];
-                return oAgg;
-            }, oReturn)
-        })
-        oReturn.column = function(sColumn) {
-            if (!isNaN(parseInt(sColumn))) { sColumn = columnToLetter(sColumn); }
-            return Object.keys(oReturn).filter(function(oElement) {
-                sColumn = sColumn.toString();
-                rMatch = sColumn + "[0-9]+";
-                // console.log(oElement + ".matching with " + sColumn);
-                return oElement.match(rMatch)
-            }).map(function(oElement) { return oReturn[oElement]; })
-        }
-        oReturn.columns = oReturn.column;
-        oReturn.row = function(sRow) { return Object.keys(oReturn).filter(function(oElement) {
-            sRow = sRow.toString(); rMatch = "[A-Z]+" + sRow;
-            return oElement.match(rMatch)
-        }).map(function(oElement) { return oReturn[oElement]; }) }
-        oReturn.rows = oReturn.row;
-        oReturn.valuesOriented = function() {
-            return getGoogleSheetRangeValuesOriented(sRange)
-            .map(function(oElement008) {
-                return oElement008.map(function(oElement007) { return oReturn[oElement007]; })
-            });
-        }
-        oReturn.values = function() {
-            return getGoogleSheetRange(sRange).reduce(function(oAgg, oElement) {
-                try {
-                    sValue = domTableToEXCELObject(domTable)[oElement].querySelectorAll("input, textarea, select")[0].value
-                } catch(e) {
-                    // console.log(domTableToEXCELObject(domTable))
-                    // console.log(oElement);
-                    sValue = domTableToEXCELObject(domTable)[oElement].innerText;
-                }
-                oAgg.push(sValue);
-                return oAgg;
-            }, [])
-        }
-        oReturn.valuesValuesOriented = function() {
-            return oReturn.valuesOriented().map(function(oElement087) {
-                return oElement087.map(function(oElement088) {
-                    try {
-                        return oElement088.querySelectorAll("input, textarea, select")[0].value;
-                    } catch(e) {
-                        return oElement088.innerText;
-                    }
-                })
-            })
-        }
-        return oReturn;
-    }
-
-    // domTableToEXCELFULLRANGE = function(domTable) { return domTableToEXCELObject(domTable); }
-    domTableToEXCELObject = function(domTable) { // domTableToEXCELObject("table")
-        oReturn = domTableToValuesOrientedDomTDs(domTable).reduce(function(oAgg122, oElement122, iIndex122) {
-            oElement122.forEach(function(oElement123, iIndex123) {
-                oAgg122[columnToLetter(iIndex123 + 1) + (iIndex122+1)] = oElement123;
-                oElement123
-            })
-            return oAgg122;
-        }, {})
-
-        return oReturn;
-
-    }
-
+    // END UNORGANIZED HTML FILTERS/LOOKUPS/MANIPULATIONS
+  
     domTableToValuesOrientedDomTDs = function(domTable) { // domTableToValuesOrientedDomTDs("table.gsws")
         if (typeof(domTable) == "string") { // eg "table.gsws"
             domTable = document.querySelectorAll(domTable)[0]
@@ -131,12 +62,6 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
     convertHTMLTableToValuesOriented = function(domTable) { return domTableToValuesOrientedDomTDs(domTable).map(function(oEl) { return oEl.map(function(oEl2) { return oEl2.innerText; }) }) }
     domTableToValuesOriented = convertHTMLTableToValuesOriented;
 
-    function toHTMLSelect(aArray, sClassList) { // refractor this to accept array of values vs array of objects (select id?)
-        // aArray = JSON.parse(JSON.stringify(aArray)); aArray.unshift
-        if (sClassList == undefined) { sClassList = "aArraySelect"; }
-        return "<select class='" + sClassList + "'><option></option>" + aArray.map(function(oElement) { return "<option>" + oElement + "</option>"; }).join("");
-    }
-  
     /* refactored this on 7/16/2021 in favor of
     convertHTMLTableToValuesOriented = function(sHTMLTable) {
         // convertHTMLTableToValuesOriented(".convertValuesOrientedToHTMLTable");
@@ -152,6 +77,19 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
         })
     } */
 
+    // BEGIN animate.css scripts
+    function addAnimateCSSToHover(sSelector, sClass) {  // jQuery-dependent
+       sClass = 'animated animate__animated animate__' + sClass; 
+       $(sSelector).hover(function(){
+           $(this).addClass(sClass);
+       });
+       $(sSelector).bind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd",function(){
+          $(this).removeClass(sClass);
+       });
+    }
+    // END animate.css scripts
+
+    // BEGIN EXTREMELY USEFUL vanilla dom scripts
     HTMLElement.prototype.prependHtml = function (element) {
         const div = document.createElement('div');
         div.innerHTML = element;
@@ -165,24 +103,11 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
             this.appendChild(div.children[0]);
         }
     }; HTMLElement.prototype.appendHTML = HTMLElement.prototype.appendHtml;
-
-    function theadify(sTable) {
-        // sTable = "table.RecordsOrientedArrayToHTML";
-        // theadify(table.RecordsOrientedArrayToHTML);
-        theadify = $(sTable)[0].querySelectorAll("tr th, tr td")[0].parentNode;
-        $(sTable)[0].createTHead();
-        theadify.remove()
-        $(sTable)[0].querySelectorAll("thead")[0].appendChild(theadify)
+    function toHTMLSelect(aArray, sClassList) { // refractor this to accept array of values vs array of objects (select id?)
+        // aArray = JSON.parse(JSON.stringify(aArray)); aArray.unshift
+        if (sClassList == undefined) { sClassList = "aArraySelect"; }
+        return "<select class='" + sClassList + "'><option></option>" + aArray.map(function(oElement) { return "<option>" + oElement + "</option>"; }).join("");
     }
-
-    /* BEGIN getElementsByInnerText vs contains */
-    function contains(selector, text) {
-      var elements = document.querySelectorAll(selector);
-      return Array.prototype.filter.call(elements, function(element){
-        return RegExp(text).test(element.textContent);
-      });
-    }
-
     HTMLElement.prototype.getElementsByInnerText = function (text, escape) {
         var nodes  = this.querySelectorAll("*");
         var matches = [];
@@ -211,8 +136,9 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
         return result[0];
     }
     document.getElementByInnerText = HTMLElement.prototype.getElementByInnerText;
-    /* END getElementsByInnerText vs contains */
-    // GoogleSheets / HTML scripts - in order of flexibility 02/06 MASTER COPY
+    // END EXTREMELY USEFUL vanilla dom scripts
+
+    // OLD GoogleSheets / HTML scripts - in order of flexibility 02/06 MASTER COPY
     GSTDINSERT = function(sTable, sColumnOrRow, aValues) {
         //console.log(isNaN(parseInt(sColumnOrRow)));
         if (!isNaN(parseInt(sColumnOrRow))) {
@@ -432,12 +358,272 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
             }).join(";");
         }
     }
+    // OLD googlesheets scripts
+    
+    // NEW googlesheets scripts
+// dataGSscriptsSTEROIDS.js 
+GSDS_disjointedRangeToAVO = function(sA1Notation) { // this function is NOT FOR DOM, just string/data-only
+    if (sA1Notation.match(/\*/g)) { return "ERROR - ASTERISK functions are for domTable ONLY!" } else {
+        // this function single-handledly dismantles getGoogleSheetRange and getGoogleSheetRangeValuesOriented
+        sA1Notation = sA1Notation.replace(/\-/g, ":").replace(/,/g, ";"); // sanitize
+        a1DCells = unique(sA1Notation.split(";").map(function(oEl) {
+            if (oEl.indexOf("\:") > -1) { return getGoogleSheetRange(oEl); } else { return oEl; }
+        }).flat().sort(sortAlphaNum));
+        // determine lowest cell and highest cell
+        iHighestColumn = a1DCells.reduce(function(oAg, oEl) {
+            return ((oAg<letterToColumn(cellToColumn(oEl))) ? letterToColumn(cellToColumn(oEl)) : oAg) 
+        }, 0)
 
+        iLowestColumn = a1DCells.reduce(function(oAg, oEl) {
+            return ((oAg>letterToColumn(cellToColumn(oEl))) ? letterToColumn(cellToColumn(oEl)) : oAg) 
+        }, iHighestColumn)
 
+        iHighestRow = a1DCells.reduce(function(oAg, oEl) {
+            return ((oAg<parseInt(cellToRow(oEl))) ? parseInt(cellToRow(oEl)) : oAg) 
+        }, 0);
+
+        iLowestRow = a1DCells.reduce(function(oAg, oEl) {
+            return ((oAg>parseInt(cellToRow(oEl))) ? parseInt(cellToRow(oEl)) : oAg) 
+        }, iHighestRow);
+        sExpansiverRange = columnToLetter(iLowestColumn) + iLowestRow + ":" + columnToLetter(iHighestColumn) + iHighestRow;
+        //console.log("Expansive Range - " + sExpansiverRange);
+        var a2DCells = getGoogleSheetRangeValuesOriented(sExpansiverRange);
+        // var a2DCells = getGoogleSheetRangeValuesOriented(a1DCells[0] + ":" + a1DCells.slice(-1)[0]); NO FUNCIONA
+        return a2DCells.map(function(oEl) { return oEl.map(function(oEl2) {
+            if (a1DCells.indexOf(oEl2) > -1) { return oEl2; }
+        }) }); 
+    }
+}
+GSDS_disjointedRangeToAVO.sample = function() { return 'GSDS_disjointedRangeToAVO("A2;A2:B4;D4,E5:F5;G1:H2,H1-H9,L8")' }
+
+GSDS_disjointedRangeToAVOdomTDs = function(domTable, sA1Notation) { // this function IS FOR DOM.
+  var oDomTableAndA1Notation=distinguishDomTableAndA1Notation(domTable, sA1Notation);
+  domTable = oDomTableAndA1Notation["domTable"];
+  sA1Notation = oDomTableAndA1Notation["sA1Notation"];
+  // console.log(sA1Notation);
+  if (domTable.oSmartRange == undefined) {
+      GSDS_setOSR(domTable);
+  }
+  sA1Notation = domReplaceAsterisksInA1Notation(domTable, sA1Notation);
+  aCellsFromRange = GSDS_disjointedRangeToAVO(sA1Notation).flat();
+  // console.log(sA1Notation);
+  return domTable.oSmartRange.allcells_valuesoriented.map(function(oEl) {
+    return oEl.map(function(oEl2) {
+        return ((aCellsFromRange.indexOf(oEl2) > -1) ? domTable.oSmartRange[oEl2].tdcell : null );
+    })
+  })
+}
+      
+distinguishDomTableAndA1Notation = function(domTable, sA1Notation) {
+    // distinguishDomTableAndA1Notation($$$('table'), "A1:*") vs distinguishDomTableAndA1Notation("table!A1:A*")
+    if (sA1Notation == undefined) {
+        sA1Notation = domTable;
+        domTable = undefined;
+    } else {
+        if (typeof(domTable) == "object") {
+            if (domTable[0]!=undefined) { domTable = domTable[0]; } // just in case I didn't [0] already
+        } else {
+            domTable = $$$(domTable)[0];
+        }
+    }
+    aA1Notation = sA1Notation.split("!");
+    if (aA1Notation.length == 1) {
+        if (domTable == undefined) {
+            sSelector = "table"; // christ, just grab first table
+            domTable = $$$(sSelector)[0]
+        }
+        sRange = aA1Notation[0];
+    } else { // .length == 2 I hope?
+        sSelector = aA1Notation[0];
+        sRange = aA1Notation[1];
+        domTable = $$$(sSelector)[0];
+    }
+    // domTable.oSmartRange.sA1Notation should be used to replace asterisks
+    return { "domTable": domTable, "sA1Notation": sRange }
+}
+domReplaceAsterisksInA1Notation = function(domTable, sA1Notation) {
+    var domTableAVO = Array.from(domTable.querySelectorAll("tr")).map(oEl => Array.from(oEl.querySelectorAll("th,td")) );
+    var sLastRow = domTableAVO.length; // do domTable.oSmartRange.width/height instead? of this?
+    var sLastColumn = columnToLetter(domTableAVO[0].length);
+    sA1Notation = sA1Notation.replace(/\-/g, ":").replace(/,/g, ";"); // sanitize
+    sA1Notation = sA1Notation.split(";").map(function(oEl0) { return oEl0.split(":").map(function(oEl) { 
+        if (oEl=="*") { oEl = sLastColumn+sLastRow.toString(); }
+        oEl = oEl.replace(/^\*/, sLastColumn).replace(/\*$/, sLastRow);
+        return oEl;
+    }).join(":") }).join(";");
+    return sA1Notation;
+} 
+GSDS_getOSR = function(domTable, sA1Notation) {
+    var oDomTableAndA1Notation = distinguishDomTableAndA1Notation(domTable, sA1Notation);
+    domTable = oDomTableAndA1Notation["domTable"];
+    sA1Notation = oDomTableAndA1Notation["sA1Notation"];
+  
+    var domTableAVO = Array.from(domTable.querySelectorAll("tr")).map(oEl => Array.from(oEl.querySelectorAll("th,td")) );
+    sA1Notation = domReplaceAsterisksInA1Notation(domTable, sA1Notation);
+
+    // aVirtualRange = getGoogleSheetRangeValuesOriented(sRange);
+    aVirtualRange = GSDS_disjointedRangeToAVO(sA1Notation);
+
+    oSmartRange = {};
+    oSmartRange.range = sA1Notation;
+    oSmartRange.allcells_valuesoriented = getGoogleSheetRangeValuesOriented(oSmartRange.range);
+    oSmartRange.height = oSmartRange.allcells_valuesoriented.length;
+    oSmartRange.width = oSmartRange.allcells_valuesoriented[0].length;
+    getGoogleSheetRange(oSmartRange.range).forEach(function(oEl) {
+        iCurrentColumn = letterToColumn(oEl.match(/[A-Z]+/g)[0]);
+        iCurrentRow = parseInt(oEl.match(/[0-9]+/g)[0]);
+        // console.log(iCurrentColumn)
+        oSmartRange[oEl] = {"tdcell": domTableAVO[iCurrentRow-1][iCurrentColumn-1] };
+    })
+    return oSmartRange;
+}
+
+GSDS_getTDRANGE = function(domTable, sA1Notation) { 
+    // sA1Notation = "table!*1:*";
+    // sA1Notation = "table!A*:*";
+    // sA1Notation = "table!B5";
+    // sA1Notation = "table!*1";
+    // sA1Notation = "table!*";
+    // sA1Notation = "table!D*";
+    // sA1Notation = "table!A*:*5";
+    // sA1Notation = "table!*2:*7";
+    oSmartRange = GSDS_getOSR(domTable, sA1Notation);
+    return oSmartRange.allcells_valuesoriented.map(function(oEl) { return oEl.map(function(oEl1) { return oSmartRange[oEl1]["tdcell"] }) })
+}
+
+GSDS_inputifyTDRANGE = function(domTable, sA1Notation) { // REFACTOR THIS - change to removeChild and appendChildHTML instead of hardcoding the html strings!
+    GSDS_getTDRANGE(domTable, sA1Notation).flat().forEach(function(domTD) {
+        //if (domTD.querySelectorAll("input, select, textarea") == undefined) {
+            domTD.style = "padding: 0 0 0 0 !important";
+            // oElement.innerHTML = "<input style='width:100%; height:100%; padding: 0 0 0 0 !important; margin: 0 0 0 0 !important;' value='" + superhtmlEntities(oElement.innerHTML) + "'></input>";
+            domTD.innerHTML = "<input style='padding: 0 0 0 0 !important; margin: 0 0 0 0 !important;' value='" + superhtmlEntities(domGetTDTextOrValue(domTD)) + "'></input>";
+        //}
+    })
+}
+GSDS_setOSR = function(domTable) {
+    var sA1Notation = "A1:*"; // set OSR to ENTIRE table.
+    domTable.oSmartRange = GSDS_getOSR(domTable, sA1Notation);
+    return domTable.oSmartRange;
+}
+// oGlobal = {};
+// oDomTable = {};
+GSDS_eval = function(oThis, sCellContents) {
+    //console.log(sCellContents);
+    sCellContents = sCellContents.replace(/^\=/g, "").trim();
+    var domTable = oThis.closest("table");
+    if (domTable.oSmartRange==undefined) {
+        GSDS_setOSR(domTable);
+    }
+
+    try {
+        // sCellContents = "D1";
+        if (sCellContents.match(/^[A-Z]+[0-9]+$/)) { // vanilla one cell
+            domTD = domTable.oSmartRange[sCellContents].tdcell;
+            return domGetTDTextOrValue(domTD);
+        // } else if (sCellContents.match(/^[A-Z]+[0-9]+:[A-Z]+[0-9]+$/)) { // vanilla one A1Notation range
+        } else if (sCellContents.match(/\:|\,|\;/g)) { // dirty A1Notation range
+            aGSRange = GSDS_disjointedRangeToAVOdomTDs(domTable, sCellContents).flat().filter(function(oEl) { return oEl });
+
+            /* this horrible things is like O(n*n), refactor it out! */
+            // it's the only way I can convert a domTD to a a1Notation
+            aGSRange = aGSRange.map(function(oEl0) {    
+                return domTable.oSmartRange.allcells_valuesoriented.flat().reduce(function(oAg, oEl) {
+                    if (!oAg) { if (domTable.oSmartRange[oEl]?.tdcell == oEl0) { oAg = oEl; } }
+                    // console.log(oSmartRange[oEl]?.tdcell);
+                    return oAg;
+                }, undefined)
+            })
+            /* end this horrible thing */
+
+            aActualRange = domTable.oSmartRange.allcells_valuesoriented.flat().filter(function(oEl) {
+                return aGSRange.indexOf(oEl)>-1; // filters out range cells that are not in table;
+            })
+            // vs return GSDS_getTDRANGE(domTable, sCellContents);?  wouldn't this be less lines of code?  worse performance tho?
+            return aActualRange.map(function(oEl) {
+                return domGetTDTextOrValue(domTable.oSmartRange[oEl].tdcell);
+            }).join(";");
+
+            // console.log(sCellContents);
+            // return JSON.stringify(GSDS_disjointedRangeToAVO(sCellContents))
+
+        } else if (false) { // "D1:E2", "D1+20", "D1*12", "D1:
+     
+        } else {
+            return eval(sCellContents)
+        }
+
+    } catch(e) {
+        alert(e);
+        return e;
+    }
+}
+GSDS_evalifyCell = function(sCellA1Notation, sFormula) {
+    // GSDS_evalifyCell("table!E6", "=A1:B2") // refactor this to accept dom and sCellA1Notation?
+    // sFormula = "=A1:A2";
+    // sCellA1Notation = "table!D6";
+    if (sFormula) { } else { sFormula = decodeURIComponent(domInput.dataset.gseval); }
+    domTD = GSDS_getTDRANGE(sCellA1Notation)[0][0];
+    domInput = domTD.querySelectorAll("input,select,textarea")[0];
+    domInput.dataset.gseval = superencode(sFormula);
+    GSDS_evalifyTDRANGE(sCellA1Notation);
+}
+
+//var oThis;
+//var domTD;
+GSDS_evalifyTDRANGE = function(domTable, sA1Notation) {
+    GSDS_getTDRANGE(domTable, sA1Notation).flat().forEach(function(domTD) {
+        var domInput = domTD.querySelectorAll("input,select,textarea")[0];
+        if (domInput) {
+            if (domInput.dataset.gseval) {
+               domInput.value = GSDS_eval(domInput, decodeURIComponent(domInput.dataset.gseval));
+            }
+            // var domInput = $$$(sSelector)[0];
+            // Array.from($$$(sSelector)).forEach(function(domInput) {
+            domInput.onblur = function(e) {
+                oThis = e.target;
+                if (oThis.value.match(/^\=/)) {
+                    oThis.dataset.gseval = superencode(oThis.value);
+                    oThis.value = GSDS_eval(oThis, oThis.value);
+                    oThis.style.backgroundColor="lightblue";
+                } else {
+                    oThis.dataset.gseval = "";
+                    oThis.style.backgroundColor="white";
+                }
+                // console.log(e.target)
+            }
+            domInput.onfocus = null;
+
+            domInput.addEventListener('dblclick', function (e) {
+                oThis = e.target;
+                if (oThis.dataset.gseval) {
+                   oThis.value = decodeURIComponent(oThis.dataset.gseval);
+                }
+                // console.log(e.target.dataset.gseval)
+            })
+        }
+    });
+}
+domGetTDTextOrValue = function(domTD) {
+    if (domTD.querySelectorAll("input,textarea,select")[0]?.value) {
+        return domTD.querySelectorAll("input,textarea,select")[0].value;
+    } else {
+        return domTD.innerText;
+    }
+}
+    // END NEW googlesheets.scripts.js
+
+                                    
     // random vanilla DOM manipulation scripts
     // // replace body tag's innerHTML with div
     // document.getElementsByTagName('body')[0].innerHTML = "<div id='my'>blahHTML<div>"
-
+    function theadify(sTable) {
+        // sTable = "table.RecordsOrientedArrayToHTML";
+        // theadify(table.RecordsOrientedArrayToHTML);
+        theadify = $(sTable)[0].querySelectorAll("tr th, tr td")[0].parentNode;
+        $(sTable)[0].createTHead();
+        theadify.remove()
+        $(sTable)[0].querySelectorAll("thead")[0].appendChild(theadify)
+    }
     function dom_lookupvalueHTMLTable(sTable, sRowValue, iColumn) {
         // sTable = "cualquierPotencialidad"; sRowValue = "pdf dump"; iColumn = 1;
         // dom_lookupvalueHTMLTable("cualquierPotencialidad", "pdf dump", 1);
@@ -466,8 +652,6 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
             //console.log(Array.from(oElement.children))
         })
     }
-
-
     // remove first column, consider refractoring to something cooler
     function removeHTMLTableColumn(sTable, iColumn) {
         // removeHTMLTableColumn('cualquierPotencialidad', 0);
@@ -475,127 +659,6 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
             oElement.children[iColumn].style.display = "none"
         })
     }
-
-    // Excel-like dom manipulation functions on html tables
-    domTableToEXCELRANGE = function(domTable, sRange) { // domTableToEXCELRANGE("table.gsws", "C2:G4").row("3");
-        // domTableToEXCELRANGE("A1:B2,C4:D7")
-        function oEXCELRANGE() {};
-        if (domTable == undefined) { domTable = document.querySelectorAll("table.gsws")[0]; sRange="A1:*" }
-        if (sRange == undefined) { sRange = domTable; domTable = document.querySelectorAll("table.gsws")[0]; }
-
-
-
-        if (sRange.indexOf("*") > -1) {
-                try {
-                    var aTDs = domTableToValuesOrientedDomTDs(domTable);
-                    if (document.querySelectorAll(domTable)[0] == undefined) { var aTDs = domTableToValuesOrientedDomTDs(domTable); }
-                    // console.log(aTDs);
-                    var aLastRowTDs = aTDs[aTDs.length-1];
-                    var sLastCell = aLastRowTDs[aLastRowTDs.length-1].classList.value.match(/[A-Z]+[0-9]+/g)[0]
-                    var sLastColumn = sLastCell.match(/[A-Z]+/g)[0];
-                    var sLastRow = sLastCell.match(/[0-9]+/g)[0];
-                    // sRange = "A1:*1";
-                    // sRange = "A1:*";
-                    // sRange = "A1:D*";
-
-                    if (sRange.match(/:\*$/g)) {
-                        sRange = sRange.replace(/:\*$/g, ":" + sLastCell)
-                    }
-
-                    if (sRange.match(/:\*/g)) {
-                        sRange = sRange.replace(/:\*/g, ":" + sLastColumn)
-                    }
-
-                    if (sRange.match(/\*$/g)) {
-                        sRange = sRange.replace(/\*/g, sLastRow)
-                    }
-                } catch(e) {
-                    // console.log(e);
-                    sRange = sRange.replace(/:\*$/g, ":Z26")
-                }
-        }
-
-        // eg domTableToEXCELRANGE("table.gsws", "A1:D2,G4")
-        oReturn = {};
-        sRange.split(",").forEach(function(oElement362) {
-            oReturn = getGoogleSheetRange(oElement362).reduce(function(oAgg, oElement) {
-                oAgg[oElement] = domTableToEXCELObject(domTable)[oElement];
-                return oAgg;
-            }, oReturn)
-        })
-        oReturn.column = function(sColumn) {
-            if (!isNaN(parseInt(sColumn))) { sColumn = columnToLetter(sColumn); }
-            return Object.keys(oReturn).filter(function(oElement) {
-                sColumn = sColumn.toString();
-                rMatch = sColumn + "[0-9]+";
-                // console.log(oElement + ".matching with " + sColumn);
-                return oElement.match(rMatch)
-            }).map(function(oElement) { return oReturn[oElement]; })
-        }
-        oReturn.columns = oReturn.column;
-        oReturn.row = function(sRow) { return Object.keys(oReturn).filter(function(oElement) {
-            sRow = sRow.toString(); rMatch = "[A-Z]+" + sRow;
-            return oElement.match(rMatch)
-        }).map(function(oElement) { return oReturn[oElement]; }) }
-        oReturn.rows = oReturn.row;
-        oReturn.valuesOriented = function() {
-            return getGoogleSheetRangeValuesOriented(sRange)
-            .map(function(oElement008) {
-                return oElement008.map(function(oElement007) { return oReturn[oElement007]; })
-            });
-        }
-        oReturn.values = function() {
-            return getGoogleSheetRange(sRange).reduce(function(oAgg, oElement) {
-                try {
-                    sValue = domTableToEXCELObject(domTable)[oElement].querySelectorAll("input, textarea, select")[0].value
-                } catch(e) {
-                    // console.log(domTableToEXCELObject(domTable))
-                    // console.log(oElement);
-                    sValue = domTableToEXCELObject(domTable)[oElement].innerText;
-                }
-                oAgg.push(sValue);
-                return oAgg;
-            }, [])
-        }
-        oReturn.valuesValuesOriented = function() {
-            return oReturn.valuesOriented().map(function(oElement087) {
-                return oElement087.map(function(oElement088) {
-                    try {
-                        return oElement088.querySelectorAll("input, textarea, select")[0].value;
-                    } catch(e) {
-                        try {
-                            return oElement088.innerText;
-                        } catch(e) { return oElement088; }
-                    }
-                })
-            }).filter(function(oElement88) { return oElement88 != undefined })
-        }
-        oReturn.array = function() {
-            return oReturn.valuesOriented().reduce(function(oAgg, oElement) {
-                oElement.forEach(function(oElement000) {
-                    oAgg.push(oElement000);
-                })
-                // oAgg.push(oElement)
-                return oAgg;
-            }, [])
-        }
-        return oReturn;
-    }
-
-    // domTableToEXCELFULLRANGE = function(domTable) { return domTableToEXCELObject(domTable); }
-    domTableToEXCELObject = function(domTable) { // domTableToEXCELObject("table")
-        oReturn = domTableToValuesOrientedDomTDs(domTable).reduce(function(oAgg122, oElement122, iIndex122) {
-            oElement122.forEach(function(oElement123, iIndex123) {
-                oAgg122[columnToLetter(iIndex123 + 1) + (iIndex122+1)] = oElement123;
-                oElement123
-            })
-            return oAgg122;
-        }, {})
-
-        return oReturn;
-
-    }
-
     domTableToValuesOrientedDomTDs = function(domTable) { // domTableToValuesOrientedDomTDs("table.gsws")
         if (typeof(domTable) == "string") { // eg "table.gsws"
             domTable = document.querySelectorAll(domTable)[0]
@@ -609,91 +672,6 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
 
         }
     }
-
-
-    function addAnimateCSSToHover(sSelector, sClass) {  // jQuery-dependent
-       sClass = 'animated animate__animated animate__' + sClass; 
-       $(sSelector).hover(function(){
-           $(this).addClass(sClass);
-       });
-       $(sSelector).bind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd",function(){
-          $(this).removeClass(sClass);
-       });
-    }
-
-fetch_XMLHttpRequest=function(oTypeURLPayload) {
-    // var oTypeURLPayload = { type:"POST", url: "https://collegediscgolf.com/wp-json/api/v1/author/2", payload: {filter: "2asdf"}};
-    superencode = function (str){  return encodeURIComponent(str).replace(/'/g, "%27"); }
-
-    var sXMLHttpRequestResponseText = "";
-    var xmlhttp = new XMLHttpRequest();
-    return new Promise(function (resolve, reject) {
-        xmlhttp.onreadystatechange = function() {
-          if (this.readyState == 4 && this.status == 200) {
-            sXMLHttpRequestResponseText = this.responseText;
-            // console.log(sXMLHttpRequestResponseText);
-            /* my solution currently responds with html, so I need to parse out the body's innerText */
-            var parser = new DOMParser();
-            var domXMLHttpRequestResponseText = parser.parseFromString(sXMLHttpRequestResponseText, "text/html");
-            //sXMLHttpRequestResponseText = domXMLHttpRequestResponseText.getElementsByTagName('body')[0].innerText;
-
-            resolve(sXMLHttpRequestResponseText);
-          } else {}
-        };
-        xmlhttp.open(oTypeURLPayload.type, oTypeURLPayload.url, true);
-        var sParams;
-        if (oTypeURLPayload.payload != undefined) {
-            sParams = Object.keys(oTypeURLPayload.payload).map(function(oElement) {
-                return superencode(oElement) + "=" + superencode(oTypeURLPayload.payload[oElement]);
-            }).join("&");
-        }
-
-        xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-        // JSON SENDING DOESN'T WORK!  HELP!
-        //xmlhttp.setRequestHeader("Content-type","application/json;charset=UTF-8");
-
-        xmlhttp.send(sParams);
-    })
-// }.then(function(sResponse) {  console.log(sResponse.trim());  })
-} 
-
-SubmitSuperNinjaForm=function (oTypeURLPayload, sTarget) {
-  superencode = function (str){  return encodeURIComponent(str).replace(/'/g, "%27"); }
-  if ((oTypeURLPayload == null) || (oTypeURLPayload == undefined) || (oTypeURLPayload == "")) {
-    var oTypeURLPayload = { type:"POST", payload: {script: 84, deploy: 1, context: "llave", payload: "just testing" } }; 
-    var sURL = "https://acct138579.app.netsuite.com/app/site/hosting/scriptlet.nl?script=84&deploy=1&context=llave";
-    oTypeURLPayload.url = sURL;
-  } 
-  var dom_form = document.createElement('form');
-  dom_form.setAttribute("target",sTarget);
-  dom_form.name = 'superninjaform';
-  dom_form.id = 'superninjaform';
-  dom_form.method = oTypeURLPayload.type;
-  dom_form.action = ((oTypeURLPayload.url != undefined) ? oTypeURLPayload.url : window.location.href.split("?")[0] ); 
-  document.body.appendChild(dom_form);
-  dom_form.innerHTML = Object.keys(oTypeURLPayload.payload).reduce(function(agg, oElement) {
-    agg += '<input type="hidden" name="' + oElement + '" id="' + oElement + '" value="' + superencode(oTypeURLPayload.payload[oElement]) + '" />' + String.fromCharCode(10) + String.fromCharCode(13);
-    return agg;
-  }, "")
-  dom_form.submit();
-}
-SubmitSuperNinjaForm.sample = function() { 
-  console.log(`
-              var oTypeURLPayload = { type:"POST", url: "https://collegediscgolf.com/wp-json/api/v1/author/2", payload: {filter: "2asdf"}};
-              
-              SubmitSuperNinjaForm(oTypeURLPayload);
-  fetch_XMLHttpRequest(oTypeURLPayload).then(function(sResponse) { console.log(sResponse.trim()); });
-  sResponse = await fetch_XMLHttpRequest(oTypeURLPayload);
-  `)
-}; fetch_XMLHttpRequest.sample = SubmitSuperNinjaForm.sample;
-  
-  
-  oGetAllParameters_CLIENT = function() {
-    if (location.search.substring(1)) {
-      return JSON.parse('{"' + location.search.substring(1).split("&").map(function(oEl) { return (oEl.indexOf("=")==-1 ? oEl + "=" : oEl) }).join("&").replace(/&/g, '","').replace(/=/g,'":"') + '"}', function(key, value) { return key===""?value:decodeURIComponent(value) })
-    } else { return {}; }
-  }
-
 
 } catch(e) {}
 
@@ -836,3 +814,24 @@ convertaRecordsOrientedToInputBoxesForm = function(oICIResponse, aFields) {
         return agg009;
     }, "<table>") + "</table>"
 }
+
+/*
+//oSmartRange = GSDS_getOSR("table!D1:*");
+//oSmartRange = GSDS_getOSR("table", "D1:*");
+//oSmartRange = GSDS_getOSR($$$("table")[1], "D1:*");
+//GSDS_getTDRANGE("table!D1:*")
+// GSDS_setOSR($$$("table")[0])
+GSDS_inputifyTDRANGE("table!D1:*")
+GSDS_evalifyTDRANGE("table!D1:*")
+GSDS_disjointedRangeToAVO("table!D1:*,A3"); //
+GSDS_disjointedRangeToAVOdomTDs("table!D1:*,A3"); // 
+GSDS_disjointedRangeToAVOdomTDs("D1:*;A1"); // 
+GSDS_disjointedRangeToAVOdomTDs("A1:A*"); // 
+// GSDS_disjointedRangeToAVOdomTDs("table!D1:*"); // 
+// GSDS_disjointedRangeToAVOdomTDs("A3:G10");
+// GSDS_disjointedRangeToAVO("A2:B4;D4,E5:F5;H1-H9");
+GSDS_getTDRANGE("table!D6")[0][0].dataset.gseval = superencode("=A1:A2");
+GSDS_evalifyTDRANGE("table!D6");
+// GSDS_eval(decodeURIComponent(sGSEVAL));
+GSDS_disjointedRangeToAVO("A2;A2:B4;D4,E5:F5;G1:H2,H1-H9,L8")
+*/
