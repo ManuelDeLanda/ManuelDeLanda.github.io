@@ -138,9 +138,9 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
 
 // NEW googlesheets scripts
 // domscriptsSTEROIDS.js
-GSDS_CELL = function(sA1Notation) { return GSDS_getTDRANGE(sA1Notation)[0][0]; }
-GSDS_RANGE1D = function(sA1Notation) { return GSDS_getTDRANGE(sA1Notation).flat().filter(function(oEl) { return oEl }); }
-GSDS_RANGE2D = function(sA1Notation) { return GSDS_getTDRANGE(sA1Notation); }
+GSDS_CELL = function(sA1Notation) { return GSDS_RANGE1D(sA1Notation)[0]; }
+GSDS_RANGE1D = function(sA1Notation) { return GSDS_disjointedRangeToAVOdomTDs(sA1Notation).flat().filter(function(oEl) { return oEl }); }
+GSDS_RANGE2D = function(sA1Notation) { return GSDS_disjointedRangeToAVOdomTDs(sA1Notation); }
 GSDS_GSDSifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes, fOptionsFunction) {
     GSDS_inputifyTDRANGE(domTable, sA1Notation, sElementType, sAttributes, fOptionsFunction);
     GSDS_evalifyTDRANGE(domTable, sA1Notation);
