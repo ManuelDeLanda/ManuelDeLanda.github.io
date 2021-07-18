@@ -139,12 +139,10 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
 // NEW googlesheets scripts
 // domscriptsSTEROIDS.js
 GSDS_CELL = function(sA1Notation) { return GSDS_getTDRANGE(sA1Notation)[0][0]; }
-GSDS_RANGE1D = function(sA1Notation) { return GSDS_getTDRANGE(sA1Notation).flat(); }
+GSDS_RANGE1D = function(sA1Notation) { return GSDS_getTDRANGE(sA1Notation).flat().filter(function(oEl) { return oEl }); }
 GSDS_RANGE2D = function(sA1Notation) { return GSDS_getTDRANGE(sA1Notation); }
 GSDS_disjointedRangeToAVOdomTDs = function(domTable, sA1Notation) { // this function IS FOR DOM-ONLY.
-  var oDomTableAndA1Notation=distinguishDomTableAndA1Notation(domTable, sA1Notation);
-  domTable = oDomTableAndA1Notation["domTable"];
-  sA1Notation = oDomTableAndA1Notation["sA1Notation"];
+  var oDomTableAndA1Notation=distinguishDomTableAndA1Notation(domTable, sA1Notation); domTable = oDomTableAndA1Notation["domTable"]; sA1Notation = oDomTableAndA1Notation["sA1Notation"];
   // console.log(sA1Notation);
   if (domTable.oSmartRange == undefined) {
     GSDS_setOSR(domTable);
@@ -161,7 +159,7 @@ GSDS_disjointedRangeToAVOdomTDs = function(domTable, sA1Notation) { // this func
       
 distinguishDomTableAndA1Notation = function(domTable, sA1Notation) {
     // distinguishDomTableAndA1Notation($$$('table'), "A1:*") vs distinguishDomTableAndA1Notation("table!A1:A*")
-    if (sA1Notation == undefined && typeof(domTable) != "object") {
+    if (sA1Notation == undefined) { // && typeof(domTable) != "object") {
         sA1Notation = domTable;
         domTable = undefined;
     } else {
@@ -171,7 +169,7 @@ distinguishDomTableAndA1Notation = function(domTable, sA1Notation) {
             domTable = $$$(domTable)[0];
         }
     }
-    console.log(sA1Notation);
+    // console.log(sA1Notation);
     aA1Notation = sA1Notation.split("!");
     if (aA1Notation.length == 1) {
         if (domTable == undefined) {
@@ -201,10 +199,7 @@ domReplaceAsterisksInA1Notation = function(domTable, sA1Notation) {
     return sA1Notation;
 } 
 GSDS_getOSR = function(domTable, sA1Notation) {
-    var oDomTableAndA1Notation = distinguishDomTableAndA1Notation(domTable, sA1Notation);
-    domTable = oDomTableAndA1Notation["domTable"];
-    sA1Notation = oDomTableAndA1Notation["sA1Notation"];
-  
+    var oDomTableAndA1Notation=distinguishDomTableAndA1Notation(domTable, sA1Notation); domTable = oDomTableAndA1Notation["domTable"]; sA1Notation = oDomTableAndA1Notation["sA1Notation"];  
     var domTableAVO = Array.from(domTable.querySelectorAll("tr")).map(oEl => Array.from(oEl.querySelectorAll("th,td")) );
     // sA1Notation = domReplaceAsterisksInA1Notation(domTable, sA1Notation);
     // aVirtualRange = getGoogleSheetRangeValuesOriented(sRange);
@@ -228,9 +223,7 @@ GSDS_setOSR = function(domTable) { // accept domTable only?  never selector stri
     return domTable.oSmartRange;
 }
 GSDS_getTDRANGE = function(domTable, sA1Notation) {
-    var oDomTableAndA1Notation = distinguishDomTableAndA1Notation(domTable, sA1Notation);
-    domTable = oDomTableAndA1Notation["domTable"];
-    sA1Notation = oDomTableAndA1Notation["sA1Notation"];
+    var oDomTableAndA1Notation=distinguishDomTableAndA1Notation(domTable, sA1Notation); domTable = oDomTableAndA1Notation["domTable"]; sA1Notation = oDomTableAndA1Notation["sA1Notation"];
     // sA1Notation = "table!*1:*";
     // sA1Notation = "table!A*:*";
     // sA1Notation = "table!B5";
@@ -262,7 +255,9 @@ GSDS_inputifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes
             // domTD.innerHTML = "<" + sElementType + " " + sAttributes + " ></"+sElementType+">";
             domDebuggingElement = domTD; domDebuggingElement2 = domElement;
             if (domTD.querySelectorAll("input")[0]) {
-              domElement.value = sValue; domElement.onclick=function(this) {this.select();}
+              domElement.value = sValue;
+              // domElement.onclick=function(this){this.select()}
+              domElement.addEventListener("click", function(){this.select()});
             } else if (domTD.querySelectorAll("textarea")[0]) {
               domElement.innerText = sValue;
             } else if (domTD.querySelectorAll("select")[0]) {
