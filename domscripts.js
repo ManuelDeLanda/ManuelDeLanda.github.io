@@ -137,8 +137,11 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
     // END EXTREMELY USEFUL vanilla dom scripts
 
 // NEW googlesheets scripts
-// dataGSscriptsSTEROIDS.js
-GSDS_disjointedRangeToAVOdomTDs = function(domTable, sA1Notation) { // this function IS FOR DOM.
+// domscriptsSTEROIDS.js
+GSDS_CELL = function(sA1Notation) { return GSDS_getTDRANGE(sA1Notation)[0][0]; }
+GSDS_RANGE1D = function(sA1Notation) { return GSDS_getTDRANGE(sA1Notation).flat(); }
+GSDS_RANGE2D = function(sA1Notation) { return GSDS_getTDRANGE(sA1Notation); }
+GSDS_disjointedRangeToAVOdomTDs = function(domTable, sA1Notation) { // this function IS FOR DOM-ONLY.
   var oDomTableAndA1Notation=distinguishDomTableAndA1Notation(domTable, sA1Notation);
   domTable = oDomTableAndA1Notation["domTable"];
   sA1Notation = oDomTableAndA1Notation["sA1Notation"];
@@ -146,8 +149,8 @@ GSDS_disjointedRangeToAVOdomTDs = function(domTable, sA1Notation) { // this func
   if (domTable.oSmartRange == undefined) {
     GSDS_setOSR(domTable);
   }
-  sA1Notation = domReplaceAsterisksInA1Notation(domTable, sA1Notation);
-  aCellsFromRange = GSDS_disjointedRangeToAVO(sA1Notation).flat();
+  // sA1Notation = domReplaceAsterisksInA1Notation(domTable, sA1Notation);
+  var aCellsFromRange = GSDS_disjointedRangeToAVO(sA1Notation).flat();
   // console.log(sA1Notation);
   return domTable.oSmartRange.allcells_valuesoriented.map(function(oEl) {
     return oEl.map(function(oEl2) {
@@ -158,7 +161,7 @@ GSDS_disjointedRangeToAVOdomTDs = function(domTable, sA1Notation) { // this func
       
 distinguishDomTableAndA1Notation = function(domTable, sA1Notation) {
     // distinguishDomTableAndA1Notation($$$('table'), "A1:*") vs distinguishDomTableAndA1Notation("table!A1:A*")
-    if (sA1Notation == undefined) {
+    if (sA1Notation == undefined && typeof(domTable) != "object") {
         sA1Notation = domTable;
         domTable = undefined;
     } else {
@@ -168,6 +171,7 @@ distinguishDomTableAndA1Notation = function(domTable, sA1Notation) {
             domTable = $$$(domTable)[0];
         }
     }
+    console.log(sA1Notation);
     aA1Notation = sA1Notation.split("!");
     if (aA1Notation.length == 1) {
         if (domTable == undefined) {
@@ -180,6 +184,7 @@ distinguishDomTableAndA1Notation = function(domTable, sA1Notation) {
         sRange = aA1Notation[1];
         domTable = $$$(sSelector)[0];
     }
+    sA1Notation = domReplaceAsterisksInA1Notation(domTable, sA1Notation);
     // domTable.oSmartRange.sA1Notation should be used to replace asterisks
     return { "domTable": domTable, "sA1Notation": sRange }
 }
@@ -201,8 +206,7 @@ GSDS_getOSR = function(domTable, sA1Notation) {
     sA1Notation = oDomTableAndA1Notation["sA1Notation"];
   
     var domTableAVO = Array.from(domTable.querySelectorAll("tr")).map(oEl => Array.from(oEl.querySelectorAll("th,td")) );
-    sA1Notation = domReplaceAsterisksInA1Notation(domTable, sA1Notation);
-
+    // sA1Notation = domReplaceAsterisksInA1Notation(domTable, sA1Notation);
     // aVirtualRange = getGoogleSheetRangeValuesOriented(sRange);
     aVirtualRange = GSDS_disjointedRangeToAVO(sA1Notation);
 
@@ -219,14 +223,14 @@ GSDS_getOSR = function(domTable, sA1Notation) {
     })
     return oSmartRange;
 }
-
+GSDS_setOSR = function(domTable) { // accept domTable only?  never selector strings?
+    domTable.oSmartRange = GSDS_getOSR(domTable, "A1:*"); // ALWAYS set a <table>'s OSR to ENTIRE table ("A1:*").
+    return domTable.oSmartRange;
+}
 GSDS_getTDRANGE = function(domTable, sA1Notation) {
     var oDomTableAndA1Notation = distinguishDomTableAndA1Notation(domTable, sA1Notation);
     domTable = oDomTableAndA1Notation["domTable"];
     sA1Notation = oDomTableAndA1Notation["sA1Notation"];
-
-    sA1Notation = domReplaceAsterisksInA1Notation(domTable, sA1Notation);
-
     // sA1Notation = "table!*1:*";
     // sA1Notation = "table!A*:*";
     // sA1Notation = "table!B5";
@@ -239,21 +243,35 @@ GSDS_getTDRANGE = function(domTable, sA1Notation) {
     return oSmartRange.allcells_valuesoriented.map(function(oEl) { return oEl.map(function(oEl1) { return oSmartRange[oEl1]["tdcell"] }) })
 }
 
-GSDS_inputifyTDRANGE = function(domTable, sA1Notation, sElementType, sWidth) { // REFACTOR THIS - change to removeChild and appendChildHTML instead of hardcoding the html strings!
+// domDebuggingElement = {};
+// domDebuggingElement2 = {};
+GSDS_inputifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes, fOptionsFunction) { // REFACTOR THIS - change to removeChild and appendChildHTML instead of hardcoding the html strings!
   if ((sElementType == undefined) || ((sElementType != "textarea") && (sElementType != "select") && (sElementType != "button")) ) { sElementType="input"; }
-  console.log(sElementType);
+  // console.log(sElementType);
   GSDS_getTDRANGE(domTable, sA1Notation).flat().forEach(function(domTD) {
         //if (domTD.querySelectorAll("input, select, textarea") == undefined) {
             domTD.style = "padding: 0 0 0 0 !important";
+            var sValue = superhtmlEntities(domGetTDTextOrValue(domTD))
             // oElement.innerHTML = "<input style='width:100%; height:100%; padding: 0 0 0 0 !important; margin: 0 0 0 0 !important;' value='" + superhtmlEntities(oElement.innerHTML) + "'></input>";
-            domTD.innerHTML = "<" + sElementType + " onClick='this.select();' style='padding: 0 0 0 0 !important; margin: 0 0 0 0 !important;' value='" + superhtmlEntities(domGetTDTextOrValue(domTD)) + "'></"+sElementType+">";
+            if (sAttributes == undefined) { sAttributes = " "; }
+            //sAttributes += " onClick=this.select();' style='padding: 0 0 0 0 !important; margin: 0 0 0 0 !important;' "
+            var domElement = document.createElement(sElementType);
+            Array.from(domTD.children).forEach(function(oEl) { domTD.removeChild(oEl) }); // remove ALL children from a node
+            domTD.appendChild(domElement);
+            // domTD.innerHTML = "<" + sElementType + " " + sAttributes + " ></"+sElementType+">";
+            domDebuggingElement = domTD; domDebuggingElement2 = domElement;
+            if (domTD.querySelectorAll("input")[0]) {
+                domElement.value = sValue;
+            } else if (domTD.querySelectorAll("textarea")[0]) {
+                domElement.innerText = sValue;
+            } else if (domTD.querySelectorAll("select")[0]) {
+                // domSelect = domDebuggingElement("select")[0];
+                if (fOptionsFunction) { } else { fOptionsFunction = function() { return ["","1","2","3"]; } }
+                domElement.innerHTML = fOptionsFunction().map(function(oEl) { return "<option>" + oEl + "</option>"; }).join();
+            }
+
         //}
     })
-}
-GSDS_setOSR = function(domTable) {
-    var sA1Notation = "A1:*"; // set OSR to ENTIRE table.
-    domTable.oSmartRange = GSDS_getOSR(domTable, sA1Notation);
-    return domTable.oSmartRange;
 }
 // oGlobal = {};
 // oDomTable = {};
@@ -274,8 +292,8 @@ GSDS_eval = function(oThis, sCellContents) {
         } else if (sCellContents.match(/\:|\,|\;/g)) { // dirty A1Notation range
             aGSRange = GSDS_disjointedRangeToAVOdomTDs(domTable, sCellContents).flat().filter(function(oEl) { return oEl });
 
-            /* this horrible things is like O(n*n), refactor it out! */
-            // it's the only way I can convert a domTD to a a1Notation
+            /* this horrible section of code is like O(n*n), refactor it out! */
+            // it's the only way I can convert a domTD to a a1Notation? Certainly a more clever and higher performance solution exists?
             aGSRange = aGSRange.map(function(oEl0) {    
                 return domTable.oSmartRange.allcells_valuesoriented.flat().reduce(function(oAg, oEl) {
                     if (!oAg) { if (domTable.oSmartRange[oEl]?.tdcell == oEl0) { oAg = oEl; } }
@@ -283,7 +301,7 @@ GSDS_eval = function(oThis, sCellContents) {
                     return oAg;
                 }, undefined)
             })
-            /* end this horrible thing */
+            /* end this horrible thing? */
 
             aActualRange = domTable.oSmartRange.allcells_valuesoriented.flat().filter(function(oEl) {
                 return aGSRange.indexOf(oEl)>-1; // filters out range cells that are not in table;
@@ -296,14 +314,14 @@ GSDS_eval = function(oThis, sCellContents) {
             // console.log(sCellContents);
             // return JSON.stringify(GSDS_disjointedRangeToAVO(sCellContents))
 
-        } else if (false) { // "D1:E2", "D1+20", "D1*12", "D1:
+        } else if (false) { // "D1+20", "D1*+E1*12", "SUM(D1:D2)"
      
         } else {
-            return eval(sCellContents)
+            return eval(sCellContents);
         }
 
     } catch(e) {
-        alert(e);
+        // alert(e);
         return e;
     }
 }
@@ -353,17 +371,24 @@ GSDS_evalifyTDRANGE = function(domTable, sA1Notation) {
                 }
                 // console.log(e.target.dataset.gseval)
             })
+        } else {
+            // REFACTOR / ADD FUNCTIONALITY - IF NO domInput then just do something with domTD instead?????
         }
     });
 }
+// domGlobal;
 domGetTDTextOrValue = function(domTD) {
+    // domGlobal = domTD;
     if (domTD.querySelectorAll("input,textarea,select")[0]?.value) {
         return domTD.querySelectorAll("input,textarea,select")[0].value;
-    } else {
+    } else if (domTD.querySelectorAll("input,textarea,select")[0]?.innerText) {
+        return domTD.querySelectorAll("input,textarea,select")[0].innerText;
+    } else if (domTD.querySelectorAll("data-value")[0]) { // also data-notes, data-notations, and data-text?
+        return domTD.querySelectorAll("data-value")[0]; 
+    } else if (domTD.innerText) { 
         return domTD.innerText;
-    }
-}
-    // END NEW googlesheets.scripts.js
+    } else { return ""; }
+}    // END NEW googlesheets.scripts.js
 
                                     
     // random vanilla DOM manipulation scripts
@@ -630,3 +655,9 @@ GSDS_disjointedRangeToAVO("A2;A2:B4;D4,E5:F5;G1:H2,H1-H9,L8")
 //GSDS_inputifyTDRANGE("table!A1:*", undefined, "textarea");
 //GSDS_evalifyTDRANGE("table!A1:*")
 // GSDS_inputifyTDRANGE("table!A1:*", undefined, "button")
+// GSDS_getTDRANGE("A1:B4");
+// GSDS_inputifyTDRANGE("A1:B4");
+// domGetTDTextOrValue(domDebuggingElement)
+// domGetTDTextOrValue(GSDS_CELL("A1"))
+// GSDS_inputifyTDRANGE("A1:B2", undefined, "input");
+// GSDS_inputifyTDRANGE("A3:B3", undefined, "textarea");
