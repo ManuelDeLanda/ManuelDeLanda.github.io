@@ -107,11 +107,6 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
             this.appendChild(div.children[0]);
         }
     }; HTMLElement.prototype.appendHTML = HTMLElement.prototype.appendHtml;
-    function toHTMLSelect(aArray, sClassList) { // refractor this to accept array of values vs array of objects (select id?)
-        // aArray = JSON.parse(JSON.stringify(aArray)); aArray.unshift
-        if (sClassList == undefined) { sClassList = "aArraySelect"; }
-        return "<select class='" + sClassList + "'><option></option>" + aArray.map(function(oElement) { return "<option>" + oElement + "</option>"; }).join("");
-    }
     HTMLElement.prototype.getElementsByInnerText = function (text, escape) {
         var nodes  = this.querySelectorAll("*");
         var matches = [];
@@ -133,7 +128,6 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
         return result;
     };
     document.getElementsByInnerText = HTMLElement.prototype.getElementsByInnerText;
-
     HTMLElement.prototype.getElementByInnerText = function (text) {
         var result = this.getElementsByInnerText(text);
         if (result.length == 0) return null;
@@ -142,278 +136,22 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
     document.getElementByInnerText = HTMLElement.prototype.getElementByInnerText;
     // END EXTREMELY USEFUL vanilla dom scripts
 
-    // OLD GoogleSheets / HTML scripts - in order of flexibility 02/06 MASTER COPY
-    GSTDINSERT = function(sTable, sColumnOrRow, aValues) {
-        //console.log(isNaN(parseInt(sColumnOrRow)));
-        if (!isNaN(parseInt(sColumnOrRow))) {
-            // console.log(2)
-            row = $(sTable)[0].insertRow(sColumnOrRow);
-            aValues.forEach(function(oElement, iIndex) {
-                cell = row.insertCell(iIndex);
-                cell.innerHTML = oElement.toString();
-            })
-        } else { // .insertColumn() logic, unfortunate that dom nor jQuery does an insertColumn
-
-        }
-    }
-
-    GSTDRANGE = function(sRange) {
-        // GSTDRANGE("table.gsws:nth-child(2)!A1:*"); // VERY POWERFUL - GETS THE SECOND INSTANCE OF table.gsws!
-        sRange = sRange.replace(/\!/g, "."); // WorksheetName!A1 vs tableid.A1
-        var aCellTokens = sRange.split(".");
-        if (aCellTokens.length > 1) {
-            sRange = aCellTokens[aCellTokens.length-1];
-
-            if (aCellTokens.length==2) {
-                var sTableSelector = "" + aCellTokens[0];
-            } else {
-                aCellTokens.pop();
-                var sTableSelector = aCellTokens.join(".");            
-            }
-        } else {
-            var sTableSelector = "table.gsws"; // just pick the first gsws in the document as default
-        }
-        if (sRange == undefined) { sRange = "A1"; }
-        sWorksheetName = "table.gsws";
-        if (sRange.indexOf(":") == -1) { sRange = sRange + ":" + sRange }
-
-
-        if (sRange.indexOf("*") > -1) {
-            try {
-                var aTDs = domTableToValuesOrientedDomTDs("#" + sTableSelector);
-                if (document.querySelectorAll("#" + sTableSelector)[0] == undefined) { var aTDs = domTableToValuesOrientedDomTDs(sTableSelector); }
-                // console.log(aTDs);
-                var aLastRowTDs = aTDs[aTDs.length-1];
-                var sLastCell = aLastRowTDs[aLastRowTDs.length-1].classList.value.match(/[A-Z]+[0-9]+/g)[0]
-                var sLastColumn = sLastCell.match(/[A-Z]+/g)[0];
-                var sLastRow = sLastCell.match(/[0-9]+/g)[0];
-                // sRange = "A1:*1";
-                // sRange = "A1:*";
-                // sRange = "A1:D*";
-
-                if (sRange.match(/:\*$/g)) {
-                    sRange = sRange.replace(/:\*$/g, ":" + sLastCell)
-                }
-
-                if (sRange.match(/:\*/g)) {
-                    sRange = sRange.replace(/:\*/g, ":" + sLastColumn)
-                }
-
-                if (sRange.match(/\*$/g)) {
-                    sRange = sRange.replace(/\*/g, sLastRow)
-                }
-            } catch(e) {
-                // console.log(e);
-                sRange = sRange.replace(/:\*$/g, ":Z26")
-            }
-        }
-
-        return getGoogleSheetRange(sRange).map(function(oElement) { return GSTDCELL(sTableSelector + "!" + oElement); }).filter(function(oElement) { return oElement != undefined; })
-    }
-    GSTDSUM = function(sCells) { // GSTDSUM("C3:H7") GSTDRANGE("G1:H2") // GSTDSUM("MylesStampingQCellComment!B2:*2")
-        // return getGoogleSheetRange(sCells).reduce(function(oAgg, oElement) {
-        return GSTDRANGE(sCells).reduce(function(oAgg, oElement) {
-            if (oElement == undefined || oElement == null || oElement == "") { return oAgg + 0; } else {
-                // iValue = $("#gscell_" + oElement + " >textarea")[0].value
-                // console.log()
-                iValue = oElement.innerText || oElement.value;
-                if (isNaN(parseInt(iValue))) { iValue = 0; } else { iValue = parseInt(iValue); }
-                oAgg += iValue;
-                return oAgg;
-            }
-        }, 0);
-    }
-    GSTDCELL_ENTERIFY = function() {
-        $(".gsws input, .gsws textarea, .gsws select").on('keypress', function (e) {
-            if (e.which == 13) {
-                e.preventDefault();
-                sCurrentColumn = this.parentNode.classList.value.match(/column[A-Z]+/g)[0]
-                sNextColumn = "column" + columnToLetter(letterToColumn(sCurrentColumn.replace(/column/g, "")) + 1)
-                aArrayOfTDs = Array.prototype.slice.call(document.querySelectorAll(".gsws td." + sCurrentColumn)).concat( Array.prototype.slice.call( document.querySelectorAll(".gsws td." + sNextColumn) ) );
-                iIndex = Array.prototype.indexOf.call(aArrayOfTDs, this.parentNode);
-                aArrayOfTDs[iIndex+1].querySelectorAll("input, select, textarea")[0].focus();
-            }
-        });
-    }
-    GSTDRANGEINPUTIFY = function (sRange) {
-        // GSTDRANGEINPUTIFY("valuesOriented!A2:*");
-        //oElement = GSTDRANGE("valuesOriented!A2:*")[0];
-        GSTDRANGE(sRange).forEach(function(oElement) {
-            oElement.style = "padding: 0 0 0 0 !important";
-            // oElement.innerHTML = "<input style='width:100%; height:100%; padding: 0 0 0 0 !important; margin: 0 0 0 0 !important;' value='" + superhtmlEntities(oElement.innerHTML) + "'></input>";
-            oElement.innerHTML = "<input style='padding: 0 0 0 0 !important; margin: 0 0 0 0 !important;' value='" + superhtmlEntities(oElement.innerHTML) + "'></input>";
-        })
-    }
-    GSSUM = function(sCells) { // GSSUM("C3:H7") GSRANGE("G1:H2")
-        // return getGoogleSheetRange(sCells).reduce(function(oAgg, oElement) {
-        return GSRANGE(sCells).reduce(function(oAgg, oElement) {
-            if (oElement == undefined || oElement == null || oElement == "") { return oAgg + 0; } else {
-                // iValue = $("#gscell_" + oElement + " >textarea")[0].value
-                iValue = oElement.value
-                if (isNaN(parseInt(iValue))) { iValue = 0; } else { iValue = parseInt(iValue); }
-
-                return oAgg += iValue;
-            }
-        }, 0);
-    }
-
-    GSCELL = function(sCell) {
-        // return $("textarea." + sCell);
-        sCell = sCell.replace(/\!/g, "."); // WorksheetName!A1 vs tableid.A1
-        if (sCell.indexOf(".") > -1) {
-            sTableSelector = "#" + sCell.split(".")[0];
-            sCell = sCell.split(".")[1];
-        } else {
-            sTableSelector = "table.gsws"; // just pick the first gsws in the document as default
-        }
-        return document.querySelectorAll(sTableSelector)[0].querySelectorAll("td." + sCell + " textarea, td." + sCell + " input, td." +  sCell + " select");
-    }
-
-    GSTDCELL = function(sCell) {
-        // return $("td." + sCell)[0]; 
-        // sCell = "table.gsws.A1"
-        sCell = sCell.replace(/\!/g, "."); // WorksheetName!A1 vs tableid.A1
-        aCellTokens = sCell.split(".");
-        if (aCellTokens.length > 1) {
-            sCell = aCellTokens[aCellTokens.length-1];
-
-            if (aCellTokens.length==2) {
-                sTableSelector = "#" + aCellTokens[0];
-            } else {
-                aCellTokens.pop();
-                sTableSelector = aCellTokens.join(".");
-
-            }
-        } else {
-            sTableSelector = "table.gsws"; // just pick the first gsws in the document as default
-        }
-        return document.querySelectorAll(sTableSelector)[0].querySelectorAll("td." + sCell + ", th." + sCell)[0];
-    }
-
-    GSRANGE = function(sRange) { // GS is textareas and GSTD are tds
-        if (sRange == undefined) { sRange = "A1"; }
-        if (sRange.indexOf(":") == -1) { sRange = sRange + ":" + sRange }
-        return getGoogleSheetRange(sRange).map(function(oElement) { return GSCELL(oElement)[0] })
-    }
-
-
-
-    GSCELLVALUE = function(sCell) {
-        // return $("textarea." + sCell);
-        // GSTDCELL("valuesOriented!A1").innerText || GSTDCELL("valuesOriented!A2").querySelectorAll("input, select, textarea")[0].value
-        /*
-        try {
-            return document.querySelectorAll("table.gsws")[0].querySelectorAll("td." + sCell + " textarea, td." + sCell + " input, td." +  sCell + " select")[0].value;
-        } catch(e) {
-            return document.querySelectorAll("table.gsws")[0].querySelectorAll("td." + sCell).innerText;
-        } */
-
-        return GSTDCELL(sCell).innerText || GSTDCELL(sCell).querySelectorAll("input, select, textarea")[0].value
-    }
-    GSCELLVALUES = function(sRange) { // domTableToEXCELRANGE vs GSCELLVALUES
-        return GSTDRANGE(sRange).map(function(oElement) { return GSCELLVALUE(oElement.title); })
-        // remember domTableToEXCELRANGE as another version of GSTDRANGE to help me remember to refractor both to make this whole GS/HTML/JS solution robust
-        // sample ALTERNATIVE CALL: return domTableToEXCELRANGE("#valuesOriented", "A1:B2").values()
-    }
-
-
-    GSCELLFORMULA = function(sCell) { return GSCELL(sCell)[0].dataset.gsvalue; }
-    VLOOKUP = function(sValue, sRange, sColumn) {
-        // VLOOKUP("b", "D3:E5", "2")
-        aValues = domTableToEXCELRANGE(sRange).valuesValuesOriented();
-        return VorHLOOKUP(sValue, aValues, sColumn);
-    }
-
-    HLOOKUP = function(sValue, sRange, sRow) {
-        // HLOOKUP("b", "D3:E5", "2")
-        aValues = domTableToEXCELRANGE(sRange).valuesValuesOriented();
-        aValues = _.zip.apply(_, aValues); // transposed
-        return VorHLOOKUP(sValue, aValues, sRow);
-    }
-
-    VorHLOOKUP = function(sValue, aValues, sColumnOrRow) {
-        aValues.unshift( aValues[0].map(function(oElement, iIndex) { return (iIndex+1).toString() }) )
-        aValuesOneOriented = toXXXOrientated(toRecordsOriented(aValues), "1");
-        if (typeof(sValue) == "string") {
-            if (aValuesOneOriented[sValue] != undefined) {
-                if (Array.isArray(aValuesOneOriented[sValue])) {
-                    console.log(Object.keys(toXXXOrientated(aValuesOneOriented[sValue], sColumnOrRow)))
-                    return Object.keys(toXXXOrientated(aValuesOneOriented[sValue], sColumnOrRow)).join(";")
-                } else {
-                    if (sColumnOrRow != undefined) {
-                        return aValuesOneOriented[sValue][sColumnOrRow]
-                    } else {
-                        return Object.keys(aValuesOneOriented[sValue]).map(function(oElement333) { return aValuesOneOriented[sValue][oElement333] }).join(";");
-                        // return aValuesOneOriented[sValue].join(";");
-                    }
-                }
-            } else { return undefined; }
-        } else { // else a regex was passed..go to town!
-            // console.log("aValuesOneOriented = " + JSON.stringify(aValuesOneOriented));
-            aMatches = Object.keys(aValuesOneOriented).filter(function(oElement234) { return oElement234.match(sValue); })
-            // console.log("aMatches = " + JSON.stringify(aMatches))
-            // console.log(aMatches)
-            return aMatches.map(function(oElement23) {
-                if (sColumnOrRow != undefined) {
-                    return aValuesOneOriented[oElement23][sColumnOrRow]
-                } else {
-                    return Object.keys(aValuesOneOriented[oElement23]).map(function(oElement333) { return aValuesOneOriented[oElement23][oElement333] }).join(";");
-                }
-            }).join(";");
-        }
-    }
-    // OLD googlesheets scripts
-    
-    // NEW googlesheets scripts
-// dataGSscriptsSTEROIDS.js 
-GSDS_disjointedRangeToAVO = function(sA1Notation) { // this function is NOT FOR DOM, just string/data-only
-    if (sA1Notation.match(/\*/g)) { return "ERROR - ASTERISK functions are for domTable ONLY!" } else {
-        // this function single-handledly dismantles getGoogleSheetRange and getGoogleSheetRangeValuesOriented
-        sA1Notation = sA1Notation.replace(/\-/g, ":").replace(/,/g, ";"); // sanitize
-        a1DCells = unique(sA1Notation.split(";").map(function(oEl) {
-            if (oEl.indexOf("\:") > -1) { return getGoogleSheetRange(oEl); } else { return oEl; }
-        }).flat().sort(sortAlphaNum));
-        // determine lowest cell and highest cell
-        iHighestColumn = a1DCells.reduce(function(oAg, oEl) {
-            return ((oAg<letterToColumn(cellToColumn(oEl))) ? letterToColumn(cellToColumn(oEl)) : oAg) 
-        }, 0)
-
-        iLowestColumn = a1DCells.reduce(function(oAg, oEl) {
-            return ((oAg>letterToColumn(cellToColumn(oEl))) ? letterToColumn(cellToColumn(oEl)) : oAg) 
-        }, iHighestColumn)
-
-        iHighestRow = a1DCells.reduce(function(oAg, oEl) {
-            return ((oAg<parseInt(cellToRow(oEl))) ? parseInt(cellToRow(oEl)) : oAg) 
-        }, 0);
-
-        iLowestRow = a1DCells.reduce(function(oAg, oEl) {
-            return ((oAg>parseInt(cellToRow(oEl))) ? parseInt(cellToRow(oEl)) : oAg) 
-        }, iHighestRow);
-        sExpansiverRange = columnToLetter(iLowestColumn) + iLowestRow + ":" + columnToLetter(iHighestColumn) + iHighestRow;
-        //console.log("Expansive Range - " + sExpansiverRange);
-        var a2DCells = getGoogleSheetRangeValuesOriented(sExpansiverRange);
-        // var a2DCells = getGoogleSheetRangeValuesOriented(a1DCells[0] + ":" + a1DCells.slice(-1)[0]); NO FUNCIONA
-        return a2DCells.map(function(oEl) { return oEl.map(function(oEl2) {
-            if (a1DCells.indexOf(oEl2) > -1) { return oEl2; }
-        }) }); 
-    }
-}
-GSDS_disjointedRangeToAVO.sample = function() { return 'GSDS_disjointedRangeToAVO("A2;A2:B4;D4,E5:F5;G1:H2,H1-H9,L8")' }
-
+// NEW googlesheets scripts
+// dataGSscriptsSTEROIDS.js
 GSDS_disjointedRangeToAVOdomTDs = function(domTable, sA1Notation) { // this function IS FOR DOM.
   var oDomTableAndA1Notation=distinguishDomTableAndA1Notation(domTable, sA1Notation);
   domTable = oDomTableAndA1Notation["domTable"];
   sA1Notation = oDomTableAndA1Notation["sA1Notation"];
   // console.log(sA1Notation);
   if (domTable.oSmartRange == undefined) {
-      GSDS_setOSR(domTable);
+    GSDS_setOSR(domTable);
   }
   sA1Notation = domReplaceAsterisksInA1Notation(domTable, sA1Notation);
   aCellsFromRange = GSDS_disjointedRangeToAVO(sA1Notation).flat();
   // console.log(sA1Notation);
   return domTable.oSmartRange.allcells_valuesoriented.map(function(oEl) {
     return oEl.map(function(oEl2) {
-        return ((aCellsFromRange.indexOf(oEl2) > -1) ? domTable.oSmartRange[oEl2].tdcell : null );
+      return ((aCellsFromRange.indexOf(oEl2) > -1) ? domTable.oSmartRange[oEl2].tdcell : null );
     })
   })
 }
@@ -817,6 +555,44 @@ convertaRecordsOrientedToInputBoxesForm = function(oICIResponse, aFields) {
         }
         return agg009;
     }, "<table>") + "</table>"
+}
+GSDS_disjointedRangeToAVO = function(sA1Notation) { // this function is NOT FOR DOM, just string/data-only
+  if (sA1Notation.match(/\*/g)) { return "ERROR - ASTERISK functions are for domTable ONLY!" } else {
+    // this function single-handledly dismantles getGoogleSheetRange and getGoogleSheetRangeValuesOriented
+    sA1Notation = sA1Notation.replace(/\-/g, ":").replace(/,/g, ";"); // sanitize
+    a1DCells = unique(sA1Notation.split(";").map(function(oEl) {
+      if (oEl.indexOf("\:") > -1) { return getGoogleSheetRange(oEl); } else { return oEl; }
+    }).flat().sort(sortAlphaNum));
+    // determine lowest cell and highest cell
+    iHighestColumn = a1DCells.reduce(function(oAg, oEl) {
+      return ((oAg<letterToColumn(cellToColumn(oEl))) ? letterToColumn(cellToColumn(oEl)) : oAg) 
+    }, 0)
+    
+    iLowestColumn = a1DCells.reduce(function(oAg, oEl) {
+      return ((oAg>letterToColumn(cellToColumn(oEl))) ? letterToColumn(cellToColumn(oEl)) : oAg) 
+    }, iHighestColumn)
+    
+    iHighestRow = a1DCells.reduce(function(oAg, oEl) {
+      return ((oAg<parseInt(cellToRow(oEl))) ? parseInt(cellToRow(oEl)) : oAg) 
+    }, 0);
+    
+    iLowestRow = a1DCells.reduce(function(oAg, oEl) {
+      return ((oAg>parseInt(cellToRow(oEl))) ? parseInt(cellToRow(oEl)) : oAg) 
+    }, iHighestRow);
+    sExpansiverRange = columnToLetter(iLowestColumn) + iLowestRow + ":" + columnToLetter(iHighestColumn) + iHighestRow;
+    //console.log("Expansive Range - " + sExpansiverRange);
+    var a2DCells = getGoogleSheetRangeValuesOriented(sExpansiverRange);
+    // var a2DCells = getGoogleSheetRangeValuesOriented(a1DCells[0] + ":" + a1DCells.slice(-1)[0]); NO FUNCIONA
+    return a2DCells.map(function(oEl) { return oEl.map(function(oEl2) {
+      if (a1DCells.indexOf(oEl2) > -1) { return oEl2; }
+    }) }); 
+  }
+}
+GSDS_disjointedRangeToAVO.sample = function() { return 'GSDS_disjointedRangeToAVO("A2;A2:B4;D4,E5:F5;G1:H2,H1-H9,L8")' }
+toHTMLSelect=function(aArray, sClassList) { // refractor this to accept array of values vs array of objects (select id?)
+  // aArray = JSON.parse(JSON.stringify(aArray)); aArray.unshift
+  if (sClassList == undefined) { sClassList = "aArraySelect"; }
+  return "<select class='" + sClassList + "'><option></option>" + aArray.map(function(oElement) { return "<option>" + oElement + "</option>"; }).join("");
 }
 
 /*
