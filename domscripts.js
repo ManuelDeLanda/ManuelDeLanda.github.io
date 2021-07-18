@@ -220,7 +220,13 @@ GSDS_getOSR = function(domTable, sA1Notation) {
     return oSmartRange;
 }
 
-GSDS_getTDRANGE = function(domTable, sA1Notation) { 
+GSDS_getTDRANGE = function(domTable, sA1Notation) {
+    var oDomTableAndA1Notation = distinguishDomTableAndA1Notation(domTable, sA1Notation);
+    domTable = oDomTableAndA1Notation["domTable"];
+    sA1Notation = oDomTableAndA1Notation["sA1Notation"];
+
+    sA1Notation = domReplaceAsterisksInA1Notation(domTable, sA1Notation);
+
     // sA1Notation = "table!*1:*";
     // sA1Notation = "table!A*:*";
     // sA1Notation = "table!B5";
@@ -331,6 +337,9 @@ GSDS_evalifyTDRANGE = function(domTable, sA1Notation) {
                     oThis.dataset.gseval = "";
                     oThis.style.backgroundColor="white";
                 }
+                // maybe get rid of this below?
+                domTable = oThis.closest("table");
+                GSDS_evalifyTDRANGE(domTable, "A1:*");
                 // console.log(e.target)
             }
             domInput.onfocus = null;
@@ -595,23 +604,23 @@ toHTMLSelect=function(aArray, sClassList) { // refractor this to accept array of
   return "<select class='" + sClassList + "'><option></option>" + aArray.map(function(oElement) { return "<option>" + oElement + "</option>"; }).join("");
 }
 
-/*
-//oSmartRange = GSDS_getOSR("table!D1:*");
-//oSmartRange = GSDS_getOSR("table", "D1:*");
-//oSmartRange = GSDS_getOSR($$$("table")[1], "D1:*");
-//GSDS_getTDRANGE("table!D1:*")
-// GSDS_setOSR($$$("table")[0])
-GSDS_inputifyTDRANGE("table!D1:*")
-GSDS_evalifyTDRANGE("table!D1:*")
+/* UNIT TESTS
+oSmartRange = GSDS_getOSR("table!D1:*");
+oSmartRange = GSDS_getOSR("table", "D1:*");
+oSmartRange = GSDS_getOSR($$$("table")[1], "D1:*");
+GSDS_getTDRANGE("table!D1:*")
+GSDS_setOSR($$$("table")[0])
+GSDS_inputifyTDRANGE("table!A1:*")
+GSDS_evalifyTDRANGE("table!A1:*")
 GSDS_disjointedRangeToAVO("table!D1:*,A3"); //
 GSDS_disjointedRangeToAVOdomTDs("table!D1:*,A3"); // 
 GSDS_disjointedRangeToAVOdomTDs("D1:*;A1"); // 
 GSDS_disjointedRangeToAVOdomTDs("A1:A*"); // 
-// GSDS_disjointedRangeToAVOdomTDs("table!D1:*"); // 
-// GSDS_disjointedRangeToAVOdomTDs("A3:G10");
-// GSDS_disjointedRangeToAVO("A2:B4;D4,E5:F5;H1-H9");
+GSDS_disjointedRangeToAVOdomTDs("table!D1:*"); // 
+GSDS_disjointedRangeToAVOdomTDs("A3:G10");
+GSDS_disjointedRangeToAVO("A2:B4;D4,E5:F5;H1-H9");
 GSDS_getTDRANGE("table!D6")[0][0].dataset.gseval = superencode("=A1:A2");
 GSDS_evalifyTDRANGE("table!D6");
-// GSDS_eval(decodeURIComponent(sGSEVAL));
+GSDS_eval(decodeURIComponent(sGSEVAL));
 GSDS_disjointedRangeToAVO("A2;A2:B4;D4,E5:F5;G1:H2,H1-H9,L8")
 */
