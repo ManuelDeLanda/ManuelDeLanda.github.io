@@ -184,9 +184,9 @@ distinguishDomTableAndA1Notation = function(domTable, sA1Notation) {
         sRange = aA1Notation[1];
         domTable = $$$(sSelector)[0];
     }
-    sA1Notation = domReplaceAsterisksInA1Notation(domTable, sA1Notation);
+    sA1Notation = domReplaceAsterisksInA1Notation(domTable, sRange);
     // domTable.oSmartRange.sA1Notation should be used to replace asterisks
-    return { "domTable": domTable, "sA1Notation": sRange }
+    return { "domTable": domTable, "sA1Notation": sA1Notation }
 }
 domReplaceAsterisksInA1Notation = function(domTable, sA1Notation) {
     var domTableAVO = Array.from(domTable.querySelectorAll("tr")).map(oEl => Array.from(oEl.querySelectorAll("th,td")) );
@@ -252,6 +252,7 @@ GSDS_inputifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes
         //if (domTD.querySelectorAll("input, select, textarea") == undefined) {
             domTD.style = "padding: 0 0 0 0 !important";
             var sValue = superhtmlEntities(domGetTDTextOrValue(domTD))
+            domTD.innerHTML = ""; // have to do this since removing all children nodes doesn't remove innerText!
             // oElement.innerHTML = "<input style='width:100%; height:100%; padding: 0 0 0 0 !important; margin: 0 0 0 0 !important;' value='" + superhtmlEntities(oElement.innerHTML) + "'></input>";
             if (sAttributes == undefined) { sAttributes = " "; }
             //sAttributes += " onClick=this.select();' style='padding: 0 0 0 0 !important; margin: 0 0 0 0 !important;' "
@@ -261,13 +262,13 @@ GSDS_inputifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes
             // domTD.innerHTML = "<" + sElementType + " " + sAttributes + " ></"+sElementType+">";
             domDebuggingElement = domTD; domDebuggingElement2 = domElement;
             if (domTD.querySelectorAll("input")[0]) {
-                domElement.value = sValue;
+              domElement.value = sValue; domElement.onclick=function(this) {this.select();}
             } else if (domTD.querySelectorAll("textarea")[0]) {
-                domElement.innerText = sValue;
+              domElement.innerText = sValue;
             } else if (domTD.querySelectorAll("select")[0]) {
-                // domSelect = domDebuggingElement("select")[0];
-                if (fOptionsFunction) { } else { fOptionsFunction = function() { return ["","1","2","3"]; } }
-                domElement.innerHTML = fOptionsFunction().map(function(oEl) { return "<option>" + oEl + "</option>"; }).join();
+              // domSelect = domDebuggingElement("select")[0];
+              if (fOptionsFunction) { } else { fOptionsFunction = function() { return ["","1","2","3"]; } }
+              domElement.innerHTML = fOptionsFunction().map(function(oEl) { return "<option>" + oEl + "</option>"; }).join();
             }
 
         //}
