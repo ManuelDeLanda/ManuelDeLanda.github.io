@@ -1,51 +1,4 @@
 <html><head>
-var oTest = {};
-<script>
-//%20%E2%96%A3%20%E2%97%A9%20%E2%97%AA%20%E2%96%A7%20%E2%97%B0%F0%9F%94%B2%0A%3Cbr%20%2F%3E%3Cbr%20%2F%3E%3Cb%3EThis%20page%20tests%20various%20grids.%3C%2Fb%3E%3Cbr%20%2F%3E%3Cbr%20%2F%3E%3Cbr%20%2F%3E%3Cbr%20%2F%3E%0A:
-addAnimateCSSToHover("table", "headShake");
-addAnimateCSSToHover("td", "rubberBand"); // lightSpeedInRight
-// addAnimateCSSToHover("td", "rubberBand"); // lightSpeedInRight
-</script><script>
-//:
-document.body.appendHTML(convertValuesOrientedToHTMLTable(
-    GSDS_disjointedRangeToAVO("A1:P50")
-));
-GSDS_inputifyTDRANGE("table.gsws!A1:*")
-GSDS_evalifyTDRANGE("table.gsws!A1:*")
-</script><script>
-//:
-var oMenu = {};
-oMenu["/philosophy/philosophersfued.htm|philosophy"] = "<br />From Decartes to Deleuze, more than grids you can peruse..<br />";
-oMenu["/?scripts|scripts"] = "scripts=<br />gists=<br />libraries=<br />frameworks=<br />kaggle=<br />firebase=";
-oMenu["/?diffchecker|diffchecker"] = "";
-oMenu["/?links|links"] = "pending..";
-
-
-// generate innerHTML from oMenu
-Object.keys(oGetAllParameters_CLIENT()).forEach(function(oEl) {
-    if (oMenu[oEl] != undefined) {
-        // oGetAllParameters_CLIENT()[oEl] // do I need to do anything with this value?
-        document.body.innerHTML = oMenu[oEl];
-    }
-})
-
-// generate top menu from oMenu
-document.body.prependHTML(
-    '<div style="padding:10px;" class="topnav"><a href="/">home</a>' + Object.keys(oMenu).reduce(function(oAg, oEl) {
-        if (oEl.indexOf("|")>-1) { sURL = oEl.split("|")[0]; sURLName = oEl.split("|")[1]; } else {
-           sURL = "?" + oEl; sURLName = oEl;
-        }
-        oAg += '<a href="' + sURL + '">' + sURLName + "</a>";
-        return oAg;
-    }, "") + "</div><br />"
-);
-</script><script>
-
-
-
-</script></head>
-<body>
-<!-- %20%E2%96%A3%20%E2%97%A9%20%E2%97%AA%20%E2%96%A7%20%E2%97%B0%F0%9F%94%B2%0A%3Cbr%20%2F%3E%3Cbr%20%2F%3E%3Cb%3EThis%20page%20tests%20various%20grids.%3C%2Fb%3E%3Cbr%20%2F%3E%3Cbr%20%2F%3E%3Cbr%20%2F%3E%3Cbr%20%2F%3E%0A-->
 <script src="https://cdn.jsdelivr.net/lodash/4/lodash.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://manueldelanda.github.io/datascripts.js"></script>
@@ -53,7 +6,7 @@ document.body.prependHTML(
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css" />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>?</text></svg>"> 
 <title>Bienvenidos!</title>
-<br />
+
 <style> /* .topnav cheap js menu */
 
 .topnav {
@@ -80,5 +33,66 @@ document.body.prependHTML(
   color: white;
 }
 </style>
+<script>
+//manueldelanda.github.io:
+var oTest = {};
+</script><script>
+
+window.addEventListener('DOMContentLoaded', (event) => { 
+
+try { addAnimateCSSToHover("table", "headShake");
+addAnimateCSSToHover("td", "rubberBand"); // lightSpeedInRight
+// addAnimateCSSToHover("td", "rubberBand"); // lightSpeedInRight
+}
+catch(e) { console.log(e); }
+})
+window.addEventListener('DOMContentLoaded', (event) => { 
+
+try { document.body.appendHTML(convertValuesOrientedToHTMLTable(
+    GSDS_disjointedRangeToAVO("A1:P50")
+));
+GSDS_inputifyTDRANGE("table.gsws!A1:*")
+GSDS_evalifyTDRANGE("table.gsws!A1:*")
+}
+catch(e) { console.log(e); }
+})
+window.addEventListener('DOMContentLoaded', (event) => { 
+
+try { var oMenu = {};
+oMenu["/philosophy/philosophersfued.htm|philosophy"] = "<br />From Decartes to Deleuze, more than grids you can peruse..<br />";
+oMenu["/?scripts|scripts"] = "scripts=<br />gists=<br />libraries=<br />frameworks=<br />kaggle=<br />firebase=";
+oMenu["/?diffchecker|diffchecker"] = "";
+oMenu["/?links|links"] = "pending..";
+
+
+// generate innerHTML from oMenu
+Object.keys(oGetAllParameters_CLIENT()).forEach(function(oEl) {
+    if (oMenu[oEl] != undefined) {
+        // oGetAllParameters_CLIENT()[oEl] // do I need to do anything with this value?
+        document.body.innerHTML = oMenu[oEl];
+    }
+})
+
+// generate top menu from oMenu
+document.body.prependHTML(
+    '<div style="padding:10px;" class="topnav"><a href="/">home</a>' + Object.keys(oMenu).reduce(function(oAg, oEl) {
+        if (oEl.indexOf("|")>-1) { sURL = oEl.split("|")[0]; sURLName = oEl.split("|")[1]; } else {
+           sURL = "?" + oEl; sURLName = oEl;
+        }
+        oAg += '<a href="' + sURL + '">' + sURLName + "</a>";
+        return oAg;
+    }, "") + "</div><br />"
+);
+}
+catch(e) { console.log(e); }
+})
+
+
+</script></head>
+<body>
+<!-- manueldelanda.github.io-->
+ ? ? ? ? ??
+<br /><br /><b>This page tests various grids.</b><br /><br /><br /><br />
+
 <br />
 </body></html>
