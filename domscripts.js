@@ -109,7 +109,7 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
         }
     }; HTMLElement.prototype.appendHTML = HTMLElement.prototype.appendHtml;
     HTMLElement.prototype.getElementsByInnerText = function (text, escape) {
-        var nodes  = this.$$$("*");
+        var nodes  = this.querySelectorAll("*"); //  this.$$$("*"); doesn't work
         var matches = [];
         for (var i = 0; i < nodes.length; i++) {
             if (nodes[i].innerText == text) {
