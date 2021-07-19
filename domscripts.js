@@ -53,9 +53,9 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
   
     domTableToValuesOrientedDomTDs = function(domTable) { // domTableToValuesOrientedDomTDs("table.gsws")
         if (typeof(domTable) == "string") { // eg "table.gsws"
-            domTable = document.$$$(domTable)[0]
+            domTable = $$$(domTable)[0]
         }
-        if (domTable == undefined) { domTable = document.$$$("table")[0]; }
+        if (domTable == undefined) { domTable = $$$("table")[0]; }
         if (domTable != undefined) {
             return Array.prototype.slice.call((domTable).$$$("tr")).map(function(oElement) {
                 return Array.prototype.slice.call(oElement.$$$("th,td"));
@@ -453,9 +453,9 @@ domGetTDTextOrValue = function(domTD) {
     }
     domTableToValuesOrientedDomTDs = function(domTable) { // domTableToValuesOrientedDomTDs("table.gsws")
         if (typeof(domTable) == "string") { // eg "table.gsws"
-            domTable = document.$$$(domTable)[0]
+            domTable = $$$(domTable)[0]
         }
-        if (domTable == undefined) { domTable = document.$$$("table")[0]; }
+        if (domTable == undefined) { domTable = $$$("table")[0]; }
         if (domTable != undefined) {
             return Array.prototype.slice.call((domTable).$$$("tr")).map(function(oElement) {
                 return Array.prototype.slice.call(oElement.$$$("th, td"));
