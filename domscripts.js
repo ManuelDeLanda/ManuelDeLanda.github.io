@@ -467,34 +467,6 @@ domGetTDTextOrValue = function(domTD) {
 } catch(e) {}
 
 // domscripts.serversafe
-/* // refractored 12/16
-convertRecordsOrientedArrayToHTMLTable = function (aRecordsOriented, aColumns) {
-    // var aColumns = ["entityid ];
-    //aColumns = aColumns || undefined;
-    //if (aColumns == undefined) {
-    //    var aColumns = Object.keys(aRecordsOriented[0]);
-    //}
-  
-    function returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented) { return aRecordsOriented.reduce(function(agg, oElement313) { agg = agg.concat(Object.keys(oElement313)); agg = unique(agg); return agg; }, []) }
-    if (aColumns == undefined) {
-        // var aColumns = Object.keys(aRecordsOriented[0]);
-                 aColumns = returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented);
-    }
-  
-    sHTMLTable = "<table class='RecordsOrientedArrayToHTML' style='margin: 0 auto; text-align: center;'>" + aRecordsOriented.reduce(function(agg, oElement) {
-        agg = agg + "<tr>" + aColumns.reduce(function(agg000, oElement000) {
-            agg000 = agg000 + "<td style='text-align:left'>" + oElement[oElement000] + "</td>";
-            return agg000;
-        }, "") + "</tr>";
-        return agg;
-    }, 
-        "<tr>" + aColumns.reduce(function(agg001, oElement001) {
-            return agg001 + "<th style='border-right: 1px solid black; border-left: 1px solid black;'>" + oElement001 + "</th>";
-        }, "") + "</tr>"
-    ) + "</table>";
-        return sHTMLTable;
-}
-*/
 convertRecordsOrientedArrayToHTMLTable = function (aRecordsOriented, aColumns, sTableID) {
     // convertRecordsOrientedArrayToHTMLTable(aRecordsOriented)
     function returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented) { return aRecordsOriented.reduce(function(agg, oElement313) { agg = agg.concat(Object.keys(oElement313)); agg = unique(agg); return agg; }, []) }
@@ -545,33 +517,10 @@ convertValuesOrientedToHTMLTable = function(aValuesOriented, aColumns, sTableID)
     }, "") + "</table>";
     return sHTMLTable.replace(/ id=''/g, "");
 }
-/* refractored with gsws on 1/18
-convertRecordsOrientedArrayToHTMLTable = function (aRecordsOriented, aColumns) {
-    function returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented) { return aRecordsOriented.reduce(function(agg, oElement313) { agg = agg.concat(Object.keys(oElement313)); agg = unique(agg); return agg; }, []) }
-    if (aColumns == undefined) {
-        // var aColumns = Object.keys(aRecordsOriented[0]);
-                 aColumns = returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented);
-    }
-  
-    sHTMLTable = "<table class='RecordsOrientedArrayToHTML' style='margin: 0 auto; text-align: center;'>" + aRecordsOriented.reduce(function(agg, oElement) {
-        agg = agg + "<tr>" + aColumns.reduce(function(agg000, oElement000, iIndex000) {
-            agg000 = agg000 + "<td class='cellcolumn" + iIndex000 + "'>" + oElement[oElement000] + "</td>"; // style='text-align:left'
-            return agg000;
-        }, "") + "</tr>";
-        return agg;
-    }, 
-        "<tr>" + aColumns.reduce(function(agg001, oElement001, iIndex001) {
-            return agg001 + "<th class='cellcolumn" + iIndex001 + "'>" + oElement001 + "</th>"; // style='border-right: 1px solid black; border-left: 1px solid black;'
-        }, "") + "</tr>"
-    ) + "</table>";
-        return sHTMLTable;
-}
-*/
-
 convertRecordsOrientedArrayToExcelXML = function(aArray, aColumns) {
   // convertRecordsOrientedArrayToExcelXML
   // normalize aRecordsOriented
-  var aRecordsOriented = toRecordsOriented(toValuesOriented(aArray));
+  var aRecordsOriented = normalizeRecordsOriented(toValuesOriented(aArray));
   aColumns = aColumns || undefined;
   if (aColumns == undefined) {
     var aColumns = Object.keys(aArray[0]);
