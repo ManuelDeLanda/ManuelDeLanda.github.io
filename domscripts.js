@@ -252,7 +252,7 @@ GSDS_getTDRANGE = function(domTable, sA1Notation) {
 GSDS_inputifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes, fOptionsFunction) { // REFACTOR THIS - change to removeChild and appendChildHTML instead of hardcoding the html strings!
   if ((sElementType == undefined) || ((sElementType != "textarea") && (sElementType != "select") && (sElementType != "button")) ) { sElementType="input"; }
   // console.log(sElementType);
-  domTable.borderCollapse = "collapse"; // gets rid of spaces between cells
+  domTable.style.borderCollapse = "collapse"; // gets rid of spaces between cells
   GSDS_getTDRANGE(domTable, sA1Notation).flat().forEach(function(domTD) {
         //if (domTD.querySelectorAll("input, select, textarea") == undefined) {
             domTD.style = "padding: 0 0 0 0 !important";
