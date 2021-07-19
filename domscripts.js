@@ -276,6 +276,7 @@ GSDS_inputifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes
               domElement.addEventListener("click", function(){this.select()}); // selects all contents inside cell
             } else if (domTD.$$$("textarea")[0]) {
               domElement.innerText = sValue;
+              domElement.style.resize = "none";
               domElement.addEventListener("click", function(){this.select()}); // selects all contents inside cell
             } else if (domTD.$$$("select")[0]) {
               // domSelect = domDebuggingElement("select")[0];
