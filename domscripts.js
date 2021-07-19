@@ -264,10 +264,10 @@ GSDS_inputifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes
             var domElement = document.createElement(sElementType);
             Array.from(domTD.children).forEach(function(oEl) { domTD.removeChild(oEl) }); // remove ALL children from a node
             domTD.appendChild(domElement);
-            domTD.width = "50px !important"; domTD.height = "20px !important";
-            domTD.style.width = "50px !important"; domTD.style.height = "20px !important";
-            domElement.width = "50px !important"; domElement.height = "20px !important";
-            domElement.style.width = "50px !important"; domElement.style.height = "20px !important";
+            // domTD.width = "50px !important"; domTD.height = "20px !important";
+            domTD.style.width = "50px"; domTD.style.height = "20px";
+            // domElement.width = "50px !important"; domElement.height = "20px !important";
+            domElement.style.width = "50px"; domElement.style.height = "20px";
             // domTD.innerHTML = "<" + sElementType + " " + sAttributes + " ></"+sElementType+">";
             domDebuggingElement = domTD; domDebuggingElement2 = domElement;
             if (domTD.$$$("input")[0]) {
