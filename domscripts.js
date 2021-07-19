@@ -64,7 +64,7 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
 
         }
     }
-    convertHTMLTableToValuesOriented = function(domTable) { return domTableToValuesOrientedDomTDs(domTable).map(function(oEl) { return oEl.map(function(oEl2) { return oEl2.innerText; }) }) }
+    convertHTMLTableToValuesOriented = function(domTable) { return domTableToValuesOrientedDomTDs(domTable).map(function(oEl) { return oEl.map(function(oEl2) { return domGetTDTextOrValue(oEl2); }) }) }
     domTableToValuesOriented = convertHTMLTableToValuesOriented;
 
     /* refactored this on 7/16/2021 in favor of
