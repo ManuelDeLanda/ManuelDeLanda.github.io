@@ -5,6 +5,7 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
   // i think i need to parseInt in letterToColumn
 
   var $$$ = document.querySelectorAll.bind(document);
+  HTMLElement.prototype.$$$ = function (element) { return this.querySelectorAll(element); }; 
   // SubmitSuperNinjaForm,fetch_XMLHttpRequest,oGetAllParameters_CLIENT()
   fetch_XMLHttpRequest=function(e){superencode=function(e){return encodeURIComponent(e).replace(/'/g,"%27")};var t="",n=new XMLHttpRequest;return new Promise(function(o,r){var a;n.onreadystatechange=function(){if(4==this.readyState&&200==this.status){t=this.responseText;(new DOMParser).parseFromString(t,"text/html");o(t)}},n.open(e.type,e.url,!0),null!=e.payload&&(a=Object.keys(e.payload).map(function(t){return superencode(t)+"="+superencode(e.payload[t])}).join("&")),n.setRequestHeader("Content-type","application/x-www-form-urlencoded"),n.send(a)})},SubmitSuperNinjaForm=function(e,t){if(superencode=function(e){return encodeURIComponent(e).replace(/'/g,"%27")},null==e||null==e||""==e){(e={type:"POST",payload:{script:84,deploy:1,context:"llave",payload:"just testing"}}).url="https://acct138579.app.netsuite.com/app/site/hosting/scriptlet.nl?script=84&deploy=1&context=llave"}var n=document.createElement("form");n.setAttribute("target",t),n.name="superninjaform",n.id="superninjaform",n.method=e.type,n.action=null!=e.url?e.url:window.location.href.split("?")[0],document.body.appendChild(n),n.innerHTML=Object.keys(e.payload).reduce(function(t,n){return t+='<input type="hidden" name="'+n+'" id="'+n+'" value="'+superencode(e.payload[n])+'" />'+String.fromCharCode(10)+String.fromCharCode(13)},""),n.submit()},SubmitSuperNinjaForm.sample=function(){console.log('\n              var oTypeURLPayload = { type:"POST", url: "https://collegediscgolf.com/wp-json/api/v1/author/2", payload: {filter: "2asdf"}};\n              \n              SubmitSuperNinjaForm(oTypeURLPayload);\n  fetch_XMLHttpRequest(oTypeURLPayload).then(function(sResponse) { console.log(sResponse.trim()); });\n  sResponse = await fetch_XMLHttpRequest(oTypeURLPayload);\n  ')},fetch_XMLHttpRequest.sample=SubmitSuperNinjaForm.sample,oGetAllParameters_CLIENT=function(){return location.search.substring(1)?JSON.parse('{"'+location.search.substring(1).split("&").map(function(e){return-1==e.indexOf("=")?e+"=":e}).join("&").replace(/&/g,'","').replace(/=/g,'":"')+'"}',function(e,t){return""===e?t:decodeURIComponent(t)}):{}};  
 
@@ -52,12 +53,12 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
   
     domTableToValuesOrientedDomTDs = function(domTable) { // domTableToValuesOrientedDomTDs("table.gsws")
         if (typeof(domTable) == "string") { // eg "table.gsws"
-            domTable = document.querySelectorAll(domTable)[0]
+            domTable = document.$$$(domTable)[0]
         }
-        if (domTable == undefined) { domTable = document.querySelectorAll("table")[0]; }
+        if (domTable == undefined) { domTable = document.$$$("table")[0]; }
         if (domTable != undefined) {
-            return Array.prototype.slice.call((domTable).querySelectorAll("tr")).map(function(oElement) {
-                return Array.prototype.slice.call(oElement.querySelectorAll("th,td"));
+            return Array.prototype.slice.call((domTable).$$$("tr")).map(function(oElement) {
+                return Array.prototype.slice.call(oElement.$$$("th,td"));
             })
         } else {
 
@@ -108,7 +109,7 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
         }
     }; HTMLElement.prototype.appendHTML = HTMLElement.prototype.appendHtml;
     HTMLElement.prototype.getElementsByInnerText = function (text, escape) {
-        var nodes  = this.querySelectorAll("*");
+        var nodes  = this.$$$("*");
         var matches = [];
         for (var i = 0; i < nodes.length; i++) {
             if (nodes[i].innerText == text) {
@@ -191,7 +192,7 @@ distinguishDomTableAndA1Notation = function(domTable, sA1Notation) {
     return { "domTable": domTable, "sA1Notation": sA1Notation }
 }
 domReplaceAsterisksInA1Notation = function(domTable, sA1Notation) {
-    var domTableAVO = Array.from(domTable.querySelectorAll("tr")).map(oEl => Array.from(oEl.querySelectorAll("th,td")) );
+    var domTableAVO = Array.from(domTable.$$$("tr")).map(oEl => Array.from(oEl.$$$("th,td")) );
     var sLastRow = domTableAVO.length; // do domTable.oSmartRange.width/height instead? of this?
     var sLastColumn = columnToLetter(domTableAVO[0].length);
     sA1Notation = sA1Notation.replace(/\-/g, ":").replace(/,/g, ";"); // sanitize
@@ -209,7 +210,7 @@ domReplaceAsterisksInA1Notation = function(domTable, sA1Notation) {
 } 
 GSDS_getOSR = function(domTable, sA1Notation) {
     var oDomTableAndA1Notation=distinguishDomTableAndA1Notation(domTable, sA1Notation); domTable = oDomTableAndA1Notation["domTable"]; sA1Notation = oDomTableAndA1Notation["sA1Notation"];  
-    var domTableAVO = Array.from(domTable.querySelectorAll("tr")).map(oEl => Array.from(oEl.querySelectorAll("th,td")) );
+    var domTableAVO = Array.from(domTable.$$$("tr")).map(oEl => Array.from(oEl.$$$("th,td")) );
     // sA1Notation = domReplaceAsterisksInA1Notation(domTable, sA1Notation);
     // aVirtualRange = getGoogleSheetRangeValuesOriented(sRange);
     // aVirtualRange = GSDS_disjointedRangeToAVO(sA1Notation);
@@ -264,13 +265,13 @@ GSDS_inputifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes
             domTD.appendChild(domElement);
             // domTD.innerHTML = "<" + sElementType + " " + sAttributes + " ></"+sElementType+">";
             domDebuggingElement = domTD; domDebuggingElement2 = domElement;
-            if (domTD.querySelectorAll("input")[0]) {
+            if (domTD.$$$("input")[0]) {
               domElement.value = sValue;
               // domElement.onclick=function(this){this.select()}
               domElement.addEventListener("click", function(){this.select()});
-            } else if (domTD.querySelectorAll("textarea")[0]) {
+            } else if (domTD.$$$("textarea")[0]) {
               domElement.innerText = sValue;
-            } else if (domTD.querySelectorAll("select")[0]) {
+            } else if (domTD.$$$("select")[0]) {
               // domSelect = domDebuggingElement("select")[0];
               if (fOptionsFunction) { } else { fOptionsFunction = function() { return ["","1","2","3"]; } }
               domElement.innerHTML = fOptionsFunction().map(function(oEl) { return "<option>" + oEl + "</option>"; }).join();
@@ -337,7 +338,7 @@ GSDS_evalifyCell = function(sCellA1Notation, sFormula) {
     // sCellA1Notation = "table!D6";
     if (sFormula) { } else { sFormula = decodeURIComponent(domInput.dataset.gseval); }
     domTD = GSDS_getTDRANGE(sCellA1Notation)[0][0];
-    domInput = domTD.querySelectorAll("input,select,textarea")[0];
+    domInput = domTD.$$$("input,select,textarea")[0];
     domInput.dataset.gseval = superencode(sFormula);
     GSDS_evalifyTDRANGE(sCellA1Notation);
 }
@@ -346,7 +347,7 @@ GSDS_evalifyCell = function(sCellA1Notation, sFormula) {
 //var domTD;
 GSDS_evalifyTDRANGE = function(domTable, sA1Notation) {
     GSDS_getTDRANGE(domTable, sA1Notation).flat().forEach(function(domTD) {
-        var domInput = domTD.querySelectorAll("input,select,textarea")[0];
+        var domInput = domTD.$$$("input,select,textarea")[0];
         if (domInput) {
             if (domInput.dataset.gseval) {
                domInput.value = GSDS_eval(domInput, decodeURIComponent(domInput.dataset.gseval));
@@ -385,12 +386,12 @@ GSDS_evalifyTDRANGE = function(domTable, sA1Notation) {
 // domGlobal;
 domGetTDTextOrValue = function(domTD) {
     // domGlobal = domTD;
-    if (domTD.querySelectorAll("input,textarea,select")[0]?.value) {
-        return domTD.querySelectorAll("input,textarea,select")[0].value;
-    } else if (domTD.querySelectorAll("input,textarea,select")[0]?.innerText) {
-        return domTD.querySelectorAll("input,textarea,select")[0].innerText;
-    } else if (domTD.querySelectorAll("data-value")[0]) { // also data-notes, data-notations, and data-text?
-        return domTD.querySelectorAll("data-value")[0]; 
+    if (domTD.$$$("input,textarea,select")[0]?.value) {
+        return domTD.$$$("input,textarea,select")[0].value;
+    } else if (domTD.$$$("input,textarea,select")[0]?.innerText) {
+        return domTD.$$$("input,textarea,select")[0].innerText;
+    } else if (domTD.$$$("data-value")[0]) { // also data-notes, data-notations, and data-text?
+        return domTD.$$$("data-value")[0]; 
     } else if (domTD.innerText) { 
         return domTD.innerText;
     } else { return ""; }
@@ -403,10 +404,10 @@ domGetTDTextOrValue = function(domTD) {
     function theadify(sTable) { // USES JQUERY
         // sTable = "table.RecordsOrientedArrayToHTML";
         // theadify(table.RecordsOrientedArrayToHTML);
-        theadify = $(sTable)[0].querySelectorAll("tr th, tr td")[0].parentNode;
+        theadify = $(sTable)[0].$$$("tr th, tr td")[0].parentNode;
         $(sTable)[0].createTHead();
         theadify.remove()
-        $(sTable)[0].querySelectorAll("thead")[0].appendChild(theadify)
+        $(sTable)[0].$$$("thead")[0].appendChild(theadify)
     }
     function dom_lookupvalueHTMLTable(sTable, sRowValue, iColumn) { // WARNING USES JQUERY
         // sTable = "cualquierPotencialidad"; sRowValue = "pdf dump"; iColumn = 1;
@@ -445,12 +446,12 @@ domGetTDTextOrValue = function(domTD) {
     }
     domTableToValuesOrientedDomTDs = function(domTable) { // domTableToValuesOrientedDomTDs("table.gsws")
         if (typeof(domTable) == "string") { // eg "table.gsws"
-            domTable = document.querySelectorAll(domTable)[0]
+            domTable = document.$$$(domTable)[0]
         }
-        if (domTable == undefined) { domTable = document.querySelectorAll("table")[0]; }
+        if (domTable == undefined) { domTable = document.$$$("table")[0]; }
         if (domTable != undefined) {
-            return Array.prototype.slice.call((domTable).querySelectorAll("tr")).map(function(oElement) {
-                return Array.prototype.slice.call(oElement.querySelectorAll("th, td"));
+            return Array.prototype.slice.call((domTable).$$$("tr")).map(function(oElement) {
+                return Array.prototype.slice.call(oElement.$$$("th, td"));
             })
         } else {
 
@@ -490,7 +491,6 @@ convertRecordsOrientedArrayToHTMLTable = function (aRecordsOriented, aColumns) {
 */
 convertRecordsOrientedArrayToHTMLTable = function (aRecordsOriented, aColumns, sTableID) {
     // convertRecordsOrientedArrayToHTMLTable(aRecordsOriented)
-    function columnToLetter(r){for(var o,t="";r>0;)o=(r-1)%26,t=String.fromCharCode(o+65)+t,r=(r-o-1)/26;return t}function letterToColumn(r){for(var o=0,t=r.length,n=0;n<t;n++)o+=(r.charCodeAt(n)-64)*Math.pow(26,t-n-1);return o}
     function returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented) { return aRecordsOriented.reduce(function(agg, oElement313) { agg = agg.concat(Object.keys(oElement313)); agg = unique(agg); return agg; }, []) }
     if (sTableID == undefined) { sTableID = ""; }
 
@@ -519,7 +519,6 @@ convertRecordsOrientedArrayToHTMLTable = function (aRecordsOriented, aColumns, s
 }
 convertValuesOrientedToHTMLTable = function(aValuesOriented, aColumns, sTableID) {
     /// convertValuesOrientedToHTMLTable([[1,2,3,4],[0,0,0,0],[9,9,9,9]], undefined, "gswsvo")
-    function columnToLetter(r){for(var o,t="";r>0;)o=(r-1)%26,t=String.fromCharCode(o+65)+t,r=(r-o-1)/26;return t}function letterToColumn(r){for(var o=0,t=r.length,n=0;n<t;n++)o+=(r.charCodeAt(n)-64)*Math.pow(26,t-n-1);return o}
     function returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented) { return aRecordsOriented.reduce(function(agg, oElement313) { agg = agg.concat(Object.keys(oElement313)); agg = unique(agg); return agg; }, []) }
     if (sTableID == undefined) { sTableID = ""; }
 
@@ -633,8 +632,9 @@ GSDS_disjointedRangeToAVO = function(sA1Notation) { // this function is NOT FOR 
     }) }); 
   }
 }
-GSDS_disjointedRangeToArray = function(sA1Notation) { return GSDS_disjointedRangeToAVO(sA1Notation).flat().filter(function(oEl) { return oEl; }) }
 GSDS_disjointedRangeToAVO.sample = function() { return 'GSDS_disjointedRangeToAVO("-A2;A2:B4; D4,E5:F5;G1:H2,H1-H9,L8,:B2, G8")' }
+GSDS_disjointedRangeToArray = function(sA1Notation) { return GSDS_disjointedRangeToAVO(sA1Notation).flat().filter(function(oEl) { return oEl; }) }
+
 toHTMLSelect=function(aArray, sClassList) { // refractor this to accept array of values vs array of objects (select id?)
   // aArray = JSON.parse(JSON.stringify(aArray)); aArray.unshift
   if (sClassList == undefined) { sClassList = "aArraySelect"; }
