@@ -252,6 +252,7 @@ GSDS_getTDRANGE = function(domTable, sA1Notation) {
 GSDS_inputifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes, fOptionsFunction) { // REFACTOR THIS - change to removeChild and appendChildHTML instead of hardcoding the html strings!
   if ((sElementType == undefined) || ((sElementType != "textarea") && (sElementType != "select") && (sElementType != "button")) ) { sElementType="input"; }
   // console.log(sElementType);
+  domTable.borderCollapse = "collapse !important"; // gets rid of spaces between cells
   GSDS_getTDRANGE(domTable, sA1Notation).flat().forEach(function(domTD) {
         //if (domTD.querySelectorAll("input, select, textarea") == undefined) {
             domTD.style = "padding: 0 0 0 0 !important";
@@ -263,14 +264,19 @@ GSDS_inputifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes
             var domElement = document.createElement(sElementType);
             Array.from(domTD.children).forEach(function(oEl) { domTD.removeChild(oEl) }); // remove ALL children from a node
             domTD.appendChild(domElement);
+            domTD.width = "50px !important"; domTD.height = "20px !important";
+            domTD.style.width = "50px !important"; domTD.style.height = "20px !important";
+            domElement.width = "50px !important"; domElement.height = "20px !important";
+            domElement.style.width = "50px !important"; domElement.style.height = "20px !important";
             // domTD.innerHTML = "<" + sElementType + " " + sAttributes + " ></"+sElementType+">";
             domDebuggingElement = domTD; domDebuggingElement2 = domElement;
             if (domTD.$$$("input")[0]) {
               domElement.value = sValue;
               // domElement.onclick=function(this){this.select()}
-              domElement.addEventListener("click", function(){this.select()});
+              domElement.addEventListener("click", function(){this.select()}); // selects all contents inside cell
             } else if (domTD.$$$("textarea")[0]) {
               domElement.innerText = sValue;
+              domElement.addEventListener("click", function(){this.select()}); // selects all contents inside cell
             } else if (domTD.$$$("select")[0]) {
               // domSelect = domDebuggingElement("select")[0];
               if (fOptionsFunction) { } else { fOptionsFunction = function() { return ["","1","2","3"]; } }
