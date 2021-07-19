@@ -23,7 +23,7 @@ letterToColumn = function(letter) {
   for (var i = 0; i < length; i++) {
     column += (letter.charCodeAt(i) - 64) * Math.pow(26, length - i - 1);
   }
-  return column;
+  return parseInt(column);
 }
 
 subtractCells = function (sCell1, sCell2) { if (typeof(sCell1) == "string") { var aCell1 = convertCellToArray(sCell1) } else { aCell1
