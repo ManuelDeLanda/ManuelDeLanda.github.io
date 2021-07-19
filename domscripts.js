@@ -142,6 +142,11 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
 GSDS_CELL = function(sA1Notation) { return GSDS_RANGE1D(sA1Notation)[0]; }
 GSDS_RANGE1D = function(sA1Notation) { return GSDS_disjointedRangeToAVOdomTDs(sA1Notation).flat().filter(function(oEl) { return oEl }); }
 GSDS_RANGE2D = function(sA1Notation) { return GSDS_disjointedRangeToAVOdomTDs(sA1Notation); }
+
+GSDS_CELL_value = function (sA1Notation) { return domGetTDTextOrValue(GSDS_CELL(sA1Notation)); }
+GSDS_RANGE1D_values = function (sA1Notation) { return GSDS_RANGE1D(sA1Notation).map(function(oEl) { return domGetTDTextOrValue(oEl) }); }
+GSDS_RANGE2D_values = function (sA1Notation) { return GSDS_RANGE2D(sA1Notation).map(function(oEl) { return oEl.map(function(oEl2) { return domGetTDTextOrValue(oEl2) }) }) }
+
 GSDS_GSDSifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes, fOptionsFunction) {
     GSDS_inputifyTDRANGE(domTable, sA1Notation, sElementType, sAttributes, fOptionsFunction);
     GSDS_evalifyTDRANGE(domTable, sA1Notation);
