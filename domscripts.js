@@ -252,9 +252,9 @@ GSDS_getTDRANGE = function(domTable, sA1Notation) {
 GSDS_inputifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes, fOptionsFunction) { // REFACTOR THIS - change to removeChild and appendChildHTML instead of hardcoding the html strings!
   if ((sElementType == undefined) || ((sElementType != "textarea") && (sElementType != "select") && (sElementType != "button")) ) { sElementType="input"; }
   // console.log(sElementType);
-  domTable.style.borderCollapse = "collapse"; // gets rid of spaces between cells
-  GSDS_getTDRANGE(domTable, sA1Notation).flat().forEach(function(domTD) {
+  GSDS_getTDRANGE(domTable, sA1Notation).flat().forEach(function(domTD, iDomTD) {
         //if (domTD.querySelectorAll("input, select, textarea") == undefined) {
+            if (iDomTD == 0) { domTD.closest("table").style.borderCollapse = "collapse"; } // domTable isn't a real domTable sometimes it's a string.  gets rid of spaces between cells 
             domTD.style = "padding: 0 0 0 0 !important";
             var sValue = superhtmlEntities(domGetTDTextOrValue(domTD))
             domTD.innerHTML = ""; // have to do this since removing all children nodes doesn't remove innerText!
