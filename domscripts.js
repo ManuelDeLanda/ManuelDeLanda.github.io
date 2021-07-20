@@ -304,6 +304,14 @@ GSDS_eval = function(oThis, sCellContents) {
     if (domTable.oSmartRange==undefined) {
         GSDS_setOSR(domTable);
     }
+    if (sCellContents.match(/COLUMN/g)) {
+        sColumn = "B";
+        sCellContents = sCellContents.replace(/COLUMN/g, sColumn)
+    }
+    if (sCellContents.match(/ROW/g)) {
+        sRow = "1";
+        sCellContents = sCellContents.replace(/ROW/g, sRow)
+    }
 
     try {
         // sCellContents = sCellContents.replace(/([A-Z]+[0-9]+)/g, "GSDS_CELL_value('$1')");
