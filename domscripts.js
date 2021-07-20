@@ -305,12 +305,14 @@ GSDS_eval = function(oThis, sCellContents) {
     }
     if (sCellContents.match(/COLUMN/g)) {
         sA1Notation = GSDS_domTDToA1Notation(oThis);
+        console.log(sA1Notation);
         sColumn = cellToColumn(sA1Notation);
+        console.log(sColumn);
         sCellContents = sCellContents.replace(/COLUMN/g, sColumn)
     }
     if (sCellContents.match(/ROW/g)) {
         sA1Notation = GSDS_domTDToA1Notation(oThis);
-        sRow = cellToColumn(sA1Notation);
+        sRow = cellToRow(sA1Notation);
         sCellContents = sCellContents.replace(/ROW/g, sRow)
     }
 
