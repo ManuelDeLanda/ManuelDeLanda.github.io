@@ -139,13 +139,13 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
 
 // NEW googlesheets scripts
 // domscriptsSTEROIDS.js
-GSDS_CELL = function(sA1Notation) { return GSDS_RANGE1D(sA1Notation)[0]; }
-GSDS_RANGE1D = function(sA1Notation) { return GSDS_disjointedRangeToAVOdomTDs(sA1Notation).flat().filter(function(oEl) { return oEl }); }
-GSDS_RANGE2D = function(sA1Notation) { return GSDS_disjointedRangeToAVOdomTDs(sA1Notation); }
+GSDS_CELL = function(domTable, sA1Notation) { return GSDS_RANGE1D(domTable, sA1Notation)[0]; }
+GSDS_RANGE1D = function(domTable, sA1Notation) { return GSDS_disjointedRangeToAVOdomTDs(domTable, sA1Notation).flat().filter(function(oEl) { return oEl }); }
+GSDS_RANGE2D = function(domTable, sA1Notation) { return GSDS_disjointedRangeToAVOdomTDs(domTable, sA1Notation); }
 
-GSDS_CELL_value = function (sA1Notation) { return domGetTDTextOrValue(GSDS_CELL(sA1Notation)); }
-GSDS_RANGE1D_values = function (sA1Notation) { return GSDS_RANGE1D(sA1Notation).map(function(oEl) { return domGetTDTextOrValue(oEl) }); }
-GSDS_RANGE2D_values = function (sA1Notation) { return GSDS_RANGE2D(sA1Notation).map(function(oEl) { return oEl.map(function(oEl2) { return domGetTDTextOrValue(oEl2) }) }) }
+GSDS_CELL_value = function (domTable, sA1Notation) { return domGetTDTextOrValue(GSDS_CELL(domTable, sA1Notation)); }
+GSDS_RANGE1D_values = function (domTable, sA1Notation) { return GSDS_RANGE1D(domTable, sA1Notation).map(function(oEl) { return domGetTDTextOrValue(oEl) }); }
+GSDS_RANGE2D_values = function (domTable, sA1Notation) { return GSDS_RANGE2D(domTable, sA1Notation).map(function(oEl) { return oEl.map(function(oEl2) { return domGetTDTextOrValue(oEl2) }) }) }
 
 GSDS_GSDSifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes, fOptionsFunction) {
     GSDS_inputifyTDRANGE(domTable, sA1Notation, sElementType, sAttributes, fOptionsFunction);
@@ -336,7 +336,7 @@ GSDS_eval = function(oThis, sCellContents) {
             // return JSON.stringify(GSDS_disjointedRangeToAVO(sCellContents))
 
         } else if (sCellContents.match(/([A-Z]+[0-9]+)/g)) { // "D1+20", "D1*+E1*12", "SUM(D1:D2)"
-            sCellContents = sCellContents.replace(/([A-Z]+[0-9]+)/g, "GSDS_CELL_value('$1')") 
+            sCellContents = sCellContents.replace(/([A-Z]+[0-9]+)/g, "GSDS_CELL_value(domTable, '$1')") 
             return eval(sCellContents);
         } else if (false) {
         } else {
