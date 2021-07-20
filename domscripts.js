@@ -392,7 +392,8 @@ GSDS_evalifyTDRANGE = function(domTable, sA1Notation) {
         if (domInput) {
             if (domInput.dataset.gseval) {
                domInput.value = GSDS_eval(domInput, decodeURIComponent(domInput.dataset.gseval));
-            }
+               domInput.style.backgroundColor="honeydew";
+            } else { domInput.style.backgroundColor="azure"; }
             // var domInput = $$$(sSelector)[0];
             // Array.from($$$(sSelector)).forEach(function(domInput) {
             domInput.onblur = function(e) {
@@ -403,11 +404,11 @@ GSDS_evalifyTDRANGE = function(domTable, sA1Notation) {
                     oThis.closest("td").dataset.gseval = superencode(sGSEVAL);
                     oThis.dataset.gseval = superencode(sGSEVAL); // CONSIDER REMOVING INPUTS' dataset.gseval in favor of TD's  
                     oThis.value = GSDS_eval(oThis, oThis.value);
-                    oThis.style.backgroundColor="lightblue";
+                    oThis.style.backgroundColor="honeydew";
                 } else {
                     oThis.closest("td").dataset.gseval = "";
                     oThis.dataset.gseval = "";
-                    oThis.style.backgroundColor="white";
+                    oThis.style.backgroundColor="azure";
                 }
                 // maybe get rid of this below? it re-evaluates whole table in order to achieve the ability for all cells to remain live evaluations.
                 domTable = oThis.closest("table");
