@@ -153,12 +153,12 @@ GSDS_GSDSifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes,
     GSDS_evalifyTDRANGE(domTable, sA1Notation);
 }
 GSDS_disjointedRangeToAVOdomTDs = function(domTable, sA1Notation) { // this function IS FOR DOM-ONLY.
-  var oDomTableAndA1Notation=distinguishDomTableAndA1Notation(domTable, sA1Notation); domTable = oDomTableAndA1Notation["domTable"]; sA1Notation = oDomTableAndA1Notation["sA1Notation"];
+  var oDomTableAndA1Notation=GSDS_distinguishDomTableAndA1Notation(domTable, sA1Notation); domTable = oDomTableAndA1Notation["domTable"]; sA1Notation = oDomTableAndA1Notation["sA1Notation"];
   // console.log(sA1Notation);
   if (domTable.oSmartRange == undefined) {
     GSDS_setOSR(domTable);
   }
-  // sA1Notation = domReplaceAsterisksInA1Notation(domTable, sA1Notation);
+  // sA1Notation = GSDS_domReplaceAsterisksInA1Notation(domTable, sA1Notation);
   var aCellsFromRange = GSDS_disjointedRangeToAVO(sA1Notation).flat();
   // console.log(sA1Notation);
   return domTable.oSmartRange.allcells_valuesoriented.map(function(oEl) {
@@ -168,8 +168,8 @@ GSDS_disjointedRangeToAVOdomTDs = function(domTable, sA1Notation) { // this func
   })
 }
       
-distinguishDomTableAndA1Notation = function(domTable, sA1Notation) {
-    // distinguishDomTableAndA1Notation($$$('table'), "A1:*") vs distinguishDomTableAndA1Notation("table!A1:A*")
+GSDS_distinguishDomTableAndA1Notation = function(domTable, sA1Notation) {
+    // GSDS_distinguishDomTableAndA1Notation($$$('table'), "A1:*") vs GSDS_distinguishDomTableAndA1Notation("table!A1:A*")
     if (sA1Notation == undefined) { // && typeof(domTable) != "object") {
         sA1Notation = domTable;
         domTable = undefined;
@@ -193,11 +193,11 @@ distinguishDomTableAndA1Notation = function(domTable, sA1Notation) {
         sRange = aA1Notation[1];
         domTable = $$$(sSelector)[0];
     }
-    sA1Notation = domReplaceAsterisksInA1Notation(domTable, sRange);
+    sA1Notation = GSDS_domReplaceAsterisksInA1Notation(domTable, sRange);
     // domTable.oSmartRange.sA1Notation should be used to replace asterisks
     return { "domTable": domTable, "sA1Notation": sA1Notation }
 }
-domReplaceAsterisksInA1Notation = function(domTable, sA1Notation) {
+GSDS_domReplaceAsterisksInA1Notation = function(domTable, sA1Notation) {
     var domTableAVO = Array.from(domTable.$$$("tr")).map(oEl => Array.from(oEl.$$$("th,td")) );
     var sLastRow = domTableAVO.length; // do domTable.oSmartRange.width/height instead? of this?
     var sLastColumn = columnToLetter(domTableAVO[0].length);
@@ -215,9 +215,9 @@ domReplaceAsterisksInA1Notation = function(domTable, sA1Notation) {
     return sA1Notation;
 } 
 GSDS_getOSR = function(domTable, sA1Notation) {
-    var oDomTableAndA1Notation=distinguishDomTableAndA1Notation(domTable, sA1Notation); domTable = oDomTableAndA1Notation["domTable"]; sA1Notation = oDomTableAndA1Notation["sA1Notation"];  
+    var oDomTableAndA1Notation=GSDS_distinguishDomTableAndA1Notation(domTable, sA1Notation); domTable = oDomTableAndA1Notation["domTable"]; sA1Notation = oDomTableAndA1Notation["sA1Notation"];  
     var domTableAVO = Array.from(domTable.$$$("tr")).map(oEl => Array.from(oEl.$$$("th,td")) );
-    // sA1Notation = domReplaceAsterisksInA1Notation(domTable, sA1Notation);
+    // sA1Notation = GSDS_domReplaceAsterisksInA1Notation(domTable, sA1Notation);
     // aVirtualRange = getGoogleSheetRangeValuesOriented(sRange);
     // aVirtualRange = GSDS_disjointedRangeToAVO(sA1Notation);
 
@@ -240,7 +240,7 @@ GSDS_setOSR = function(domTable) { // accept domTable only?  never selector stri
     return domTable.oSmartRange;
 }
 GSDS_getTDRANGE = function(domTable, sA1Notation) {
-    var oDomTableAndA1Notation=distinguishDomTableAndA1Notation(domTable, sA1Notation); domTable = oDomTableAndA1Notation["domTable"]; sA1Notation = oDomTableAndA1Notation["sA1Notation"];
+    var oDomTableAndA1Notation=GSDS_distinguishDomTableAndA1Notation(domTable, sA1Notation); domTable = oDomTableAndA1Notation["domTable"]; sA1Notation = oDomTableAndA1Notation["sA1Notation"];
     // sA1Notation = "table!*1:*";
     // sA1Notation = "table!A*:*";
     // sA1Notation = "table!B5";
@@ -442,6 +442,12 @@ domGetTDTextOrValue = function(domTD) {
 domGetTDTextOrValueParseInt = function(domTD) {
     iReturn = parseInt(domGetTDTextOrValue(domTD));                              
     return ((isNaN(iReturn)) ? 0 : iReturn);
+}
+domSetTDTextOrValue = function(domTD, sString) {
+    if (domTD.$$$("input")[0]) { domTD.$$$("input")[0].value = sString; }
+    else if (domTD.$$$("textarea")[0]) { domTD.$$$("textarea")[0].innerText = sString }
+    else if (domTD.$$$("select")[0]) {}
+    else {domTD.innerText = sString} 
 }
     // END NEW googlesheets.scripts.js
 
