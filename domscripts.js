@@ -294,24 +294,19 @@ GSDS_inputifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes
         //}
     })
 }
-// oGlobal = {};
-// oDomTable = {};
 GSDS_eval = function(oThis, sCellContents) {
-    //console.log(sCellContents);
     sCellContents = sCellContents.replace(/^\=/g, "").trim();
     var domTable = oThis.closest("table");
     if (domTable.oSmartRange==undefined) {
         GSDS_setOSR(domTable);
     }
     if (sCellContents.match(/COLUMN/g)) {
-        sA1Notation = GSDS_domTDToA1Notation(oThis);
-        console.log(sA1Notation);
+        sA1Notation = GSDS_domTDToA1Notation(oThis.closest("td"));
         sColumn = cellToColumn(sA1Notation);
-        console.log(sColumn);
         sCellContents = sCellContents.replace(/COLUMN/g, sColumn)
     }
     if (sCellContents.match(/ROW/g)) {
-        sA1Notation = GSDS_domTDToA1Notation(oThis);
+        sA1Notation = GSDS_domTDToA1Notation(oThis.closest("td"));
         sRow = cellToRow(sA1Notation);
         sCellContents = sCellContents.replace(/ROW/g, sRow)
     }
@@ -432,9 +427,7 @@ GSDS_evalifyTDRANGE = function(domTable, sA1Notation) {
         }
     });
 }
-// domGlobal;
 domGetTDTextOrValue = function(domTD) {
-    // domGlobal = domTD;
     if (domTD.$$$("input,textarea,select")[0]?.value) {
         return domTD.$$$("input,textarea,select")[0].value;
     } else if (domTD.$$$("input,textarea,select")[0]?.innerText) {
