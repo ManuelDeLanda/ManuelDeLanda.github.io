@@ -304,11 +304,13 @@ GSDS_eval = function(oThis, sCellContents) {
         GSDS_setOSR(domTable);
     }
     if (sCellContents.match(/COLUMN/g)) {
-        sColumn = "B";
+        sA1Notation = GSDS_domTDToA1Notation(oThis);
+        sColumn = cellToColumn(sA1Notation);
         sCellContents = sCellContents.replace(/COLUMN/g, sColumn)
     }
     if (sCellContents.match(/ROW/g)) {
-        sRow = "1";
+        sA1Notation = GSDS_domTDToA1Notation(oThis);
+        sRow = cellToColumn(sA1Notation);
         sCellContents = sCellContents.replace(/ROW/g, sRow)
     }
 
@@ -357,6 +359,21 @@ GSDS_eval = function(oThis, sCellContents) {
         // alert(e);
         return e;
     }
+}
+GSDS_domTDToA1Notation = function(domTD) {
+    domTable = domTD.closest("table");
+    if (!(domTable.oSmartRange)) {
+        GSDS_setOSR(domTable);
+    }
+    return domTable.oSmartRange.allcells_valuesoriented.flat().reduce(function(oAg, oEl) {
+        if (oAg == undefined) {
+            // console.log(oEl);
+            if (domTable.oSmartRange[oEl].tdcell == domTD) {
+                oAg = oEl;
+            }
+        }
+        return oAg;
+    }, undefined)
 }
 GSDS_evalifyCell = function(sCellA1Notation, sFormula) {
     // GSDS_evalifyCell("table!E6", "=A1:B2") // refactor this to accept dom and sCellA1Notation?
