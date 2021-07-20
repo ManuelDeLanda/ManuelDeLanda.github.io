@@ -2,7 +2,6 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
   /* BEGIN - THESE FUNCTIONS SHOULD NEVER BE ADDED TO datascripts.js? */
   // REFACTORING NOTES:
   // cellToColumn("C10") vs columnToLetter(convertCellToArray("C10")[0])?
-  // i think i need to parseInt in letterToColumn
 
   var $$$ = document.querySelectorAll.bind(document);
   HTMLElement.prototype.$$$ = function (element) { return this.querySelectorAll(element); }; 
@@ -346,7 +345,8 @@ GSDS_eval = function(oThis, sCellContents) {
             // return JSON.stringify(GSDS_disjointedRangeToAVO(sCellContents))
 
         } else if (sCellContents.match(/([A-Z]+[0-9]+)/g)) { // "D1+20", "D1*+E1*12", "SUM(D1:D2)"
-            sCellContents = sCellContents.replace(/([A-Z]+[0-9]+)/g, "GSDS_CELL_valueParseInt(domTable, '$1')") 
+            sCellContents = sCellContents.replace(/([A-Z]+[0-9]+)/g, "GSDS_CELL_valueParseInt(domTable, '$1')")
+            console.log("var sCellContents = " + sCellContents);
             return eval(sCellContents);
         } else if (false) {
         } else {
