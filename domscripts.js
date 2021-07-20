@@ -144,6 +144,8 @@ GSDS_RANGE1D = function(domTable, sA1Notation) { return GSDS_disjointedRangeToAV
 GSDS_RANGE2D = function(domTable, sA1Notation) { return GSDS_disjointedRangeToAVOdomTDs(domTable, sA1Notation); }
 
 GSDS_CELL_value = function (domTable, sA1Notation) { return domGetTDTextOrValue(GSDS_CELL(domTable, sA1Notation)); }
+GSDS_CELL_valueParseInt = function (domTable, sA1Notation) { return domGetTDTextOrValueParseInt(GSDS_CELL(domTable, sA1Notation)); }
+
 GSDS_RANGE1D_values = function (domTable, sA1Notation) { return GSDS_RANGE1D(domTable, sA1Notation).map(function(oEl) { return domGetTDTextOrValue(oEl) }); }
 GSDS_RANGE2D_values = function (domTable, sA1Notation) { return GSDS_RANGE2D(domTable, sA1Notation).map(function(oEl) { return oEl.map(function(oEl2) { return domGetTDTextOrValue(oEl2) }) }) }
 
@@ -336,7 +338,7 @@ GSDS_eval = function(oThis, sCellContents) {
             // return JSON.stringify(GSDS_disjointedRangeToAVO(sCellContents))
 
         } else if (sCellContents.match(/([A-Z]+[0-9]+)/g)) { // "D1+20", "D1*+E1*12", "SUM(D1:D2)"
-            sCellContents = sCellContents.replace(/([A-Z]+[0-9]+)/g, "GSDS_CELL_value(domTable, '$1')") 
+            sCellContents = sCellContents.replace(/([A-Z]+[0-9]+)/g, "GSDS_CELL_valueParseInt(domTable, '$1')") 
             return eval(sCellContents);
         } else if (false) {
         } else {
@@ -415,7 +417,12 @@ domGetTDTextOrValue = function(domTD) {
     } else if (domTD.innerText) { 
         return domTD.innerText;
     } else { return ""; }
-}    // END NEW googlesheets.scripts.js
+}
+domGetTDTextOrValueParseInt = function(domTD) {
+    return parseInt(domGetTDTextOrValue(domTD));
+}
+
+    // END NEW googlesheets.scripts.js
 
                                     
     // random vanilla DOM manipulation scripts
