@@ -304,6 +304,7 @@ GSDS_eval = function(oThis, sCellContents) {
     }
 
     try {
+        // sCellContents = sCellContents.replace(/([A-Z]+[0-9]+)/g, "GSDS_CELL_value('$1')");
         // sCellContents = "D1";
         if (sCellContents.match(/^[A-Z]+[0-9]+$/)) { // vanilla one cell
             domTD = domTable.oSmartRange[sCellContents].tdcell;
@@ -334,8 +335,10 @@ GSDS_eval = function(oThis, sCellContents) {
             // console.log(sCellContents);
             // return JSON.stringify(GSDS_disjointedRangeToAVO(sCellContents))
 
-        } else if (false) { // "D1+20", "D1*+E1*12", "SUM(D1:D2)"
-     
+        } else if (sCellContents.match(/([A-Z]+[0-9]+)/g)) { // "D1+20", "D1*+E1*12", "SUM(D1:D2)"
+            sCellContents = sCellContents.replace(/([A-Z]+[0-9]+)/g, "GSDS_CELL_value('$1')") 
+            return eval(sCellContents);
+        } else if (false) {
         } else {
             return eval(sCellContents);
         }
@@ -369,15 +372,19 @@ GSDS_evalifyTDRANGE = function(domTable, sA1Notation) {
             // Array.from($$$(sSelector)).forEach(function(domInput) {
             domInput.onblur = function(e) {
                 oThis = e.target;
+                                    
                 if (oThis.value.match(/^\=/)) {
-                    oThis.dataset.gseval = superencode(oThis.value);
+                    sGSEVAL = oThis.value;
+                    oThis.closest("td").dataset.gseval = superencode(sGSEVAL);
+                    oThis.dataset.gseval = superencode(sGSEVAL); // CONSIDER REMOVING INPUTS' dataset.gseval in favor of TD's  
                     oThis.value = GSDS_eval(oThis, oThis.value);
                     oThis.style.backgroundColor="lightblue";
                 } else {
+                    oThis.closest("td").dataset.gseval = "";
                     oThis.dataset.gseval = "";
                     oThis.style.backgroundColor="white";
                 }
-                // maybe get rid of this below?
+                // maybe get rid of this below? it re-evaluates whole table in order to achieve the ability for all cells to remain live evaluations.
                 domTable = oThis.closest("table");
                 GSDS_evalifyTDRANGE(domTable, "A1:*");
                 // console.log(e.target)
