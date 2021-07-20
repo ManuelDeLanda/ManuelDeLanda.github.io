@@ -427,9 +427,9 @@ domGetTDTextOrValue = function(domTD) {
     } else { return ""; }
 }
 domGetTDTextOrValueParseInt = function(domTD) {
-    return parseInt(domGetTDTextOrValue(domTD));
+    iReturn = parseInt(domGetTDTextOrValue(domTD));                              
+    return ((isNaN(iReturn)) ? 0 : iReturn);
 }
-
     // END NEW googlesheets.scripts.js
 
                                     
