@@ -259,8 +259,8 @@ GSDS_inputifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes
   // console.log(sElementType);
   GSDS_getTDRANGE(domTable, sA1Notation).flat().forEach(function(domTD, iDomTD) {
         //if (domTD.querySelectorAll("input, select, textarea") == undefined) {
-            if (iDomTD == 0) { domTD.closest("table").style.borderCollapse = "collapse"; } // domTable isn't a real domTable sometimes it's a string.  gets rid of spaces between cells 
-            domTD.style = "padding: 0 0 0 0 !important";
+            if (iDomTD == 0) { domTD.closest("table").style.borderCollapse = "collapse"; domTD.closest("table").style.tableLayout = "fixed"; } // domTable isn't a real domTable sometimes it's a string.  gets rid of spaces between cells 
+            domTD.style = "padding: 0 0 0 0 !important; !important; margin: 0 0 0 0 !important;";
             var sValue = superhtmlEntities(domGetTDTextOrValue(domTD))
             domTD.innerHTML = ""; // have to do this since removing all children nodes doesn't remove innerText!
             // oElement.innerHTML = "<input style='width:100%; height:100%; padding: 0 0 0 0 !important; margin: 0 0 0 0 !important;' value='" + superhtmlEntities(oElement.innerHTML) + "'></input>";
@@ -271,8 +271,9 @@ GSDS_inputifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes
             domTD.appendChild(domElement);
             // domTD.width = "50px !important"; domTD.height = "20px !important";
             domTD.style.width = "50px"; domTD.style.height = "20px";
-            // domElement.width = "50px !important"; domElement.height = "20px !important";
             domElement.style.width = "50px"; domElement.style.height = "20px";
+            domElement.style = "padding: 0 0 0 0 !important; !important; margin: 0 0 0 0 !important;";
+            // domElement.width = "50px !important"; domElement.height = "20px !important";
             // domTD.innerHTML = "<" + sElementType + " " + sAttributes + " ></"+sElementType+">";
             domDebuggingElement = domTD; domDebuggingElement2 = domElement;
             if (domTD.$$$("input")[0]) {
