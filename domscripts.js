@@ -300,7 +300,8 @@ GSDS_eval = function(oThis, sCellContents) {
     if (domTable.oSmartRange==undefined) {
         GSDS_setOSR(domTable);
     }
-    if (sCellContents.match(/\{COLUMN\}|\{COL\}/g)) {
+    sCellContents = sCellContents.replace(/\{COLUMN/, "{COL")
+    if (sCellContents.match(/\{COL\}/g)) {
         sA1Notation = GSDS_domTDToA1Notation(oThis.closest("td"));
         sColumn = cellToColumn(sA1Notation);
 
