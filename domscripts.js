@@ -303,7 +303,13 @@ GSDS_eval = function(oThis, sCellContents) {
     if (sCellContents.match(/\{COLUMN\}|\{COL\}/g)) {
         sA1Notation = GSDS_domTDToA1Notation(oThis.closest("td"));
         sColumn = cellToColumn(sA1Notation);
-        sCellContents = sCellContents.replace(/\{COLUMN\}/g, sColumn).replace(/\{COL\}/g, sColumn);
+
+        //  REFACTOR IN COL+1 COL-1 SORT OF LOGIC HERE?
+        if (sCellContents.match(/(\-|\+|)[0-9]}/g)) {
+            sOperation = sCellContents.match(/\+[0-9]+\}/g)[0].replace(/\}/, "");
+            sColumn = columnToLetter(eval(letterToColumn(sColumn).toString()+sOperation))
+        }        
+        sCellContents = sCellContents.replace(/\{COL(\-|\+|)[0-9]*\}/, sColumn);
     }
     
     if (sCellContents.match(/\{ROW\}/g)) {
