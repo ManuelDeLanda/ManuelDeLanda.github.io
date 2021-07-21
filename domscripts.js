@@ -301,7 +301,7 @@ GSDS_eval = function(oThis, sCellContents) {
         GSDS_setOSR(domTable);
     }
     sCellContents = sCellContents.replace(/\{COLUMN/, "{COL")
-    if (sCellContents.match(/\{COL\}/g)) {
+    if (sCellContents.match(/\{COL(\-|\+|)[0-9]*\}/g)) {
         sA1Notation = GSDS_domTDToA1Notation(oThis.closest("td"));
         sColumn = cellToColumn(sA1Notation);
 
