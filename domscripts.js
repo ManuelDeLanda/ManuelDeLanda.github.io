@@ -300,10 +300,10 @@ GSDS_eval = function(oThis, sCellContents) {
     if (domTable.oSmartRange==undefined) {
         GSDS_setOSR(domTable);
     }
-    if (sCellContents.match(/\{COLUMN\}/g)) {
+    if (sCellContents.match(/\{COLUMN\}|\{COL\}/g)) {
         sA1Notation = GSDS_domTDToA1Notation(oThis.closest("td"));
         sColumn = cellToColumn(sA1Notation);
-        sCellContents = sCellContents.replace(/\{COLUMN\}/g, sColumn)
+        sCellContents = sCellContents.replace(/\{COLUMN\}/g, sColumn).replace(/\{COL\}/g, sColumn);
     }
     
     if (sCellContents.match(/\{ROW\}/g)) {
@@ -450,7 +450,7 @@ domSetTDTextOrValue = function(domTD, sString) {
     else if (domTD.$$$("select")[0]) {}
     else {domTD.innerText = sString} 
 }
-    // END NEW googlesheets.scripts.js
+// END NEW googlesheets.scripts.js
 
                                     
     // random vanilla DOM manipulation scripts
