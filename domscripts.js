@@ -313,10 +313,14 @@ GSDS_eval = function(oThis, sCellContents) {
         sCellContents = sCellContents.replace(/\{COL(\-|\+|)[0-9]*\}/, sColumn);
     }
     
-    if (sCellContents.match(/\{ROW\}/g)) {
+    if (sCellContents.match(/\{ROW(\-|\+|)[0-9]*\}/g)) {
         sA1Notation = GSDS_domTDToA1Notation(oThis.closest("td"));
         sRow = cellToRow(sA1Notation);
-        sCellContents = sCellContents.replace(/\{ROW\}/g, sRow)
+        if (sCellContents.match(/(\-|\+|)[0-9]}/g)) {
+            sOperation = sCellContents.match(/\+[0-9]+\}/g)[0].replace(/\}/, "");
+            sRow = eval(sRow.toString()+sOperation)
+        }    
+        sCellContents = sCellContents.replace(/\{ROW(\-|\+|)[0-9]*\}/g, sRow)
     }
 
     try {
