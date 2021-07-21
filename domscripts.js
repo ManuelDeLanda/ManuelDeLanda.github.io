@@ -403,8 +403,10 @@ GSDS_evalifyTDRANGE = function(domTable, sA1Notation) {
         if (domInput) {
             if (domInput.dataset.gseval) {
                domInput.value = GSDS_eval(domInput, decodeURIComponent(domInput.dataset.gseval));
-               domInput.style.backgroundColor="honeydew";
-            } else { domInput.style.backgroundColor="azure"; }
+               // domInput.style.backgroundColor="honeydew";
+            } else {
+               // domInput.style.backgroundColor="azure";
+            }
             // var domInput = $$$(sSelector)[0];
             // Array.from($$$(sSelector)).forEach(function(domInput) {
             domInput.onblur = function(e) {
