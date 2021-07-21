@@ -310,7 +310,7 @@ GSDS_eval = function(oThis, sCellContents) {
             sOperation = sCellContents.match(/COL(\-|\+)[0-9]+\}/g)[0].replace(/COL/, "").replace(/\}/, "");
             sColumn = columnToLetter(eval(letterToColumn(sColumn).toString()+sOperation))
         }        
-        sCellContents = sCellContents.replace(/\{COL(\-|\+|)[0-9]*\}/, sColumn);
+        sCellContents = sCellContents.replace(/\{COL(\-|\+|)[0-9]*\}/g, sColumn);
     }
     
     if (sCellContents.match(/\{ROW(\-|\+|)[0-9]*\}/g)) {
@@ -415,11 +415,14 @@ GSDS_evalifyTDRANGE = function(domTable, sA1Notation) {
                     oThis.closest("td").dataset.gseval = superencode(sGSEVAL);
                     oThis.dataset.gseval = superencode(sGSEVAL); // CONSIDER REMOVING INPUTS' dataset.gseval in favor of TD's  
                     oThis.value = GSDS_eval(oThis, oThis.value);
-                    oThis.style.backgroundColor="honeydew";
+                    // oThis.style.backgroundColor="honeydew";
+                } else if (oThis.closest("td").dataset.gseval) {
+                    oThis.value = GSDS_eval(oThis, oThis.value);
+                    // oThis.style.backgroundColor="honeydew";
                 } else {
                     oThis.closest("td").dataset.gseval = "";
                     oThis.dataset.gseval = "";
-                    oThis.style.backgroundColor="azure";
+                    // oThis.style.backgroundColor="azure";
                 }
                 // maybe get rid of this below? it re-evaluates whole table in order to achieve the ability for all cells to remain live evaluations.
                 domTable = oThis.closest("table");
