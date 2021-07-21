@@ -306,8 +306,8 @@ GSDS_eval = function(oThis, sCellContents) {
         sColumn = cellToColumn(sA1Notation);
 
         //  REFACTOR IN COL+1 COL-1 SORT OF LOGIC HERE?
-        if (sCellContents.match(/(\-|\+|)[0-9]}/g)) {
-            sOperation = sCellContents.match(/\+[0-9]+\}/g)[0].replace(/\}/, "");
+        if (sCellContents.match(/COL(\-|\+)[0-9]+}/g)) {
+            sOperation = sCellContents.match(/COL(\-|\+)[0-9]+\}/g)[0].replace(/COL/, "").replace(/\}/, "");
             sColumn = columnToLetter(eval(letterToColumn(sColumn).toString()+sOperation))
         }        
         sCellContents = sCellContents.replace(/\{COL(\-|\+|)[0-9]*\}/, sColumn);
@@ -316,8 +316,8 @@ GSDS_eval = function(oThis, sCellContents) {
     if (sCellContents.match(/\{ROW(\-|\+|)[0-9]*\}/g)) {
         sA1Notation = GSDS_domTDToA1Notation(oThis.closest("td"));
         sRow = cellToRow(sA1Notation);
-        if (sCellContents.match(/(\-|\+|)[0-9]}/g)) {
-            sOperation = sCellContents.match(/\+[0-9]+\}/g)[0].replace(/\}/, "");
+        if (sCellContents.match(/ROW(\-|\+)[0-9]+}/g)) {
+            sOperation = sCellContents.match(/ROW(\-|\+)[0-9]+\}/g)[0].replace(/ROW/, "").replace(/\}/, "");
             sRow = eval(sRow.toString()+sOperation)
         }    
         sCellContents = sCellContents.replace(/\{ROW(\-|\+|)[0-9]*\}/g, sRow)
