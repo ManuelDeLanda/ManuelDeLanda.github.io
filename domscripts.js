@@ -325,9 +325,9 @@ GSDS_inputifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes
                     //oSmartRange[sBelowA1Notation].gscell.select();
                     //console.log(oSmartRange);
 
-                    oSmartRange[sNextA1Notation].tdcell.$$$("input,select,textarea")[0].select()
-                    oSmartRange[sNextA1Notation].tdcell.$$$("input,select,textarea")[0].focus()
-                    oSmartRange[sNextA1Notation].tdcell.$$$("input,select,textarea")[0].scrollIntoView()
+                    oSmartRange[sNextA1Notation].tdcell.$$$("input,select,textarea")[0].select();
+                    oSmartRange[sNextA1Notation].tdcell.$$$("input,select,textarea")[0].focus();
+                    oSmartRange[sNextA1Notation].tdcell.$$$("input,select,textarea")[0].scrollIntoViewIfNeeded();
 
 
                     //sCurrentColumn = this.parentNode.classList.value.match(/column[A-Z]+/g)[0]
