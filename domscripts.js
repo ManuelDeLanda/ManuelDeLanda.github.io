@@ -299,15 +299,33 @@ GSDS_inputifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes
                     // console.log(oGlobalXXX);
                     oSmartRange = domWhatever.closest("table").oSmartRange;
                     sA1Notation = GSDS_domTDToA1Notation(domWhatever.closest("td"));
-                    console.log(sA1Notation)
-                    
-                    sBelowA1Notation = cellToColumn(sA1Notation) + (parseInt(cellToRow(sA1Notation))+1);
-                    console.log("A1 = " + sA1Notation + "; Below " + sBelowA1Notation); 
-                    // oSmartRange[sBelowA1Notation].gscell.select();
-                    console.log(oSmartRange);
+                    iLastRow = parseInt(cellToRow(oSmartRange.range.split(":")[0]));
+                    sLastColumn = parseInt(cellToColumn(oSmartRange.range.split(":")[0]));
+                    sLastCell = oSmartRange.range.split(":");
+                    // console.log(sA1Notation)
+                    if(!!e.shiftKey) {
+                        if ((parseInt(cellToRow(sA1Notation))-1) == 1) {
+                            sNextA1Notation = columnToLetter(letterToColumn(cellToColumn(sA1Notation))-1) + (parseInt(cellToRow(sA1Notation))-1);
+                        } else {
+                            sNextA1Notation = cellToColumn(sA1Notation) + (parseInt(cellToRow(sA1Notation))-1);
+                        }
+                        
+                    } else {
+                        if (sA1Notation == sLastCell) {
+                            sNextA1Notation = "A1"
+                        } else if (parseInt(cellToRow(sA1Notation)) == iLastRow) {
+                            sNextA1Notation = columnToLetter(parseInt(cellToColumn(sA1Notation)))+1 + "1";
+                        } else {
+                            sNextA1Notation = cellToColumn(sA1Notation) + (parseInt(cellToRow(sA1Notation))+1);
+                        }
 
-                    oSmartRange[sBelowA1Notation].tdcell.$$$("input,select,textarea")[0].select()
-                    oSmartRange[sBelowA1Notation].tdcell.$$$("input,select,textarea")[0].focus()
+                    }
+                    //console.log("A1 = " + sA1Notation + "; Below " + sNextA1Notation); 
+                    // oSmartRange[sBelowA1Notation].gscell.select();
+                    //console.log(oSmartRange);
+
+                    oSmartRange[sNextA1Notation].tdcell.$$$("input,select,textarea")[0].select()
+                    oSmartRange[sNextA1Notation].tdcell.$$$("input,select,textarea")[0].focus()
 
 
                     //sCurrentColumn = this.parentNode.classList.value.match(/column[A-Z]+/g)[0]
