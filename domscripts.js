@@ -148,9 +148,9 @@ GSDS_CELL_valueParseInt = function (domTable, sA1Notation) { return domGetTDText
 GSDS_RANGE1D_values = function (domTable, sA1Notation) { return GSDS_RANGE1D(domTable, sA1Notation).map(function(oEl) { return domGetTDTextOrValue(oEl) }); }
 GSDS_RANGE2D_values = function (domTable, sA1Notation) { return GSDS_RANGE2D(domTable, sA1Notation).map(function(oEl) { return oEl.map(function(oEl2) { return domGetTDTextOrValue(oEl2) }) }) }
 
-GSDS_GSDSifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes, fOptionsFunction) {
+GSDS_GSDSifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes, fOptionsFunction, sFormula) {
     GSDS_inputifyTDRANGE(domTable, sA1Notation, sElementType, sAttributes, fOptionsFunction);
-    GSDS_evalifyTDRANGE(domTable, sA1Notation);
+    GSDS_evalifyTDRANGE(domTable, sA1Notation, sFormula);
 }
 GSDS_disjointedRangeToAVOdomTDs = function(domTable, sA1Notation) { // this function IS FOR DOM-ONLY.
   var oDomTableAndA1Notation=GSDS_distinguishDomTableAndA1Notation(domTable, sA1Notation); domTable = oDomTableAndA1Notation["domTable"]; sA1Notation = oDomTableAndA1Notation["sA1Notation"];
@@ -384,23 +384,27 @@ GSDS_domTDToA1Notation = function(domTD) {
         return oAg;
     }, undefined)
 }
-GSDS_evalifyCell = function(sCellA1Notation, sFormula) {
+GSDS_evalifyCell = function(domTable, sCellA1Notation, sFormula) {
     // GSDS_evalifyCell("table!E6", "=A1:B2") // refactor this to accept dom and sCellA1Notation?
     // sFormula = "=A1:A2";
     // sCellA1Notation = "table!D6";
-    if (sFormula) { } else { sFormula = decodeURIComponent(domInput.dataset.gseval); }
-    domTD = GSDS_getTDRANGE(sCellA1Notation)[0][0];
-    domInput = domTD.$$$("input,select,textarea")[0];
-    domInput.dataset.gseval = superencode(sFormula);
-    GSDS_evalifyTDRANGE(sCellA1Notation);
+    // if (sFormula) { } else { sFormula = decodeURIComponent(domInput.dataset.gseval); }
+    // domTD = GSDS_getTDRANGE(domTable, sCellA1Notation)[0][0];
+    // domInput = domTD.$$$("input,select,textarea")[0];
+    // domInput.dataset.gseval = superencode(sFormula);
+    GSDS_evalifyTDRANGE(domTable, sCellA1Notation, sFormula);
 }
 
 //var oThis;
 //var domTD;
-GSDS_evalifyTDRANGE = function(domTable, sA1Notation) {
+GSDS_evalifyTDRANGE = function(domTable, sA1Notation, sFormula) {
     GSDS_getTDRANGE(domTable, sA1Notation).flat().forEach(function(domTD) {
         var domInput = domTD.$$$("input,select,textarea")[0];
         if (domInput) {
+            if (sFormula) {
+                domInput.dataset.gseval = superencode(sFormula);
+                domInput.closest("td").dataset.gseval = superencode(sFormula);
+            }
             if (domInput.dataset.gseval) {
                domInput.value = GSDS_eval(domInput, decodeURIComponent(domInput.dataset.gseval));
                // domInput.style.backgroundColor="honeydew";
@@ -418,8 +422,8 @@ GSDS_evalifyTDRANGE = function(domTable, sA1Notation) {
                     oThis.dataset.gseval = superencode(sGSEVAL); // CONSIDER REMOVING INPUTS' dataset.gseval in favor of TD's  
                     oThis.value = GSDS_eval(oThis, oThis.value);
                     // oThis.style.backgroundColor="honeydew";
-                } else if (oThis.closest("td").dataset.gseval) {
-                    oThis.value = GSDS_eval(oThis, oThis.value);
+                //} else if (oThis.closest("td").dataset.gseval) {
+                //    oThis.value = GSDS_eval(oThis, oThis.value);
                     // oThis.style.backgroundColor="honeydew";
                 } else {
                     oThis.closest("td").dataset.gseval = "";
