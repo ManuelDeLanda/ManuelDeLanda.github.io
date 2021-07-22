@@ -299,10 +299,10 @@ GSDS_inputifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes
                     // console.log(oGlobalXXX);
                     oSmartRange = domWhatever.closest("table").oSmartRange;
                     sA1Notation = GSDS_domTDToA1Notation(domWhatever.closest("td"));
-                    iLastRow = parseInt(cellToRow(oSmartRange.range.split(":")[0]));
-                    sLastColumn = parseInt(cellToColumn(oSmartRange.range.split(":")[0]));
-                    sLastCell = oSmartRange.range.split(":");
-                    // console.log(sA1Notation)
+                    sLastCell = oSmartRange.range.split(":")[1];
+                    sLastColumn = cellToColumn(sLastCell);
+                    iLastRow = parseInt(cellToRow(sLastCell));
+                    console.log("iLastRow =" + iLastRow + "; sLastColumn=" + sLastColumn + "; sLastCell=" + sLastCell)
                     if(!!e.shiftKey) {
                         if ((parseInt(cellToRow(sA1Notation))-1) == 1) {
                             sNextA1Notation = columnToLetter(letterToColumn(cellToColumn(sA1Notation))-1) + (parseInt(cellToRow(sA1Notation))-1);
@@ -320,8 +320,8 @@ GSDS_inputifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes
                         }
 
                     }
-                    //console.log("A1 = " + sA1Notation + "; Below " + sNextA1Notation); 
-                    // oSmartRange[sBelowA1Notation].gscell.select();
+                    console.log("sA1Notation = " + sA1Notation + "; sNextA1Notation " + sNextA1Notation); 
+                    //oSmartRange[sBelowA1Notation].gscell.select();
                     //console.log(oSmartRange);
 
                     oSmartRange[sNextA1Notation].tdcell.$$$("input,select,textarea")[0].select()
