@@ -301,13 +301,15 @@ GSDS_inputifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes
                     sA1Notation = GSDS_domTDToA1Notation(domWhatever.closest("td"));
                     console.log(sA1Notation)
                     
-                    sBelowA1Notation = cellToColumn(sA1Notation) + (cellToRow(sA1Notation)+1);
+                    sBelowA1Notation = cellToColumn(sA1Notation) + (parseInt(cellToRow(sA1Notation))+1);
+                    console.log("A1 = " + sA1Notation + "; Below " + sBelowA1Notation); 
                     // oSmartRange[sBelowA1Notation].gscell.select();
                     console.log(oSmartRange);
 
                     oSmartRange[sBelowA1Notation].tdcell.$$$("input,select,textarea")[0].select()
+                    oSmartRange[sBelowA1Notation].tdcell.$$$("input,select,textarea")[0].focus()
 
-                    console.log(oSmartRange[sBelowA1Notation]);
+
                     //sCurrentColumn = this.parentNode.classList.value.match(/column[A-Z]+/g)[0]
                     //sNextColumn = "column" + columnToLetter(letterToColumn(sCurrentColumn.replace(/column/g, "")) + 1)
                     //aArrayOfTDs = Array.prototype.slice.call(document.querySelectorAll(".gsws td." + sCurrentColumn)).concat( Array.prototype.slice.call( document.querySelectorAll(".gsws td." + sNextColumn) ) );
