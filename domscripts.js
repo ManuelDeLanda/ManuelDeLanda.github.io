@@ -304,8 +304,10 @@ GSDS_inputifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes
                     iLastRow = parseInt(cellToRow(sLastCell));
                     console.log("iLastRow =" + iLastRow + "; sLastColumn=" + sLastColumn + "; sLastCell=" + sLastCell)
                     if(!!e.shiftKey) {
-                        if ((parseInt(cellToRow(sA1Notation))-1) == 1) {
-                            sNextA1Notation = columnToLetter(letterToColumn(cellToColumn(sA1Notation))-1) + (parseInt(cellToRow(sA1Notation))-1);
+                        if (sA1Notation == "A1") {
+                            sNextA1Notation = sLastCell;
+                        } else if ((parseInt(cellToRow(sA1Notation))) == 1) {
+                            sNextA1Notation = columnToLetter(letterToColumn(cellToColumn(sA1Notation))-1) + iLastRow;
                         } else {
                             sNextA1Notation = cellToColumn(sA1Notation) + (parseInt(cellToRow(sA1Notation))-1);
                         }
