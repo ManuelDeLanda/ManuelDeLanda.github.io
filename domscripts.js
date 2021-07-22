@@ -302,7 +302,7 @@ GSDS_inputifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes
                     sLastCell = oSmartRange.range.split(":")[1];
                     sLastColumn = cellToColumn(sLastCell);
                     iLastRow = parseInt(cellToRow(sLastCell));
-                    console.log("iLastRow =" + iLastRow + "; sLastColumn=" + sLastColumn + "; sLastCell=" + sLastCell)
+                    // console.log("iLastRow =" + iLastRow + "; sLastColumn=" + sLastColumn + "; sLastCell=" + sLastCell)
                     if(!!e.shiftKey) {
                         if (sA1Notation == "A1") {
                             sNextA1Notation = sLastCell;
@@ -311,7 +311,6 @@ GSDS_inputifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes
                         } else {
                             sNextA1Notation = cellToColumn(sA1Notation) + (parseInt(cellToRow(sA1Notation))-1);
                         }
-                        
                     } else {
                         if (sA1Notation == sLastCell) {
                             sNextA1Notation = "A1"
@@ -322,12 +321,13 @@ GSDS_inputifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes
                         }
 
                     }
-                    console.log("sA1Notation = " + sA1Notation + "; sNextA1Notation " + sNextA1Notation); 
+                    // console.log("sA1Notation = " + sA1Notation + "; sNextA1Notation " + sNextA1Notation); 
                     //oSmartRange[sBelowA1Notation].gscell.select();
                     //console.log(oSmartRange);
 
                     oSmartRange[sNextA1Notation].tdcell.$$$("input,select,textarea")[0].select()
                     oSmartRange[sNextA1Notation].tdcell.$$$("input,select,textarea")[0].focus()
+                    oSmartRange[sNextA1Notation].tdcell.$$$("input,select,textarea")[0].scrollIntoView()
 
 
                     //sCurrentColumn = this.parentNode.classList.value.match(/column[A-Z]+/g)[0]
@@ -403,7 +403,7 @@ GSDS_eval = function(oThis, sCellContents) {
 
         } else if (sCellContents.match(/([A-Z]+[0-9]+)/g)) { // "D1+20", "D1*+E1*12", "SUM(D1:D2)"
             sCellContents = sCellContents.replace(/([A-Z]+[0-9]+)/g, "GSDS_CELL_valueParseInt(domTable, '$1')")
-            console.log("var sCellContents = " + sCellContents);
+            // console.log("var sCellContents = " + sCellContents);
             return eval(sCellContents);
         } else if (false) {
         } else {
