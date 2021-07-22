@@ -255,6 +255,7 @@ GSDS_getTDRANGE = function(domTable, sA1Notation) {
 
 // domDebuggingElement = {};
 // domDebuggingElement2 = {};
+oGlobalXXX = {};
 GSDS_inputifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes, fOptionsFunction) { // REFACTOR THIS - change to removeChild and appendChildHTML instead of hardcoding the html strings!
   if ((sElementType == undefined) || ((sElementType != "textarea") && (sElementType != "select") && (sElementType != "button")) ) { sElementType="input"; }
   // console.log(sElementType);
@@ -291,6 +292,29 @@ GSDS_inputifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes
               domElement.innerHTML = fOptionsFunction().map(function(oEl) { return "<option>" + oEl + "</option>"; }).join();
             }
 
+            $(domElement).on('keypress', function (e) {
+                if (e.which == 13) {
+                    e.preventDefault();
+                    domWhatever = e.target;
+                    // console.log(oGlobalXXX);
+                    oSmartRange = domWhatever.closest("table").oSmartRange;
+                    sA1Notation = GSDS_domTDToA1Notation(domWhatever.closest("td"));
+                    console.log(sA1Notation)
+                    
+                    sBelowA1Notation = cellToColumn(sA1Notation) + (cellToRow(sA1Notation)+1);
+                    // oSmartRange[sBelowA1Notation].gscell.select();
+                    console.log(oSmartRange);
+
+                    oSmartRange[sBelowA1Notation].tdcell.$$$("input,select,textarea")[0].select()
+
+                    console.log(oSmartRange[sBelowA1Notation]);
+                    //sCurrentColumn = this.parentNode.classList.value.match(/column[A-Z]+/g)[0]
+                    //sNextColumn = "column" + columnToLetter(letterToColumn(sCurrentColumn.replace(/column/g, "")) + 1)
+                    //aArrayOfTDs = Array.prototype.slice.call(document.querySelectorAll(".gsws td." + sCurrentColumn)).concat( Array.prototype.slice.call( document.querySelectorAll(".gsws td." + sNextColumn) ) );
+                    //iIndex = Array.prototype.indexOf.call(aArrayOfTDs, this.parentNode);
+                    //aArrayOfTDs[iIndex+1].querySelectorAll("input, select, textarea")[0].focus();
+                }
+            });
         //}
     })
 }
@@ -415,15 +439,18 @@ GSDS_evalifyTDRANGE = function(domTable, sA1Notation, sFormula) {
             // Array.from($$$(sSelector)).forEach(function(domInput) {
             domInput.onblur = function(e) {
                 oThis = e.target;
-                                    
+
                 if (oThis.value.match(/^\=/)) {
                     sGSEVAL = oThis.value;
                     oThis.closest("td").dataset.gseval = superencode(sGSEVAL);
                     oThis.dataset.gseval = superencode(sGSEVAL); // CONSIDER REMOVING INPUTS' dataset.gseval in favor of TD's  
                     oThis.value = GSDS_eval(oThis, oThis.value);
                     // oThis.style.backgroundColor="honeydew";
-                //} else if (oThis.closest("td").dataset.gseval) {
-                //    oThis.value = GSDS_eval(oThis, oThis.value);
+                } else if (oThis.closest("td").dataset.gseval) {
+                    if (oThis.value != GSDS_eval(oThis, oThis.value)) {
+                        oThis.closest("td").dataset.gseval = "";
+                        oThis.dataset.gseval = "";
+                    }
                     // oThis.style.backgroundColor="honeydew";
                 } else {
                     oThis.closest("td").dataset.gseval = "";
