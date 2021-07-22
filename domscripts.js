@@ -315,7 +315,7 @@ GSDS_inputifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes
                         if (sA1Notation == sLastCell) {
                             sNextA1Notation = "A1"
                         } else if (parseInt(cellToRow(sA1Notation)) == iLastRow) {
-                            sNextA1Notation = columnToLetter(parseInt(cellToColumn(sA1Notation)))+1 + "1";
+                            sNextA1Notation = columnToLetter(parseInt(cellToColumn(sA1Notation))+1) + "1";
                         } else {
                             sNextA1Notation = cellToColumn(sA1Notation) + (parseInt(cellToRow(sA1Notation))+1);
                         }
