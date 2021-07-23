@@ -170,6 +170,10 @@ GSDS_disjointedRangeToAVOdomTDs = function(domTable, sA1Notation) { // this func
       
 GSDS_distinguishDomTableAndA1Notation = function(domTable, sA1Notation) {
     // GSDS_distinguishDomTableAndA1Notation($$$('table'), "A1:*") vs GSDS_distinguishDomTableAndA1Notation("table!A1:A*")
+    if (domTable.nodeName == "TD") {
+        sA1Notation = GSDS_domTDToA1Notation(domTable);
+        domTable = domTable.closest("table");
+    }
     if (sA1Notation == undefined) { // && typeof(domTable) != "object") {
         sA1Notation = domTable;
         domTable = undefined;
@@ -197,6 +201,7 @@ GSDS_distinguishDomTableAndA1Notation = function(domTable, sA1Notation) {
     // domTable.oSmartRange.sA1Notation should be used to replace asterisks
     return { "domTable": domTable, "sA1Notation": sA1Notation }
 }
+
 GSDS_domReplaceAsterisksInA1Notation = function(domTable, sA1Notation) {
     var domTableAVO = Array.from(domTable.$$$("tr")).map(oEl => Array.from(oEl.$$$("th,td")) );
     var sLastRow = domTableAVO.length; // do domTable.oSmartRange.width/height instead? of this?
@@ -744,3 +749,5 @@ GSDS_disjointedRangeToAVO("A2;A2:B4;D4,E5:F5;G1:H2,H1-H9,L8,:B2, G8")
 // domGetTDTextOrValue(GSDS_CELL("A1"))
 // GSDS_inputifyTDRANGE("A1:B2", undefined, "input");
 // GSDS_inputifyTDRANGE("A3:B3", undefined, "textarea");
+// GSDS_GSDSifyTDRANGE("A1:*", undefined, "textarea", undefined, undefined, "=89");
+// GSDS_RANGE1D("A1:*").forEach(function(domTD, iIn) { ((iIn%2==0) ? sType = "textarea" : sType = "input"); GSDS_GSDSifyTDRANGE(domTD, undefined, sType); });
