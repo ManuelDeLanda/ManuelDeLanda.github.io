@@ -2,7 +2,7 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
   /* BEGIN - THESE FUNCTIONS SHOULD NEVER BE ADDED TO datascripts.js? */
   // REFACTORING NOTES:
   // cellToColumn("C10") vs columnToLetter(convertCellToArray("C10")[0])?
-
+  function addStyle(e){const t=document.createElement("style");t.textContent=e,document.head.append(t)}
   var $$$ = document.querySelectorAll.bind(document);
   HTMLElement.prototype.$$$ = function (element) { return this.querySelectorAll(element); }; 
   // SubmitSuperNinjaForm,fetch_XMLHttpRequest,oGetAllParameters_CLIENT()
