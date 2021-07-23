@@ -104,10 +104,16 @@ catch(e) { console.log(e); }
 window.addEventListener('DOMContentLoaded', (event) => { 
 
 try { document.body.appendHTML(convertValuesOrientedToHTMLTable(
-    GSDS_disjointedRangeToAVO("A1:P50");
+    GSDS_disjointedRangeToAVO("A1:P50")
 ));
 
-GSDS_GSDSifyTDRANGE("A1:", undefined, "textarea");
+// GSDS_GSDSifyTDRANGE("A1:", undefined, "textarea");
+
+GSDS_RANGE1D("A1:*").forEach(function(domTD, iIn) {
+    ((iIn%2==0) ? sType = "textarea" : sType = "input")
+    GSDS_GSDSifyTDRANGE(domTD, undefined, sType, "background-color: black");
+})
+
 addStyle(`textarea, input { height:30px !important; }`);
 }
 catch(e) { console.log(e); }
