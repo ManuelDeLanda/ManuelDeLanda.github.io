@@ -48,7 +48,7 @@ catch(e) { console.log(e); }
 })
 window.addEventListener('DOMContentLoaded', (event) => { 
 
-try { document.body.$$$("div.GSDS1").appendHTML(convertValuesOrientedToHTMLTable(
+try { document.body.$$$("div.GSDS1")[0].appendHTML(convertValuesOrientedToHTMLTable(
     GSDS_disjointedRangeToAVO("A1:P50")
 ));
 
