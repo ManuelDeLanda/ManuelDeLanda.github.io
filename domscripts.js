@@ -94,7 +94,8 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
     // END animate.css scripts
 
     // BEGIN EXTREMELY USEFUL vanilla dom scripts
-    domRemoveNode = function(domElement) { domElement.parentNode.removeChild(domElement); }
+    domRemoveNode = function(domEl) { domEl.parentNode.removeChild(domEl); }
+    domRemoveChildren = function(domEl) { Array.from(domEl.children).forEach(function(oEl) { domEl.removeChild(oEl); }) }
 
     HTMLElement.prototype.prependHtml = function (element) {
         const div = document.createElement('div');
