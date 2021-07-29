@@ -280,8 +280,8 @@ GSDS_inputifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes
             domTD.appendChild(domElement);        
             // domTD.width = "50px !important"; domTD.height = "20px !important";        
             domTD.style.width = "50px"; domTD.style.height = "20px";
-      
-            var sDefaultStyle = "padding: 0 0 0 0 !important; margin: 0 0 0 0 !important; height:100% !important; width: 100% !important;";
+            // var sDefaultStyle = "padding: 0 0 0 0 !important; margin: 0 0 0 0 !important; height:100% !important; width: 100% !important;";
+            var sDefaultStyle = "padding: 0 0 0 0 !important; margin: 0 0 0 0 !important; height:100%; width: 100%;";
             if (sAttributes == undefined) { sAttributes = sDefaultStyle; }
             if (sAttributes.match(/^\;/)) { sAttributes = sDefaultStyle+=sAttributes; }
             domElement.style = sAttributes;        
