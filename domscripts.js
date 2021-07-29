@@ -264,90 +264,87 @@ GSDS_getTDRANGE = function(domTable, sA1Notation) {
 // domDebuggingElement = {};
 // domDebuggingElement2 = {};
 oGlobalXXX = {};
-GSDS_inputifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes, fOptionsFunction) { // REFACTOR THIS - change to removeChild and appendChildHTML instead of hardcoding the html strings!
-  if ((sElementType == undefined) || ((sElementType != "textarea") && (sElementType != "select") && (sElementType != "button")) ) { sElementType="input"; }
-  // console.log(sElementType);
-  GSDS_getTDRANGE(domTable, sA1Notation).flat().forEach(function(domTD, iDomTD) {
-        //if (domTD.querySelectorAll("input, select, textarea") == undefined) {
-            if (iDomTD == 0) { domTD.closest("table").style.borderCollapse = "collapse"; domTD.closest("table").style.tableLayout = "fixed"; } // domTable isn't a real domTable sometimes it's a string.  gets rid of spaces between cells 
-            domTD.style = "padding: 0 0 0 0 !important; !important; margin: 0 0 0 0 !important;";
-            var sValue = superhtmlEntities(domGetTDTextOrValue(domTD))
-            domTD.innerHTML = ""; // have to do this since removing all children nodes doesn't remove innerText!
-            // oElement.innerHTML = "<input style='width:100%; height:100%; padding: 0 0 0 0 !important; margin: 0 0 0 0 !important;' value='" + superhtmlEntities(oElement.innerHTML) + "'></input>";
-            if (sAttributes == undefined) { sAttributes = " "; }
-            //sAttributes += " onClick=this.select();' style='padding: 0 0 0 0 !important; margin: 0 0 0 0 !important;' "
-            var domElement = document.createElement(sElementType);
-            Array.from(domTD.children).forEach(function(oEl) { domTD.removeChild(oEl) }); // remove ALL children from a node
-            domTD.appendChild(domElement);
-            // domTD.width = "50px !important"; domTD.height = "20px !important";
+GSDS_inputifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes, fOptionsFunction) { // REFACTOR THIS - change to removeChild and appendChildHTML instead of hardcoding the html strings!	
+  if ((sElementType == undefined) || ((sElementType != "textarea") && (sElementType != "select") && (sElementType != "button")) ) { sElementType="input"; }	
+  // console.log(sElementType);	
+  GSDS_getTDRANGE(domTable, sA1Notation).flat().forEach(function(domTD, iDomTD) {	
+        //if (domTD.querySelectorAll("input, select, textarea") == undefined) {	
+            if (iDomTD == 0) { domTD.closest("table").style.borderCollapse = "collapse"; domTD.closest("table").style.tableLayout = "fixed"; } // domTable isn't a real domTable sometimes it's a string.  gets rid of spaces between cells 	
+            domTD.style = "padding: 0 0 0 0 !important; !important; margin: 0 0 0 0 !important;";	
+            var sValue = superhtmlEntities(domGetTDTextOrValue(domTD))	
+            domTD.innerHTML = ""; // have to do this since removing all children nodes doesn't remove innerText!	
+            // oElement.innerHTML = "<input style='width:100%; height:100%; padding: 0 0 0 0 !important; margin: 0 0 0 0 !important;' value='" + superhtmlEntities(oElement.innerHTML) + "'></input>";	
+            //sAttributes += " onClick=this.select();' style='padding: 0 0 0 0 !important; margin: 0 0 0 0 !important;' "	
+            var domElement = document.createElement(sElementType);	
+            Array.from(domTD.children).forEach(function(oEl) { domTD.removeChild(oEl) }); // remove ALL children from a node	
+            domTD.appendChild(domElement);	
+            // domTD.width = "50px !important"; domTD.height = "20px !important";	
             domTD.style.width = "50px"; domTD.style.height = "20px";
-            domElement.style.width = "50px"; domElement.style.height = "20px";
-            domElement.style = "padding: 0 0 0 0 !important; !important; margin: 0 0 0 0 !important;";
-            // domElement.width = "50px !important"; domElement.height = "20px !important";
-            // domTD.innerHTML = "<" + sElementType + " " + sAttributes + " ></"+sElementType+">";
-            domDebuggingElement = domTD; domDebuggingElement2 = domElement;
-            if (domTD.$$$("input")[0]) {
-              domElement.value = sValue;
-              // domElement.onclick=function(this){this.select()}
-              domElement.addEventListener("click", function(){this.select()}); // selects all contents inside cell
-            } else if (domTD.$$$("textarea")[0]) {
-              domElement.innerText = sValue;
-              domElement.style.resize = "none";
-              domElement.addEventListener("click", function(){this.select()}); // selects all contents inside cell
-            } else if (domTD.$$$("select")[0]) {
-              // domSelect = domDebuggingElement("select")[0];
-              if (fOptionsFunction) { } else { fOptionsFunction = function() { return ["","1","2","3"]; } }
-              domElement.innerHTML = fOptionsFunction().map(function(oEl) { return "<option>" + oEl + "</option>"; }).join();
-            }
-
-            $(domElement).on('keypress', function (e) {
-                if (e.which == 13) {
-                    e.preventDefault();
-                    domWhatever = e.target;
-                    // console.log(oGlobalXXX);
-                    oSmartRange = domWhatever.closest("table").oSmartRange;
-                    sA1Notation = GSDS_domTDToA1Notation(domWhatever.closest("td"));
-                    sLastCell = oSmartRange.range.split(":")[1];
-                    sLastColumn = cellToColumn(sLastCell);
-                    iLastRow = parseInt(cellToRow(sLastCell));
-                    // console.log("iLastRow =" + iLastRow + "; sLastColumn=" + sLastColumn + "; sLastCell=" + sLastCell)
-                    if(!!e.shiftKey) {
-                        if (sA1Notation == "A1") {
-                            sNextA1Notation = sLastCell;
-                        } else if ((parseInt(cellToRow(sA1Notation))) == 1) {
-                            sNextA1Notation = columnToLetter(letterToColumn(cellToColumn(sA1Notation))-1) + iLastRow;
-                        } else {
-                            sNextA1Notation = cellToColumn(sA1Notation) + (parseInt(cellToRow(sA1Notation))-1);
-                        }
-                    } else {
-                        if (sA1Notation == sLastCell) {
-                            sNextA1Notation = "A1"
-                        } else if (parseInt(cellToRow(sA1Notation)) == iLastRow) {
-                            sNextA1Notation = columnToLetter(parseInt(letterToColumn(cellToColumn(sA1Notation)))+1) + "1";
-                        } else {
-                            sNextA1Notation = cellToColumn(sA1Notation) + (parseInt(cellToRow(sA1Notation))+1);
-                        }
-
-                    }
-                    // console.log("sA1Notation = " + sA1Notation + "; sNextA1Notation " + sNextA1Notation); 
-                    //oSmartRange[sBelowA1Notation].gscell.select();
-                    //console.log(oSmartRange);
-
-                    oSmartRange[sNextA1Notation].tdcell.$$$("input,select,textarea")[0].select();
-                    oSmartRange[sNextA1Notation].tdcell.$$$("input,select,textarea")[0].focus();
-                    oSmartRange[sNextA1Notation].tdcell.$$$("input,select,textarea")[0].scrollIntoViewIfNeeded();
-
-
-                    //sCurrentColumn = this.parentNode.classList.value.match(/column[A-Z]+/g)[0]
-                    //sNextColumn = "column" + columnToLetter(letterToColumn(sCurrentColumn.replace(/column/g, "")) + 1)
-                    //aArrayOfTDs = Array.prototype.slice.call(document.querySelectorAll(".gsws td." + sCurrentColumn)).concat( Array.prototype.slice.call( document.querySelectorAll(".gsws td." + sNextColumn) ) );
-                    //iIndex = Array.prototype.indexOf.call(aArrayOfTDs, this.parentNode);
-                    //aArrayOfTDs[iIndex+1].querySelectorAll("input, select, textarea")[0].focus();
-                }
-            });
-        //}
-    })
+      
+            var sDefaultStyle = "padding: 0 0 0 0 !important; margin: 0 0 0 0 !important; height:100% !important; width: 100% !important;";
+            if (sAttributes == undefined) { sAttributes = sDefaultStyle; }
+            if (sAttribute.match(/^\;/)) { sAttributes = sDefaultStyle+=sAttributes; }
+            domElement.style = sAttributes;	
+	
+            domDebuggingElement = domTD; domDebuggingElement2 = domElement;	
+            if (domTD.$$$("input")[0]) {	
+              domElement.value = sValue;	
+              // domElement.onclick=function(this){this.select()}	
+              domElement.addEventListener("click", function(){this.select()}); // selects all contents inside cell	
+            } else if (domTD.$$$("textarea")[0]) {	
+              domElement.innerText = sValue;	
+              domElement.style.resize = "none";	
+              domElement.addEventListener("click", function(){this.select()}); // selects all contents inside cell	
+            } else if (domTD.$$$("select")[0]) {	
+              // domSelect = domDebuggingElement("select")[0];	
+              if (fOptionsFunction) { } else { fOptionsFunction = function() { return ["","1","2","3"]; } }	
+              domElement.innerHTML = fOptionsFunction().map(function(oEl) { return "<option>" + oEl + "</option>"; }).join();	
+            }	
+            $(domElement).on('keypress', function (e) {	
+                if (e.which == 13) {	
+                    e.preventDefault();	
+                    domWhatever = e.target;	
+                    // console.log(oGlobalXXX);	
+                    oSmartRange = domWhatever.closest("table").oSmartRange;	
+                    sA1Notation = GSDS_domTDToA1Notation(domWhatever.closest("td"));	
+                    sLastCell = oSmartRange.range.split(":")[1];	
+                    sLastColumn = cellToColumn(sLastCell);	
+                    iLastRow = parseInt(cellToRow(sLastCell));	
+                    // console.log("iLastRow =" + iLastRow + "; sLastColumn=" + sLastColumn + "; sLastCell=" + sLastCell)	
+                    if(!!e.shiftKey) {	
+                        if (sA1Notation == "A1") {	
+                            sNextA1Notation = sLastCell;	
+                        } else if ((parseInt(cellToRow(sA1Notation))) == 1) {	
+                            sNextA1Notation = columnToLetter(letterToColumn(cellToColumn(sA1Notation))-1) + iLastRow;	
+                        } else {	
+                            sNextA1Notation = cellToColumn(sA1Notation) + (parseInt(cellToRow(sA1Notation))-1);	
+                        }	
+                    } else {	
+                        if (sA1Notation == sLastCell) {	
+                            sNextA1Notation = "A1"	
+                        } else if (parseInt(cellToRow(sA1Notation)) == iLastRow) {	
+                            sNextA1Notation = columnToLetter(parseInt(letterToColumn(cellToColumn(sA1Notation)))+1) + "1";	
+                        } else {	
+                            sNextA1Notation = cellToColumn(sA1Notation) + (parseInt(cellToRow(sA1Notation))+1);	
+                        }	
+                    }	
+                    // console.log("sA1Notation = " + sA1Notation + "; sNextA1Notation " + sNextA1Notation); 	
+                    //oSmartRange[sBelowA1Notation].gscell.select();	
+                    //console.log(oSmartRange);	
+                    oSmartRange[sNextA1Notation].tdcell.$$$("input,select,textarea")[0].select();	
+                    oSmartRange[sNextA1Notation].tdcell.$$$("input,select,textarea")[0].focus();	
+                    oSmartRange[sNextA1Notation].tdcell.$$$("input,select,textarea")[0].scrollIntoViewIfNeeded();	
+                    //sCurrentColumn = this.parentNode.classList.value.match(/column[A-Z]+/g)[0]	
+                    //sNextColumn = "column" + columnToLetter(letterToColumn(sCurrentColumn.replace(/column/g, "")) + 1)	
+                    //aArrayOfTDs = Array.prototype.slice.call(document.querySelectorAll(".gsws td." + sCurrentColumn)).concat( Array.prototype.slice.call( document.querySelectorAll(".gsws td." + sNextColumn) ) );	
+                    //iIndex = Array.prototype.indexOf.call(aArrayOfTDs, this.parentNode);	
+                    //aArrayOfTDs[iIndex+1].querySelectorAll("input, select, textarea")[0].focus();	
+                }	
+            });	
+        //}	
+    })	
 }
+
 GSDS_eval = function(oThis, sCellContents) {
     sCellContents = sCellContents.replace(/^\=/g, "").trim();
     var domTable = oThis.closest("table");
