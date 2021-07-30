@@ -3,6 +3,8 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
   // REFACTORING NOTES:
   // cellToColumn("C10") vs columnToLetter(convertCellToArray("C10")[0])?
   function addStyle(e){const t=document.createElement("style");t.textContent=e,document.head.append(t)}
+  function domLoadScripts(e,n){!function t(){var a,o,c;0!=e.length?(a=e.shift(),o=t,(c=document.createElement("script")).src=a,c.onload=c.onreadystatechange=function(){c.onreadystatechange=c.onload=null,o()},(document.getElementsByTagName("head")[0]||document.body).appendChild(c)):n&&n()}()}
+
   var $$$ = document.querySelectorAll.bind(document);
   HTMLElement.prototype.$$$ = function (element) { return this.querySelectorAll(element); }; 
   // SubmitSuperNinjaForm,fetch_XMLHttpRequest,oGetAllParameters_CLIENT()
