@@ -56,10 +56,10 @@ try { document.body.$$$("div.GSDS1")[0].appendHTML(convertValuesOrientedToHTMLTa
 
 GSDS_RANGE1D("A1:*").forEach(function(domTD, iIn) {
     ((iIn%2==0) ? sType = "textarea" : sType = "input")
-    GSDS_GSDSifyTDRANGE(domTD, undefined, sType, "background-color: black");
+    GSDS_GSDSifyTDRANGE(domTD, undefined, sType, "background-color: azure");
 })
 
-addStyle(`textarea, input { height:100% !important; width: 100% !important; }`);
+// addStyle(`textarea, input { height:100% !important; width: 100% !important; }`);
 
 }
 catch(e) { console.log(e); }
