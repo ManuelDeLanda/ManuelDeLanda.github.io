@@ -2,103 +2,23 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
   /* BEGIN - THESE FUNCTIONS SHOULD NEVER BE ADDED TO datascripts.js? */
   // REFACTORING NOTES:
   // cellToColumn("C10") vs columnToLetter(convertCellToArray("C10")[0])?
-  function addStyle(e){const t=document.createElement("style");t.textContent=e,document.head.append(t)}
-  function domLoadScripts(e,n){!function t(){var a,o,c;0!=e.length?(a=e.shift(),o=t,(c=document.createElement("script")).src=a,c.onload=c.onreadystatechange=function(){c.onreadystatechange=c.onload=null,o()},(document.getElementsByTagName("head")[0]||document.body).appendChild(c)):n&&n()}()}
-
-  var $$$ = document.querySelectorAll.bind(document);
-  HTMLElement.prototype.$$$ = function (element) { return this.querySelectorAll(element); }; 
-  // SubmitSuperNinjaForm,fetch_XMLHttpRequest,oGetAllParameters_CLIENT()
-  fetch_XMLHttpRequest=function(e){superencode=function(e){return encodeURIComponent(e).replace(/'/g,"%27")};var t="",n=new XMLHttpRequest;return new Promise(function(o,r){var a;n.onreadystatechange=function(){if(4==this.readyState&&200==this.status){t=this.responseText;(new DOMParser).parseFromString(t,"text/html");o(t)}},n.open(e.type,e.url,!0),null!=e.payload&&(a=Object.keys(e.payload).map(function(t){return superencode(t)+"="+superencode(e.payload[t])}).join("&")),n.setRequestHeader("Content-type","application/x-www-form-urlencoded"),n.send(a)})},SubmitSuperNinjaForm=function(e,t){if(superencode=function(e){return encodeURIComponent(e).replace(/'/g,"%27")},null==e||null==e||""==e){(e={type:"POST",payload:{script:84,deploy:1,context:"llave",payload:"just testing"}}).url="https://acct138579.app.netsuite.com/app/site/hosting/scriptlet.nl?script=84&deploy=1&context=llave"}var n=document.createElement("form");n.setAttribute("target",t),n.name="superninjaform",n.id="superninjaform",n.method=e.type,n.action=null!=e.url?e.url:window.location.href.split("?")[0],document.body.appendChild(n),n.innerHTML=Object.keys(e.payload).reduce(function(t,n){return t+='<input type="hidden" name="'+n+'" id="'+n+'" value="'+superencode(e.payload[n])+'" />'+String.fromCharCode(10)+String.fromCharCode(13)},""),n.submit()},SubmitSuperNinjaForm.sample=function(){console.log('\n              var oTypeURLPayload = { type:"POST", url: "https://collegediscgolf.com/wp-json/api/v1/author/2", payload: {filter: "2asdf"}};\n              \n              SubmitSuperNinjaForm(oTypeURLPayload);\n  fetch_XMLHttpRequest(oTypeURLPayload).then(function(sResponse) { console.log(sResponse.trim()); });\n  sResponse = await fetch_XMLHttpRequest(oTypeURLPayload);\n  ')},fetch_XMLHttpRequest.sample=SubmitSuperNinjaForm.sample,oGetAllParameters_CLIENT=function(){return location.search.substring(1)?JSON.parse('{"'+location.search.substring(1).split("&").map(function(e){return-1==e.indexOf("=")?e+"=":e}).join("&").replace(/&/g,'","').replace(/=/g,'":"')+'"}',function(e,t){return""===e?t:decodeURIComponent(t)}):{}};  
-
-// random vanilla DOM manipulation scripts
-// // replace body tag's innerHTML with div
-// document.getElementsByTagName('body')[0].innerHTML = "<div id='my'>blahHTML<div>"
-
-    // UNORGANIZED HTML TABLE LOOKUPS/FILTERS/MANIPULATIONS
-    function dom_lookupvalueHTMLTable(sTable, sRowValue, iColumn) {
-        // sTable = "cualquierPotencialidad"; sRowValue = "pdf dump"; iColumn = 1;
-        // dom_lookupvalueHTMLTable("cualquierPotencialidad", "pdf dump", 1);
-        return Array.from( $("#" + sTable)[0].children[0].children ).reduce(function(agg, oElement) {
-            if (oElement.children[0].innerText == sRowValue) {
-                return agg + oElement.children[iColumn].innerText;
-            } else {
-                return agg;
-            }
-            console.log()
-            return agg + oElement;
-        }, "")
-    }
-
-    function filterHTMLTable(sTable, iColumn, aAcceptableValues) {
-        // aAcceptableValues = ["aOrderItemsALL", "POST daterange", "buttons"]; filterHTMLTable("cualquierPotencialidad", 0, aAcceptableValues);
-        iColumn = 0; //first column
-        //Array.from($("#cualquierPotencialidad")[0].children[iColumn].children).forEach(function(oElement) {
-        Array.from($("#" + sTable + "")[0].children[iColumn].children).forEach(function(oElement) {
-            //gObject = oElement;
-            var bDecision = aAcceptableValues.reduce(function(agg098, oElement098) { return agg098 && (oElement.children[0].innerText != oElement098);}, true);
-
-            if (bDecision) {
-                oElement.style.display = "none";
-            }
-            //console.log(Array.from(oElement.children))
-        })
-    }
-    // remove first column, consider refractoring to something cooler
-    function removeHTMLTableColumn(sTable, iColumn) {
-        // removeHTMLTableColumn('cualquierPotencialidad', 0);
-        Array.from($("#" + sTable + "")[0].children[0].children).forEach(function(oElement) {
-            oElement.children[iColumn].style.display = "none"
-        })
-    }
-    // END UNORGANIZED HTML FILTERS/LOOKUPS/MANIPULATIONS
-  
-    domTableToValuesOrientedDomTDs = function(domTable) { // domTableToValuesOrientedDomTDs("table.gsws")
-        if (typeof(domTable) == "string") { // eg "table.gsws"
-            domTable = $$$(domTable)[0]
-        }
-        if (domTable == undefined) { domTable = $$$("table")[0]; }
-        if (domTable != undefined) {
-            return Array.prototype.slice.call((domTable).$$$("tr")).map(function(oElement) {
-                return Array.prototype.slice.call(oElement.$$$("th,td"));
-            })
-        } else {
-
-        }
-    }
-    convertHTMLTableToValuesOriented = function(domTable) { return domTableToValuesOrientedDomTDs(domTable).map(function(oEl) { return oEl.map(function(oEl2) { return domGetTDTextOrValue(oEl2); }) }) }
-    domTableToValuesOriented = convertHTMLTableToValuesOriented;
-
-    /* refactored this on 7/16/2021 in favor of
-    convertHTMLTableToValuesOriented = function(sHTMLTable) {
-        // convertHTMLTableToValuesOriented(".convertValuesOrientedToHTMLTable");
-        // sHTMLTable = ".convertValuesOrientedToHTMLTable";
-        return Array.prototype.slice.call($(sHTMLTable)[0].querySelectorAll("tr")).map(function(oElement) {
-            return Array.prototype.slice.call(oElement.querySelectorAll("td")).map(function(oElement0) {
-                if (oElement0.querySelectorAll("select")[0]) {
-                    return oElement0.querySelectorAll("select")[0].value; //[0].value;
-                } else {
-                    return oElement0.innerText; // | oElement0.value;
-                }
-            });
-        })
-    } */
-
-    // BEGIN animate.css scripts
-    function addAnimateCSSToHover(sSelector, sClass) {  // jQuery-dependent
-       sClass = 'animated animate__animated animate__' + sClass; 
-       $(sSelector).hover(function(){
-           $(this).addClass(sClass);
-       });
-       $(sSelector).bind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd",function(){
-          $(this).removeClass(sClass);
-       });
-    }
-    // END animate.css scripts
 
     // BEGIN EXTREMELY USEFUL vanilla dom scripts
+    var $$$ = document.querySelectorAll.bind(document);
+    HTMLElement.prototype.$$$ = function (element) { return this.querySelectorAll(element); }; 
+  
+    domAppendStyle = function(e){const t=document.createElement("style");t.textContent=e,document.head.append(t)}; addStyle = domAppendStyle;
+    domAppendToHead = function(s){ $$$('head')[0].append(s); }
+    domLoadScripts = function(e,n){!function t(){var a,o,c;0!=e.length?(a=e.shift(),o=t,(c=document.createElement("script")).src=a,c.onload=c.onreadystatechange=function(){c.onreadystatechange=c.onload=null,o()},(document.getElementsByTagName("head")[0]||document.body).appendChild(c)):n&&n()}()}
     domRemoveNode = function(domEl) { domEl.parentNode.removeChild(domEl); }
     domRemoveChildren = function(domEl) { Array.from(domEl.children).forEach(function(oEl) { domEl.removeChild(oEl); }) }
+    domTableAssumed = function(domTable) { ((domTable) ? "" : domTable = $$$("table")[0]); ((typeof(domTable) == "string") ? domTable = $$$(domTable)[0] : ""); return domTable; }
+    domTableToValuesOrientedTDs = function(domTable) { domTable = domTableAssumed(domTable); return Array.prototype.slice.call((domTable).$$$("tr")).map(function(oElement) { return Array.prototype.slice.call(oElement.$$$("th,td")); }) }
+    domTableToValuesOrientedTDs = domTableToValuesOrientedDomTDs;
 
+    domTableToValuesOriented = function(domTable) { return domTableToValuesOrientedDomTDs(domTable).map(function(oEl) { return oEl.map(function(oEl2) { return domGetTDTextOrValue(oEl2); }) }) }
+    convertHTMLTableToValuesOriented = domTableToValuesOriented;    
+    
     HTMLElement.prototype.prependHtml = function (element) {
         const div = document.createElement('div');
         div.innerHTML = element;
@@ -140,6 +60,77 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
     }
     document.getElementByInnerText = HTMLElement.prototype.getElementByInnerText;
     // END EXTREMELY USEFUL vanilla dom scripts
+  
+    // SubmitSuperNinjaForm,fetch_XMLHttpRequest,oGetAllParameters_CLIENT()
+    fetch_XMLHttpRequest=function(e){superencode=function(e){return encodeURIComponent(e).replace(/'/g,"%27")};var t="",n=new XMLHttpRequest;return new Promise(function(o,r){var a;n.onreadystatechange=function(){if(4==this.readyState&&200==this.status){t=this.responseText;(new DOMParser).parseFromString(t,"text/html");o(t)}},n.open(e.type,e.url,!0),null!=e.payload&&(a=Object.keys(e.payload).map(function(t){return superencode(t)+"="+superencode(e.payload[t])}).join("&")),n.setRequestHeader("Content-type","application/x-www-form-urlencoded"),n.send(a)})},SubmitSuperNinjaForm=function(e,t){if(superencode=function(e){return encodeURIComponent(e).replace(/'/g,"%27")},null==e||null==e||""==e){(e={type:"POST",payload:{script:84,deploy:1,context:"llave",payload:"just testing"}}).url="https://acct138579.app.netsuite.com/app/site/hosting/scriptlet.nl?script=84&deploy=1&context=llave"}var n=document.createElement("form");n.setAttribute("target",t),n.name="superninjaform",n.id="superninjaform",n.method=e.type,n.action=null!=e.url?e.url:window.location.href.split("?")[0],document.body.appendChild(n),n.innerHTML=Object.keys(e.payload).reduce(function(t,n){return t+='<input type="hidden" name="'+n+'" id="'+n+'" value="'+superencode(e.payload[n])+'" />'+String.fromCharCode(10)+String.fromCharCode(13)},""),n.submit()},SubmitSuperNinjaForm.sample=function(){console.log('\n              var oTypeURLPayload = { type:"POST", url: "https://collegediscgolf.com/wp-json/api/v1/author/2", payload: {filter: "2asdf"}};\n              \n              SubmitSuperNinjaForm(oTypeURLPayload);\n  fetch_XMLHttpRequest(oTypeURLPayload).then(function(sResponse) { console.log(sResponse.trim()); });\n  sResponse = await fetch_XMLHttpRequest(oTypeURLPayload);\n  ')},fetch_XMLHttpRequest.sample=SubmitSuperNinjaForm.sample,oGetAllParameters_CLIENT=function(){return location.search.substring(1)?JSON.parse('{"'+location.search.substring(1).split("&").map(function(e){return-1==e.indexOf("=")?e+"=":e}).join("&").replace(/&/g,'","').replace(/=/g,'":"')+'"}',function(e,t){return""===e?t:decodeURIComponent(t)}):{}};  
+
+    // random vanilla DOM manipulation scripts
+    // // replace body tag's innerHTML with div
+    // document.getElementsByTagName('body')[0].innerHTML = "<div id='my'>blahHTML<div>"
+    // UNORGANIZED HTML TABLE LOOKUPS/FILTERS/MANIPULATIONS
+    function dom_lookupvalueHTMLTable(sTable, sRowValue, iColumn) {
+        // sTable = "cualquierPotencialidad"; sRowValue = "pdf dump"; iColumn = 1;
+        // dom_lookupvalueHTMLTable("cualquierPotencialidad", "pdf dump", 1);
+        return Array.from( $("#" + sTable)[0].children[0].children ).reduce(function(agg, oElement) {
+            if (oElement.children[0].innerText == sRowValue) {
+                return agg + oElement.children[iColumn].innerText;
+            } else {
+                return agg;
+            }
+            console.log()
+            return agg + oElement;
+        }, "")
+    }
+
+    function filterHTMLTable(sTable, iColumn, aAcceptableValues) {
+        // aAcceptableValues = ["aOrderItemsALL", "POST daterange", "buttons"]; filterHTMLTable("cualquierPotencialidad", 0, aAcceptableValues);
+        iColumn = 0; //first column
+        //Array.from($("#cualquierPotencialidad")[0].children[iColumn].children).forEach(function(oElement) {
+        Array.from($("#" + sTable + "")[0].children[iColumn].children).forEach(function(oElement) {
+            //gObject = oElement;
+            var bDecision = aAcceptableValues.reduce(function(agg098, oElement098) { return agg098 && (oElement.children[0].innerText != oElement098);}, true);
+
+            if (bDecision) {
+                oElement.style.display = "none";
+            }
+            //console.log(Array.from(oElement.children))
+        })
+    }
+    // remove first column, consider refractoring to something cooler
+    function removeHTMLTableColumn(sTable, iColumn) {
+        // removeHTMLTableColumn('cualquierPotencialidad', 0);
+        Array.from($("#" + sTable + "")[0].children[0].children).forEach(function(oElement) {
+            oElement.children[iColumn].style.display = "none"
+        })
+    }
+    // END UNORGANIZED HTML FILTERS/LOOKUPS/MANIPULATIONS
+  
+    /* refactored this on 7/16/2021 in favor of
+    convertHTMLTableToValuesOriented = function(sHTMLTable) {
+        // convertHTMLTableToValuesOriented(".convertValuesOrientedToHTMLTable");
+        // sHTMLTable = ".convertValuesOrientedToHTMLTable";
+        return Array.prototype.slice.call($(sHTMLTable)[0].querySelectorAll("tr")).map(function(oElement) {
+            return Array.prototype.slice.call(oElement.querySelectorAll("td")).map(function(oElement0) {
+                if (oElement0.querySelectorAll("select")[0]) {
+                    return oElement0.querySelectorAll("select")[0].value; //[0].value;
+                } else {
+                    return oElement0.innerText; // | oElement0.value;
+                }
+            });
+        })
+    } */
+
+    // BEGIN animate.css scripts
+    function addAnimateCSSToHover(sSelector, sClass) {  // jQuery-dependent
+       sClass = 'animated animate__animated animate__' + sClass; 
+       $(sSelector).hover(function(){
+           $(this).addClass(sClass);
+       });
+       $(sSelector).bind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd",function(){
+          $(this).removeClass(sClass);
+       });
+    }
+    // END animate.css scripts
 
 // NEW googlesheets scripts
 // domscriptsSTEROIDS.js
