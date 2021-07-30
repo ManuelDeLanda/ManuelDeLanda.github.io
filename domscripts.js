@@ -14,7 +14,7 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
     domRemoveChildren = function(domEl) { Array.from(domEl.children).forEach(function(oEl) { domEl.removeChild(oEl); }) }
     domTableAssumed = function(domTable) { ((domTable) ? "" : domTable = $$$("table")[0]); ((typeof(domTable) == "string") ? domTable = $$$(domTable)[0] : ""); return domTable; }
     domTableToValuesOrientedTDs = function(domTable) { domTable = domTableAssumed(domTable); return Array.prototype.slice.call((domTable).$$$("tr")).map(function(oElement) { return Array.prototype.slice.call(oElement.$$$("th,td")); }) }
-    domTableToValuesOrientedTDs = domTableToValuesOrientedDomTDs;
+    domTableToValuesOrientedDomTDs = domTableToValuesOrientedTDs;
 
     domTableToValuesOriented = function(domTable) { return domTableToValuesOrientedDomTDs(domTable).map(function(oEl) { return oEl.map(function(oEl2) { return domGetTDTextOrValue(oEl2); }) }) }
     convertHTMLTableToValuesOriented = domTableToValuesOriented;    
@@ -580,7 +580,7 @@ domSetTDTextOrValue = function(domTD, sString) {
         }
     }
 
-} catch(e) {}
+} catch(e) { console.log(e) }
 
 // domscripts.serversafe
 convertRecordsOrientedArrayToHTMLTable = function (aRecordsOriented, aColumns, sTableID) {
