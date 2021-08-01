@@ -3,7 +3,7 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
   // REFACTORING NOTES:
   // cellToColumn("C10") vs columnToLetter(convertCellToArray("C10")[0])?
 
-    // BEGIN EXTREMELY USEFUL vanilla dom scripts
+    // BEGIN useful vanilla dom scripts - consider refactoring out the overloading prototypes?
     var $$$ = document.querySelectorAll.bind(document);
     HTMLElement.prototype.$$$ = function (element) { return this.querySelectorAll(element); }; 
   
