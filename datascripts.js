@@ -1,6 +1,4 @@
-/* A BIT MORE REFACTORING REQUIRED BUT THIS IS MOSTLY PRODUCTION-READY  */
-// function consolelog(sReturn) {   setTimeout (console.log.bind(console, sReturn)); }
-// function dumpCSSText(element){ var s = ''; var o = getComputedStyle(element); for(var i = 0; i < o.length; i++){ s+=o[i] + ':' + o.getPropertyValue(o[i])+';'; } return s; }
+/* datascripts => Vanilla ES5-safe functions inspired from Python Pandas, uses lodash lightly  */
 
 /* prototype altering functions */
 //Array.prototype.toDelimited ="";
@@ -19,6 +17,9 @@ unique = function(aArray) { var a = []; for (var i=0, l=aArray.length; i<l; i++)
 
 /* BEGIN values oriented / records oriented / tab delimited converter functions */
 // toValuesOriented = function(aInputArray) { var aArrayOfAllPossibleColumnTitles = aInputArray.reduce(function(agg123, oElement123) { Object.keys(oElement123).forEach(function(oElement751) { if (!agg123.includes(oElement751)) { agg123.push(oElement751); } else {} }); return agg123; }, Object.keys(aInputArray[0])); var aValuesOrientation = aInputArray.map(function(oElement123, iIndex123) { return aArrayOfAllPossibleColumnTitles.reduce(function(agg751, oElement751) { if (oElement123[oElement751] == undefined) { agg751.push(); } else { agg751.push(oElement123[oElement751]); } return agg751; }, []) }); aValuesOrientation.unshift(aArrayOfAllPossibleColumnTitles); return aValuesOrientation; }
+// findKey = function(aData,sKey,sVal) { return aData[_.findKey(aData, o=>o[sKey]==sVal)] }
+findKeys = function(aData,sKey,sVal) { return aData.filter(function(e){return e[sKey]==sVal}) }
+findKey = function(aData,sKey,sVal) { return findKeys(aData,sKey,sVal)[0]; }
 toValuesOriented = function(aInputArray, aColumns) {
     // REFACTOR: replace aArrayOfAllPossibleColumnTitles now that there's a normalizeRecordsOriented function?
     var aArrayOfAllPossibleColumnTitles = aInputArray.reduce(function(agg123, oElement123) {
