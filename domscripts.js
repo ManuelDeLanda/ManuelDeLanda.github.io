@@ -2,6 +2,8 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
   /* BEGIN - THESE FUNCTIONS SHOULD NEVER BE ADDED TO datascripts.js? */
   // REFACTORING NOTES:
   // cellToColumn("C10") vs columnToLetter(convertCellToArray("C10")[0])?
+  // function consolelog(sReturn) {   setTimeout (console.log.bind(console, sReturn)); }
+  // function dumpCSSText(element){ var s = ''; var o = getComputedStyle(element); for(var i = 0; i < o.length; i++){ s+=o[i] + ':' + o.getPropertyValue(o[i])+';'; } return s; }
 
     // BEGIN useful vanilla dom scripts - consider refactoring out the overloading prototypes?
     var $$$ = document.querySelectorAll.bind(document);
