@@ -513,11 +513,12 @@ getRange.sample=function() { return "getRange(1,5)"; }
 
 getRandomInt = function (min, max) {
   if (!min) { min = 1;}; if (!max) { max = 10;};
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
+  min = min-1; max=max+1; min = Math.ceil(min); max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min) + min);
 }
+getRandomInt.sample=function(){return "_.countBy( getRange(0,1000).map(function(oEl) { return getRandomInt(0,1) }) )";}
 getRandomArbitrary=getRandomInt;
+
 
 /* string cleanup functions */
 function strip_tags(str) {
