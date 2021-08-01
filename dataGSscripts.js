@@ -35,6 +35,35 @@ addCells = function (sCell1, sCell2) { if (typeof(sCell1) == "string") { var aCe
 = sCell2; }  return aCell1.map(function(oElement, iIndex) { return oElement + parseInt(aCell2[iIndex]) }) }
 // addCells("B1", "A1"); addCells("B1", [1,'1']); addCells("B1", [1,1])
 
+
+addA1Notation = function(sA1Notation, sOffset) {
+  ((Array.isArray(sA1Notation) ) ? sA1Notation = convertArrayToCell(sA1Notation) : "" );
+  ((Array.isArray(sOffset) ) ? sOffset = convertArrayToCell(sOffset) : "" );
+  // addA1Notation("table!C2", "C2")
+  // sColumn = sA1Notation.match(/([A-Z]*)([0-9]*$)/)[1]
+  if (sA1Notation.match(/!/g)) {
+    var sTable = sA1Notation.split("!")[0] + "!";
+    sA1Notation = sA1Notation.split("!")[1];
+  } else {
+    var sTable = "";
+  }
+  // sColumnOffset = convertArrayToCell(addCells(sColumn, sOffset))
+  sA1NotationOffset = convertArrayToCell(addCells(sA1Notation, sOffset))
+  return sTable + sA1NotationOffset;
+}
+subtractA1Notation = function(sA1Notation, sOffset) {
+  ((Array.isArray(sA1Notation) ) ? sA1Notation = convertArrayToCell(sA1Notation) : "" );
+  ((Array.isArray(sOffset) ) ? sOffset = convertArrayToCell(sOffset) : "" );
+  if (sA1Notation.match(/!/g)) {
+    var sTable = sA1Notation.split("!")[0] + "!";
+    sA1Notation = sA1Notation.split("!")[1];
+  } else {
+    var sTable = "";
+  }
+  sA1NotationOffset = convertArrayToCell(subtractCells(sA1Notation, sOffset))
+  return sTable + sA1NotationOffset;
+}
+
 getGoogleSheetRange = function (sCells) {
     // getGoogleSheetRange("A3:G3,H5,H7")
     aReturn = []
