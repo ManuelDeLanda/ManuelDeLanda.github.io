@@ -18,6 +18,24 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
     domTableToValuesOrientedTDs = function(domTable) { domTable = domTableAssumed(domTable); return Array.prototype.slice.call((domTable).$$$("tr")).map(function(oElement) { return Array.prototype.slice.call(oElement.$$$("th,td")); }) }
     domTableToValuesOrientedDomTDs = domTableToValuesOrientedTDs;
 
+
+    function domReplaceDom(oEl, oEl2) { // simplifies .replaceChild()
+        // domReplaceDom($$$("table")[0], '<div id="my_dataviz">test!</div>');
+        if (typeof(oEl) == "string") {
+            oEl = $$$(oEl)[0];
+        }
+        if (typeof(oEl2) == "string") {
+            var oElTemp = document.createElement("div");
+            oElTemp.innerHTML = oEl2;
+            oEl2 = oElTemp;
+        }
+        // oEl.parentElement.appendChild(oEl2);
+        // oEl.parentElement.replaceChild(oEl, oEl2);
+        document.body.insertBefore(oEl2, oEl)
+        document.body.removeChild(oEl);
+    }
+
+
     domTableToValuesOriented = function(domTable) { return domTableToValuesOrientedDomTDs(domTable).map(function(oEl) { return oEl.map(function(oEl2) { return domGetTDTextOrValue(oEl2); }) }) }
     convertHTMLTableToValuesOriented = domTableToValuesOriented;    
     
