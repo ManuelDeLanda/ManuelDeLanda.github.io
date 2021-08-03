@@ -1,9 +1,4 @@
 <html><head>
-<script src="https://cdn.jsdelivr.net/lodash/4/lodash.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://manueldelanda.github.io/datascripts.js"></script>
-<script src="https://manueldelanda.github.io/domscripts.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css" />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>?</text></svg>"> 
 <title>Bienvenidos!</title>
 
@@ -33,22 +28,40 @@
   color: white;
 }
 </style>
+
+<script src="https://cdn.jsdelivr.net/npm/p5@1.4.0/lib/p5.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.js"></script>
+<script src="https://cdn.jsdelivr.net/lodash/4/lodash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://manueldelanda.github.io/datascripts.js"></script>
+<script src="https://manueldelanda.github.io/domscripts.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css" type="text/css" />
 <script>
 //MDL%2Findex.htm:
 var oTest = {};
-</script><script>
+</script>
+<script>
+
+
 
 window.addEventListener('DOMContentLoaded', (event) => { 
 
-try { addAnimateCSSToHover("table", "headShake");
+try {
+
+ addAnimateCSSToHover("table", "headShake");
 addAnimateCSSToHover("td", "rubberBand"); // lightSpeedInRight
-// addAnimateCSSToHover("td", "rubberBand"); // lightSpeedInRight
+// addAnimateCSSToHover("td", "rubberBand"); // lightSpeedInRight 
+
 }
 catch(e) { console.log(e); }
 })
+
+
 window.addEventListener('DOMContentLoaded', (event) => { 
 
-try { document.body.$$$("div.GSDS1")[0].appendHTML(convertValuesOrientedToHTMLTable(
+try {
+
+ document.body.$$$("div.GSDS1")[0].appendHTML(convertValuesOrientedToHTMLTable(
     GSDS_disjointedRangeToAVO("A1:P50")
 ));
 
@@ -60,13 +73,18 @@ GSDS_RANGE1D("A1:*").forEach(function(domTD, iIn) {
 })
 
 // addStyle(`textarea, input { height:100% !important; width: 100% !important; }`);
+ 
 
 }
 catch(e) { console.log(e); }
 })
+
+
 window.addEventListener('DOMContentLoaded', (event) => { 
 
-try { var oMenu = {};
+try {
+
+ var oMenu = {};
 oMenu["/philosophy/philosophersfued.htm|philosophy"] = "<br />From Decartes to Deleuze, more than grids you can peruse..<br />";
 oMenu["/?scripts|scripts"] = "scripts=<br />gists=<br />libraries=<br />frameworks=<br />kaggle=<br />firebase=";
 oMenu["/?diffchecker|diffchecker"] = "";
@@ -90,7 +108,8 @@ document.body.prependHTML(
         oAg += '<a href="' + sURL + '">' + sURLName + "</a>";
         return oAg;
     }, "") + "</div><br />"
-);
+); 
+
 }
 catch(e) { console.log(e); }
 })
