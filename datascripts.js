@@ -21,7 +21,7 @@ unique = function(aArray) { var a = []; for (var i=0, l=aArray.length; i<l; i++)
 findKeys = function(aData,sKey,sVal) { return aData.filter(function(e){return e[sKey]==sVal}) }
 findKey = function(aData,sKey,sVal) { return findKeys(aData,sKey,sVal)[0]; }
 findKeysIndex = function(aData,sKey,sVal) { return findKeyIndexes(aData,sKey,sVal)[0]; }
-findKeyIndexes = function(aData,sKey,sVal) { return JSON.parse(JSON.stringify(energy2.nodes)).map(function(e, i) { e.index = i; return e; }).filter(function(e) { return e[sKey] == sVal; }).map(function(e) { return e.index }) }
+findKeyIndexes = function(aData,sKey,sVal) { return JSON.parse(JSON.stringify(aData)).map(function(e, i) { e.index = i; return e; }).filter(function(e) { return e[sKey] == sVal; }).map(function(e) { return e.index }) }
 
 
 toValuesOriented = function(aInputArray, aColumns) {
