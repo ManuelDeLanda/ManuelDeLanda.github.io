@@ -13,6 +13,7 @@ String.prototype.count=function(c) { var result = 0, i = 0; for(i;i<this.length;
 // Array.prototype.unique = function() { var a = []; for (var i=0, l=this.length; i<l; i++) if (a.indexOf(this[i]) === -1) a.push(this[i]); return a; };
 unique = function(aArray) { var a = []; for (var i=0, l=aArray.length; i<l; i++) if (a.indexOf(aArray[i]) === -1) a.push(aArray[i]); return a; };
 //Object.prototype.toArray = function () { var _this = this; var array = []; Object.keys(this).map(function (key) { array.push(_this[key]); }); return array; };
+sCarriageReturn = String.fromCharCode(13); sLineFeed = String.fromCharCode(10); sTab = String.fromCharCode(9);
 /* END no brainer / polyfilles for es5 */
 
 /* BEGIN values oriented / records oriented / tab delimited converter functions */
