@@ -7,14 +7,15 @@
 function padArray(array, length, fill) { return length > array.length ? array.concat(Array(length - array.length).fill(fill)) : array; }
 padArray.sample=function(e){return "padArray([1,2,3]), 5, 'end');";}
 
-String.prototype.count=function(c) { var result = 0, i = 0; for(i;i<this.length;i++)if(this[i]==c)result++; return result; };
+// String.prototype.count=function(c) { var result = 0, i = 0; for(i;i<this.length;i++)if(this[i]==c)result++; return result; };
+count=function(s, c) { var result = 0, i = 0; for(i;i<s.length;i++)if(s[i]==c)result++; return result; };
 //Array.prototype.unique = function() { var a = []; for (var i=0, l=this.length; i<l; i++) if (a.indexOf(this[i]) === -1) a.push(this[i]); return a; };
 // count=function(c) { var result = 0, i = 0; for(i;i<this.length;i++)if(this[i]==c)result++; return result; };
 // Array.prototype.unique = function() { var a = []; for (var i=0, l=this.length; i<l; i++) if (a.indexOf(this[i]) === -1) a.push(this[i]); return a; };
 unique = function(aArray) { var a = []; for (var i=0, l=aArray.length; i<l; i++) if (a.indexOf(aArray[i]) === -1) a.push(aArray[i]); return a; };
 //Object.prototype.toArray = function () { var _this = this; var array = []; Object.keys(this).map(function (key) { array.push(_this[key]); }); return array; };
-sCF = String.fromCharCode(13); sLF = String.fromCharCode(10); sTB = String.fromCharCode(9);
-sCarriageReturn = sCF; sLineFeed = sLF; sTab = sTB;                                                                       
+// sCF = String.fromCharCode(13); sLF = String.fromCharCode(10); sTB = String.fromCharCode(9);
+// sCarriageReturn = sCF; sLineFeed = sLF; sTab = sTB;                                                                       
 /* END no brainer / polyfilles for es5 */
 
 /* BEGIN values oriented / records oriented / tab delimited converter functions */
@@ -64,13 +65,13 @@ toTabDelimited = function (aInputArray, sDelimiter, sQualifier) {
       })
   })
   if (Object.prototype.toString.call(aInputArray[0]) == '[object Array]') { // hack for aValuesOriented
-      return toDelimited(aInputArray, sTB, "").split(sLF).splice(1,aInputArray.length+1).join(sLF);
+      return toDelimited(aInputArray, String.fromCharCode(9), "").split(String.fromCharCode(10)).splice(1,aInputArray.length+1).join(String.fromCharCode(10));
   } else { // else return aRecordsOriented
-      return toDelimited(aInputArray, sTB, "");
+      return toDelimited(aInputArray, String.fromCharCode(9), "");
   }
 }
 toDelimited = function(aInputArray, sDelimiter, sQualifier) { function returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented) { return aRecordsOriented.reduce(function(agg, oElement313) { agg = agg.concat(Object.keys(oElement313)); agg = unique(agg); return agg; }, []) } var aColumns = returnAllKeysAmongAllObjectsInRecordsOrientedArray(aInputArray); return aInputArray.reduce(function(agg, oElement) { return agg + "\n" + aColumns.filter(function(oElement777) { return oElement777.trim() != "" }).reduce(function(agg001, oElement001, iIndex001) { return agg001 + ((iIndex001 == 0) ? "" : sDelimiter) + sQualifier + ((oElement[oElement001] == undefined ? "" : oElement[oElement001])).toString().replace(/\r\n/g, "<br>").replace(/\n/g, "<br>") + sQualifier; }, "") }, aColumns.map(function(oElement002) { return sQualifier + oElement002 + sQualifier; }).join(sDelimiter)) }
-convertTabDelimitedToValuesOriented = function(sText) { return sText.split(sLF).map(function(oElement) { return oElement.split("\t"); }); }
+convertTabDelimitedToValuesOriented = function(sText) { return sText.split(String.fromCharCode(10)).map(function(oElement) { return oElement.split(String.fromCharCode(9)); }); }
 convertTabDelimitedToRecordsOriented = function(sText) { return toRecordsOriented(convertTabDelimitedToValuesOriented(sText)); }
 toXXXOrientated=toXXXOriented;toXXXOrientatedDEDUPED=toXXXOrientedDEDUPED;
 /* END values oriented / records oriented / tab delimited converter functions */
@@ -159,7 +160,7 @@ JSONObjectify = function(sString, sDelimiter, sColon) {
   try {
     return JSON.parse(sString);
   } catch(e) {
-    aReturn = sString.trim().replace(/\,/g, sLF).split(sLF).map(function(oEl) {
+    aReturn = sString.trim().replace(/\,/g, String.fromCharCode(10)).split(String.fromCharCode(10)).map(function(oEl) {
       return oEl;
     })
     return aReturn.reduce(function(oAg, oEl) {
@@ -368,7 +369,7 @@ pivottable = function (aInputArray, aPivotInstructions) {
                                 // var sObjectToBuildOutTemplate = "<%= sTitle %>: 'Sorry, this is not a valid agg instruction!'"
                             } 
                             var templateFn = _.template(sObjectToBuildOutTemplate);
-                            sSecondPartOfReturn += templateFn({sTitle: sTitle, sObject: sObject, sValueTitle: sValueTitle}) + sLF;
+                            sSecondPartOfReturn += templateFn({sTitle: sTitle, sObject: sObject, sValueTitle: sValueTitle}) + String.fromCharCode(10);
 
                         })
                     } else {  // elseif there exists NO columns (aColumnsIndex is blank)
@@ -388,7 +389,7 @@ pivottable = function (aInputArray, aPivotInstructions) {
                             // var sObjectToBuildOutTemplate = "<%= sTitle %>: {sTitle: <%= sTitle %>, sObject: 'sObject', sValueTitle: <%= sValueTitle %>, group: JSON.stringify(group)},"; // 'Sorry, this is not a valid agg instruction!'";
                         } 
                         var templateFn = _.template(sObjectToBuildOutTemplate);
-                        sSecondPartOfReturn += templateFn({sTitle: sTitle, sValueTitle: sValueTitle}) + sLF;
+                        sSecondPartOfReturn += templateFn({sTitle: sTitle, sValueTitle: sValueTitle}) + String.fromCharCode(10);
                     }
                 })
             })
