@@ -159,7 +159,7 @@ JSONObjectify = function(sString, sDelimiter, sColon) {
   try {
     return JSON.parse(sString);
   } catch(e) {
-    aReturn = sString.trim().replace(/\n/g, ",").split(",").map(function(oEl) {
+    aReturn = sString.trim().replace(/\,/g, sLF).split(sLF).map(function(oEl) {
       return oEl;
     })
     return aReturn.reduce(function(oAg, oEl) {
@@ -368,7 +368,7 @@ pivottable = function (aInputArray, aPivotInstructions) {
                                 // var sObjectToBuildOutTemplate = "<%= sTitle %>: 'Sorry, this is not a valid agg instruction!'"
                             } 
                             var templateFn = _.template(sObjectToBuildOutTemplate);
-                            sSecondPartOfReturn += templateFn({sTitle: sTitle, sObject: sObject, sValueTitle: sValueTitle}) + "\n";
+                            sSecondPartOfReturn += templateFn({sTitle: sTitle, sObject: sObject, sValueTitle: sValueTitle}) + sLF;
 
                         })
                     } else {  // elseif there exists NO columns (aColumnsIndex is blank)
@@ -388,7 +388,7 @@ pivottable = function (aInputArray, aPivotInstructions) {
                             // var sObjectToBuildOutTemplate = "<%= sTitle %>: {sTitle: <%= sTitle %>, sObject: 'sObject', sValueTitle: <%= sValueTitle %>, group: JSON.stringify(group)},"; // 'Sorry, this is not a valid agg instruction!'";
                         } 
                         var templateFn = _.template(sObjectToBuildOutTemplate);
-                        sSecondPartOfReturn += templateFn({sTitle: sTitle, sValueTitle: sValueTitle}) + "\n";
+                        sSecondPartOfReturn += templateFn({sTitle: sTitle, sValueTitle: sValueTitle}) + sLF;
                     }
                 })
             })
