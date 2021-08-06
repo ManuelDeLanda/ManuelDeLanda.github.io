@@ -13,7 +13,8 @@ String.prototype.count=function(c) { var result = 0, i = 0; for(i;i<this.length;
 // Array.prototype.unique = function() { var a = []; for (var i=0, l=this.length; i<l; i++) if (a.indexOf(this[i]) === -1) a.push(this[i]); return a; };
 unique = function(aArray) { var a = []; for (var i=0, l=aArray.length; i<l; i++) if (a.indexOf(aArray[i]) === -1) a.push(aArray[i]); return a; };
 //Object.prototype.toArray = function () { var _this = this; var array = []; Object.keys(this).map(function (key) { array.push(_this[key]); }); return array; };
-sCarriageReturn = String.fromCharCode(13); sLineFeed = String.fromCharCode(10); sTab = String.fromCharCode(9);
+sCF = String.fromCharCode(13); sLF = String.fromCharCode(10); sTB = String.fromCharCode(9);
+sCarriageReturn = sCF; sLineFeed = sLF; sTab = sTB;                                                                       
 /* END no brainer / polyfilles for es5 */
 
 /* BEGIN values oriented / records oriented / tab delimited converter functions */
@@ -63,13 +64,13 @@ toTabDelimited = function (aInputArray, sDelimiter, sQualifier) {
       })
   })
   if (Object.prototype.toString.call(aInputArray[0]) == '[object Array]') { // hack for aValuesOriented
-      return toDelimited(aInputArray, "\t", "").split("\n").splice(1,aInputArray.length+1).join("\n");
+      return toDelimited(aInputArray, sTB, "").split(sLF).splice(1,aInputArray.length+1).join(sLF);
   } else { // else return aRecordsOriented
-      return toDelimited(aInputArray, "\t", "");
+      return toDelimited(aInputArray, sTB, "");
   }
 }
 toDelimited = function(aInputArray, sDelimiter, sQualifier) { function returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented) { return aRecordsOriented.reduce(function(agg, oElement313) { agg = agg.concat(Object.keys(oElement313)); agg = unique(agg); return agg; }, []) } var aColumns = returnAllKeysAmongAllObjectsInRecordsOrientedArray(aInputArray); return aInputArray.reduce(function(agg, oElement) { return agg + "\n" + aColumns.filter(function(oElement777) { return oElement777.trim() != "" }).reduce(function(agg001, oElement001, iIndex001) { return agg001 + ((iIndex001 == 0) ? "" : sDelimiter) + sQualifier + ((oElement[oElement001] == undefined ? "" : oElement[oElement001])).toString().replace(/\r\n/g, "<br>").replace(/\n/g, "<br>") + sQualifier; }, "") }, aColumns.map(function(oElement002) { return sQualifier + oElement002 + sQualifier; }).join(sDelimiter)) }
-convertTabDelimitedToValuesOriented = function(sText) { return sText.split("\n").map(function(oElement) { return oElement.split("\t"); }); }
+convertTabDelimitedToValuesOriented = function(sText) { return sText.split(sLF).map(function(oElement) { return oElement.split("\t"); }); }
 convertTabDelimitedToRecordsOriented = function(sText) { return toRecordsOriented(convertTabDelimitedToValuesOriented(sText)); }
 toXXXOrientated=toXXXOriented;toXXXOrientatedDEDUPED=toXXXOrientedDEDUPED;
 /* END values oriented / records oriented / tab delimited converter functions */
