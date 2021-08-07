@@ -151,7 +151,7 @@ getYYYYMMDDHHMMSS = function(sDate) {
 }
 /* END SOME DATE-RELATED FUNCTIONS */
 
-/* BEGIN PANDAS-INSPIRED FUNCTIONS */
+
 JSONObjectify = function(sString, sDelimiter, sColon) {
   if (!sDelimiter) { sDelimiter = ","; } // for now, assume , or \n as delimiters
   if (!sColon) { sColon = ":";} // for now, assume : or = as colons
@@ -173,6 +173,9 @@ JSONObjectify = function(sString, sDelimiter, sColon) {
   }
 }
 JSONObjectify.sample=function() { return 'JSONObjectify("branch:main,folder:datascripts");'; }
+
+/* BEGIN PANDAS-INSPIRED, LODASH-DEPENDENT FUNCTIONS */
+lodashmerge = function(a, b, sKey) { return _.values(_.merge(_.keyBy(a, sKey), _.keyBy(b, sKey))); }
 
 melt = function (aInputArray, aColumns) {
 // REFACTOR OUT .flat() in favor of flatten() to make this friendly with es5 servers?
@@ -443,7 +446,7 @@ pivottable.sample = function(aThis) {
     sSample += "\n\n// also this - \n// pivottable(aRecordsOriented, '2 4,5 7 listaggU');";
     return sSample;
 }
-/* END PANDAS-INSPIRED FUNCTIONS */
+/* END PANDAS-INSPIRED, LODASH-DEPENDENT FUNCTIONS */
 
 cartesian = function(args) { // args = aArrayOfArarys
     // permutations / combinations?
