@@ -729,7 +729,7 @@ GSDS_disjointedRangeToArray = function(sA1Notation) { return GSDS_disjointedRang
 toHTMLSelect=function(aArray, sClassList) { // refractor this to accept array of values vs array of objects (select id?)
   // aArray = JSON.parse(JSON.stringify(aArray)); aArray.unshift
   if (sClassList == undefined) { sClassList = "aArraySelect"; }
-  return "<select class='" + sClassList + "'><option></option>" + aArray.map(function(oElement) { return "<option>" + oElement + "</option>"; }).join("");
+  return "<select class='" + sClassList + "'><option></option>" + aArray.map(function(oElement) { return "<option>" + oElement + "</option>"; }).join("")+"</select>";
 }
 
 /* UNIT TESTS
