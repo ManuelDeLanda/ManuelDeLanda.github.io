@@ -494,6 +494,14 @@ chunkize.sample=function() { return "chunkize([1,2,3,4,5,6,7,8,9,0,'A','B','C'],
 
 intersectionString = function(sS1, sS2) { return (sS2.match(new RegExp('[' + sS1 + ']', 'g')) || []).join(''); }
 intersectionArray = function(aAr1, aAr2) { return aAr1.filter(function(n) { return aAr2.indexOf(n) !== -1; }); }
+intersection = function(aTwoArrays) { // consider refactoring this into datascripts.js
+  var s = new Set(aTwoArrays[1]);
+  return aTwoArrays[0].filter(item => s.has(item));
+};
+intersectionMultipleWords = function(sWords) { // this function assumes the sWords are delimited by semicolon.  consider refactoring?
+  return intersection(sWords.split(";").map(function(oEl) { return oEl.split(" "); }));
+}
+// intersectionMultipleWords("TFR Halo Star Valkyrie;Halo Star Valkyrie").join(" ");
 
 intersperse = function(arr, el) {
     var res = [], i=0;
