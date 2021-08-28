@@ -270,7 +270,7 @@ explode = function (aInputArray, aColumns, sDelimiter) {
 // sanitizeRecordsOrientedData(toRecordsOriented(convertHTMLTableToValuesOriented("table.wikitable.plainrowheaders.wikiepisodetable")))
 explode.sample=function() { return 'var aRecordsOriented = [{"No.overall":1,"No. inseason":1,"Title":"Pilot?","Directed by":"Robert Mandel","Written by":"Chris Carter","Original air date":"September 10, 1993"},{"No.overall":2,"No. inseason":2,"Title":"Deep Throat?","Directed by":"Daniel Sackheim","Written by":"Chris Carter","Original air date":"September 17, 1993"},{"No.overall":3,"No. inseason":3,"Title":"Squeeze","Directed by":"Harry Longstreet","Written by":"Glen Morgan & James Wong","Original air date":"September 24, 1993"},{"No.overall":4,"No. inseason":4,"Title":"Conduit","Directed by":"Daniel Sackheim","Written by":"Alex Gansa & Howard Gordon","Original air date":"October 1, 1993"},{"No.overall":5,"No. inseason":5,"Title":"The Jersey Devil","Directed by":"Joe Napolitano","Written by":"Chris Carter","Original air date":"October 8, 1993"},{"No.overall":6,"No. inseason":6,"Title":"Shadows","Directed by":"Michael Katleman","Written by":"Glen Morgan & James Wong","Original air date":"October 22, 1993"},{"No.overall":7,"No. inseason":7,"Title":"Ghost in the Machine","Directed by":"Jerrold Freedman","Written by":"Alex Gansa & Howard Gordon","Original air date":"October 29, 1993"},{"No.overall":8,"No. inseason":8,"Title":"Ice","Directed by":"David Nutter","Written by":"Glen Morgan & James Wong","Original air date":"November 5, 1993"}]; explode(aRecordsOriented, ["Written by"], " & ")'; }
 
-pivottable = function (aInputArray, aPivotInstructions) {
+pivottable=function(aInputArray, aPivotInstructions) {
     function parseFloatForSUM(sString) {
         if (isNaN(sString) || sString == "" || sString == undefined || sString == null || sString == NaN) { sString = 0 }
         return parseFloat(sString);
@@ -290,7 +290,13 @@ pivottable = function (aInputArray, aPivotInstructions) {
           if (iIn == 3) {
             return oEl.split(",")
           } else {
-            return oEl.split(",").map(function(oEl0) { return parseInt(oEl0); })
+            return oEl.split(",").map(function(oEl0) {
+                if (oEl0 == "") {
+                    return 0;
+                } else {
+                    return parseInt(oEl0);
+                }
+            })
           }
         })
       }
@@ -299,6 +305,7 @@ pivottable = function (aInputArray, aPivotInstructions) {
         // convert strs to int columns
         // aPivotInstructions2 = aPivotInstructions.map(function(oElement0, iIndex0) { return ((iIndex0 != 3 ) ? oElement0.map(function(oElement) { return Object.keys(aRecordsOrientation[0]).indexOf(oElement) }) : oElement0); })
         // convert int to str columns
+            console.log(aPivotInstructions)
             aPivotInstructions = aPivotInstructions.map(function(oElement0, iIndex0) { return ((iIndex0 != 3 ) ? oElement0.map(function(oElement) { return Object.keys(aRecordsOrientation[0])[oElement.toString()] }) : oElement0); })
         }
         // .replace(/[^A-Za-z_]+/g,"_")
