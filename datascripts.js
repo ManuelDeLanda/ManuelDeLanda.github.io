@@ -22,7 +22,11 @@ unique = function(aArray) { var a = []; for (var i=0, l=aArray.length; i<l; i++)
 // toValuesOriented = function(aInputArray) { var aArrayOfAllPossibleColumnTitles = aInputArray.reduce(function(agg123, oElement123) { Object.keys(oElement123).forEach(function(oElement751) { if (!agg123.includes(oElement751)) { agg123.push(oElement751); } else {} }); return agg123; }, Object.keys(aInputArray[0])); var aValuesOrientation = aInputArray.map(function(oElement123, iIndex123) { return aArrayOfAllPossibleColumnTitles.reduce(function(agg751, oElement751) { if (oElement123[oElement751] == undefined) { agg751.push(); } else { agg751.push(oElement123[oElement751]); } return agg751; }, []) }); aValuesOrientation.unshift(aArrayOfAllPossibleColumnTitles); return aValuesOrientation; }
 // findKey = function(aData,sKey,sVal) { return aData[_.findKey(aData, o=>o[sKey]==sVal)] }
 // findKeys = function(aData,sKey,sVal) { return aData.filter(function(e){return e[sKey]==sVal}) }
-findKeys = function(aRO,sKey,sVal) { // sKey now allows regex match or arrays of keys, need to allow sVal to be regex or array too?
+findKeys = function(aRO,sKey,sVal) {
+    // consider refactoring this to make it more concise, eg 
+    // interesting notes: my intuition says sKey can be string, regex or array, whereas sVal should be string or regex (and never array?)
+
+    // normalize in order to get first row and all its keys / columns that way
     aRO = normalizeRecordsOriented(JSON.parse(JSON.stringify(aRO)));
     
     if (sKey instanceof RegExp) { // regex
@@ -30,19 +34,27 @@ findKeys = function(aRO,sKey,sVal) { // sKey now allows regex match or arrays of
         // return findKeys(aRO, aKeys, sVal);
     }
 
-    if (sVal instanceof RegExp) {
-        
-    }
-
     if (Array.isArray(sKey)) { // array
-        return aRO.filter(function(e){
-            return sKey.reduce(function(a1, e1, i1) {
-                a1 = a1 || e[e1]==sVal; 
-                return a1;
-            }, false) 
-        })
+        if (sVal instanceof RegExp) {
+            return aRO.filter(function(e){
+                return sKey.reduce(function(a1, e1, i1) {
+                    a1 = a1 || e[e1].match(sVal); 
+                    return a1;
+                }, false) 
+            })
+        } else { // sVal is exact match
+            return aRO.filter(function(e){
+                return sKey.reduce(function(a1, e1, i1) {
+                    a1 = a1 || e[e1]==sVal; 
+                    return a1;
+                }, false) 
+            })        }
     } else { // string
-        return aRO.filter(function(e){return e[sKey]==sVal})
+        if (sVal instanceof RegExp) {
+            return aRO.filter(function(e){return e[sKey].match(sVal) });
+        } else { // sVal is exact match
+            return aRO.filter(function(e){return e[sKey]==sVal});
+        }
     }
 }
 findKey = function(aData,sKey,sVal) { return findKeys(aData,sKey,sVal)[0]; }
