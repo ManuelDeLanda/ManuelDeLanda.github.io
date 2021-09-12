@@ -21,7 +21,30 @@ unique = function(aArray) { var a = []; for (var i=0, l=aArray.length; i<l; i++)
 /* BEGIN values oriented / records oriented / tab delimited converter functions */
 // toValuesOriented = function(aInputArray) { var aArrayOfAllPossibleColumnTitles = aInputArray.reduce(function(agg123, oElement123) { Object.keys(oElement123).forEach(function(oElement751) { if (!agg123.includes(oElement751)) { agg123.push(oElement751); } else {} }); return agg123; }, Object.keys(aInputArray[0])); var aValuesOrientation = aInputArray.map(function(oElement123, iIndex123) { return aArrayOfAllPossibleColumnTitles.reduce(function(agg751, oElement751) { if (oElement123[oElement751] == undefined) { agg751.push(); } else { agg751.push(oElement123[oElement751]); } return agg751; }, []) }); aValuesOrientation.unshift(aArrayOfAllPossibleColumnTitles); return aValuesOrientation; }
 // findKey = function(aData,sKey,sVal) { return aData[_.findKey(aData, o=>o[sKey]==sVal)] }
-findKeys = function(aData,sKey,sVal) { return aData.filter(function(e){return e[sKey]==sVal}) }
+// findKeys = function(aData,sKey,sVal) { return aData.filter(function(e){return e[sKey]==sVal}) }
+findKeys = function(aRO,sKey,sVal) { // sKey now allows regex match or arrays of keys, need to allow sVal to be regex or array too?
+    aRO = normalizeRecordsOriented(JSON.parse(JSON.stringify(aRO)));
+    
+    if (sKey instanceof RegExp) { // regex
+        sKey = Object.keys(aRO[0]).filter(function(k) { return k.match(sKey); }); // to array;
+        // return findKeys(aRO, aKeys, sVal);
+    }
+
+    if (sVal instanceof RegExp) {
+        
+    }
+
+    if (Array.isArray(sKey)) { // array
+        return aRO.filter(function(e){
+            return sKey.reduce(function(a1, e1, i1) {
+                a1 = a1 || e[e1]==sVal; 
+                return a1;
+            }, false) 
+        })
+    } else { // string
+        return aRO.filter(function(e){return e[sKey]==sVal})
+    }
+}
 findKey = function(aData,sKey,sVal) { return findKeys(aData,sKey,sVal)[0]; }
 findKeysIndex = function(aData,sKey,sVal) { return findKeyIndexes(aData,sKey,sVal)[0]; }
 findKeyIndexes = function(aData,sKey,sVal) { return JSON.parse(JSON.stringify(aData)).map(function(e, i) { e.index = i; return e; }).filter(function(e) { return e[sKey] == sVal; }).map(function(e) { return e.index }) }
@@ -152,6 +175,8 @@ getYYYYMMDDHHMMSS = function(sDate) {
 /* END SOME DATE-RELATED FUNCTIONS */
 
 
+// consider refactoring JSONObjectify try/catch errors and keep trying to make assumptions about the data passed into it.  assumptions aren't good but this function is experimental anyways so it'd be cool if I can figure out whether the sSeparator is , vs ; so come up with some sDelimiter (' / ") vs sSeparator ("," / ";") vs sTerminator ("/n")
+// note2: sDelimiter should not be considered at all for JSONObjectify, only sSeparator and sTerminator.
 JSONObjectify = function(sString, sDelimiter, sColon) {
   if (!sDelimiter) { sDelimiter = ","; } // for now, assume , or \n as delimiters
   if (!sColon) { sColon = ":";} // for now, assume : or = as colons
