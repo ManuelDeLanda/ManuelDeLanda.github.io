@@ -109,6 +109,24 @@ toDelimited = function(aInputArray, sDelimiter, sQualifier) { function returnAll
 convertTabDelimitedToValuesOriented = function(sText) { return sText.split(String.fromCharCode(10)).map(function(oElement) { return oElement.split(String.fromCharCode(9)); }); }
 convertTabDelimitedToRecordsOriented = function(sText) { return toRecordsOriented(convertTabDelimitedToValuesOriented(sText)); }
 toXXXOrientated=toXXXOriented;toXXXOrientatedDEDUPED=toXXXOrientedDEDUPED;
+
+isValuesOriented = function(aArray) { return Array.isArray(aArray[0]); }
+
+uniqueLodash = function(aArray, aColumns) {
+    // eg uniqueLodash(aRO, ["Type", "Document Number", "Internal ID"])
+    if (isValuesOriented(aArray)) { aArray = toRecordsOriented(aArray); }
+
+    return _.uniqWith(
+      aArray,
+      (oA, oB) =>
+        // oA[aColumns[0]] === oB[aColumns[0]]
+        aColumns.reduce( (oAgg, oEl, iIn) => {
+            oAgg = oAgg && (oA[oEl] == oB[oEl]);
+            return oAgg;
+        }, true )
+    );
+
+}
 /* END values oriented / records oriented / tab delimited converter functions */
 
 /* BEGIN CLEANER/NORMALIZER/SANITIZER FUNCTIONS */
