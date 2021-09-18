@@ -60,7 +60,18 @@ findKeys = function(aRO,sKey,sVal) {
 findKey = function(aData,sKey,sVal) { return findKeys(aData,sKey,sVal)[0]; }
 findKeysIndex = function(aData,sKey,sVal) { return findKeyIndexes(aData,sKey,sVal)[0]; }
 findKeyIndexes = function(aData,sKey,sVal) { return JSON.parse(JSON.stringify(aData)).map(function(e, i) { e.index = i; return e; }).filter(function(e) { return e[sKey] == sVal; }).map(function(e) { return e.index }) }
-
+ObjectKeysRegex = function(oObject, rRegexKey) {
+    return Object.keys(oObject).filter(function(oEl) {
+        return oEl.match(rRegex);
+    })
+}
+ObjectValuesRegex = function(oObject, rRegexKey) {
+    return Object.keys(oObject).filter(function(oEl) {
+        return oEl.match(rRegex);
+    }).map(function(oEl) {
+        return oObject[oEl];
+    })
+}
 
 toValuesOriented = function(aInputArray, aColumns) {
     // REFACTOR: replace aArrayOfAllPossibleColumnTitles now that there's a normalizeRecordsOriented function?
@@ -483,41 +494,6 @@ pivottable=function(aInputArray, aPivotInstructions) {
         }
     }
     return pivot_table(aInputArray, aPivotInstructions);
-}
-
-pivottable.sample = function(aThis) {
-  sSample = "";
-  if (!aThis) { aThis = [{"Account":714466,"Name":"Trantow-Barrows","Rep":"Craig Booker","Manager":"Debra Henley","Product":"CPU","Quantity":1,"Price":30000,"Status":"presented"},{"Account":714466,"Name":"Trantow-Barrows","Rep":"Craig Booker","Manager":"Debra Henley","Product":"Software","Quantity":1,"Price":10000,"Status":"presented"},{"Account":714466,"Name":"Trantow-Barrows","Rep":"Craig Booker","Manager":"Debra Henley","Product":"Maintenance","Quantity":2,"Price":5000,"Status":"pending"},{"Account":737550,"Name":"Fritsch, Russel and Anderson","Rep":"Craig Booker","Manager":"Debra Henley","Product":"CPU","Quantity":1,"Price":35000,"Status":"declined"},{"Account":146832,"Name":"Kiehn-Spinka","Rep":"Daniel Hilton","Manager":"Debra Henley","Product":"CPU","Quantity":2,"Price":65000,"Status":"won"},{"Account":218895,"Name":"Kulas Inc","Rep":"Daniel Hilton","Manager":"Debra Henley","Product":"CPU","Quantity":2,"Price":40000,"Status":"pending"},{"Account":218895,"Name":"Kulas Inc","Rep":"Daniel Hilton","Manager":"Debra Henley","Product":"Software","Quantity":1,"Price":10000,"Status":"presented"},{"Account":412290,"Name":"Jerde-Hilpert","Rep":"John Smith","Manager":"Debra Henley","Product":"Maintenance","Quantity":2,"Price":5000,"Status":"pending"},{"Account":740150,"Name":"Barton LLC","Rep":"John Smith","Manager":"Debra Henley","Product":"CPU","Quantity":1,"Price":35000,"Status":"declined"},{"Account":141962,"Name":"Herman LLC","Rep":"Cedric Moss","Manager":"Fred Anderson","Product":"CPU","Quantity":2,"Price":65000,"Status":"won"},{"Account":163416,"Name":"Purdy-Kunde","Rep":"Cedric Moss","Manager":"Fred Anderson","Product":"CPU","Quantity":1,"Price":30000,"Status":"presented"},{"Account":239344,"Name":"Stokes LLC","Rep":"Cedric Moss","Manager":"Fred Anderson","Product":"Maintenance","Quantity":1,"Price":5000,"Status":"pending"},{"Account":239344,"Name":"Stokes LLC","Rep":"Cedric Moss","Manager":"Fred Anderson","Product":"Software","Quantity":1,"Price":10000,"Status":"presented"},{"Account":307599,"Name":"Kassulke, Ondricka and Metz","Rep":"Wendy Yule","Manager":"Fred Anderson","Product":"Maintenance","Quantity":3,"Price":7000,"Status":"won"},{"Account":688981,"Name":"Keeling LLC","Rep":"Wendy Yule","Manager":"Fred Anderson","Product":"CPU","Quantity":5,"Price":100000,"Status":"won"},{"Account":729833,"Name":"Koepp Ltd","Rep":"Wendy Yule","Manager":"Fred Anderson","Product":"CPU","Quantity":2,"Price":65000,"Status":"declined"},{"Account":729833,"Name":"Koepp Ltd","Rep":"Wendy Yule","Manager":"Fred Anderson","Product":"Monitor","Quantity":2,"Price":5000,"Status":"presented"},{"Account":101010,"Name":"Dipshit Corp","Rep":"Daniel Hilton","Manager":"Debra Henley","Product":"Software","Quantity":5,"Price":350000,"Status":"presented"}]; sSample = "aRecordsOriented = " + JSON.stringify(aThis) + "\n\n";  }
-    var aPivotFunctions = ['sum', 'listagg', 'listaggU', 'listagg-len', 'listagg-sum', 'intersection'];
-    var iRandomIndex;
-    var aRandomPivotInstructions = Object.keys(aThis[0]).reduce(function(agg, oElement, iIndex) {
-      var iTotalKeys = Object.keys(aThis[0]).length;
-      iRandomIndex = Math.floor((Math.random() * 2) + 0);
-      if (iIndex == 0) { 
-        iRandomIndex = 0;
-      } else if (iIndex == iTotalKeys - 1) {
-        iRandomIndex = 2;
-      }
-      if (agg[iRandomIndex] == undefined) {
-          agg[iRandomIndex] = [oElement];
-
-      } else {
-          agg[iRandomIndex].push(oElement);
-      }
-      return agg;
-    }, []);
-
-    aRandomPivotInstructions[3] = [];
-
-    for(i=0; i<aRandomPivotInstructions[2].length; i++) {
-     iRandomIndex = Math.floor((Math.random() * aPivotFunctions.length) + 0);
-     aRandomPivotInstructions[3][i] = aPivotFunctions[iRandomIndex]
-    }
-    // return aRandomPivotInstructions;
-    sSample += "var aPivotInstructions = " + JSON.stringify(aRandomPivotInstructions) + ";";
-    sSample += '\npivottable(aRecordsOriented, aPivotInstructions);';
-    sSample += "\n\n// also this - \n// pivottable(aRecordsOriented, '2 4,5 7 listaggU');";
-    return sSample;
 }
 /* END PANDAS-INSPIRED, LODASH-DEPENDENT FUNCTIONS */
 
