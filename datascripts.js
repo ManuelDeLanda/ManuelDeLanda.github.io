@@ -111,22 +111,6 @@ convertTabDelimitedToRecordsOriented = function(sText) { return toRecordsOriente
 toXXXOrientated=toXXXOriented;toXXXOrientatedDEDUPED=toXXXOrientedDEDUPED;
 
 isValuesOriented = function(aArray) { return Array.isArray(aArray[0]); }
-
-uniqueLodash = function(aArray, aColumns) {
-    // eg uniqueLodash(aRO, ["Type", "Document Number", "Internal ID"])
-    if (isValuesOriented(aArray)) { aArray = toRecordsOriented(aArray); }
-
-    return _.uniqWith(
-      aArray,
-      (oA, oB) =>
-        // oA[aColumns[0]] === oB[aColumns[0]]
-        aColumns.reduce( (oAgg, oEl, iIn) => {
-            oAgg = oAgg && (oA[oEl] == oB[oEl]);
-            return oAgg;
-        }, true )
-    );
-
-}
 /* END values oriented / records oriented / tab delimited converter functions */
 
 /* BEGIN CLEANER/NORMALIZER/SANITIZER FUNCTIONS */
@@ -230,6 +214,22 @@ JSONObjectify = function(sString, sDelimiter, sColon) {
 JSONObjectify.sample=function() { return 'JSONObjectify("branch:main,folder:datascripts");'; }
 
 /* BEGIN PANDAS-INSPIRED, LODASH-DEPENDENT FUNCTIONS */
+uniqueLodash = function(aArray, aColumns) {
+    // eg uniqueLodash(aRO, ["Type", "Document Number", "Internal ID"])
+    if (isValuesOriented(aArray)) { aArray = toRecordsOriented(aArray); }
+
+    return _.uniqWith(
+      aArray,
+      (oA, oB) =>
+        // oA[aColumns[0]] === oB[aColumns[0]]
+        aColumns.reduce( (oAgg, oEl, iIn) => {
+            oAgg = oAgg && (oA[oEl] == oB[oEl]);
+            return oAgg;
+        }, true )
+    );
+
+}
+
 lodashmerge = function(a, b, sKey) { return _.values(_.merge(_.keyBy(a, sKey), _.keyBy(b, sKey))); }
 
 melt = function (aInputArray, aColumns) {
@@ -347,7 +347,8 @@ pivottable=function(aInputArray, aPivotInstructions) {
           } else {
             return oEl.split(",").map(function(oEl0) {
                 if (oEl0 == "") {
-                    return 0;
+                    // return 0;
+                    return "";
                 } else {
                     return parseInt(oEl0);
                 }
@@ -360,8 +361,18 @@ pivottable=function(aInputArray, aPivotInstructions) {
         // convert strs to int columns
         // aPivotInstructions2 = aPivotInstructions.map(function(oElement0, iIndex0) { return ((iIndex0 != 3 ) ? oElement0.map(function(oElement) { return Object.keys(aRecordsOrientation[0]).indexOf(oElement) }) : oElement0); })
         // convert int to str columns
-            console.log(aPivotInstructions)
-            aPivotInstructions = aPivotInstructions.map(function(oElement0, iIndex0) { return ((iIndex0 != 3 ) ? oElement0.map(function(oElement) { return Object.keys(aRecordsOrientation[0])[oElement.toString()] }) : oElement0); })
+           console.log(aPivotInstructions)
+            aPivotInstructions = aPivotInstructions.map(function(oElement0, iIndex0) { return ((iIndex0 != 3 ) ? oElement0.map(function(oElement) {
+                sColumnNameFromInteger = Object.keys(aRecordsOrientation[0])[oElement.toString()];
+                // console.log(sColumnNameFromInteger);
+                if (sColumnNameFromInteger != undefined) {
+                    return sColumnNameFromInteger;
+                } else {
+                    return [];
+                }
+            }) : oElement0); })
+            if (aPivotInstructions[1][0] == "") { aPivotInstructions[1] = []; }
+            console.log(aPivotInstructions);
         }
         // .replace(/[^A-Za-z_]+/g,"_")
         // REPLACE aRecordsOrientation with underscored keys and toString()'d values'
