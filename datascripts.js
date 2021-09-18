@@ -224,12 +224,37 @@ JSONObjectify = function(sString, sDelimiter, sColon) {
 }
 JSONObjectify.sample=function() { return 'JSONObjectify("branch:main,folder:datascripts");'; }
 
+// unique2D vs uniqueLodash
+function unique2D(aArray) { return unique(aArray.map(function(o){ return JSON.stringify(o); })).map(function(o) { return JSON.parse(o); }) }
+function unique2D_getdupes(aArray) {
+    var bIsRO = true; if (isValuesOriented(aArray)) { aArray = toRecordsOriented(aArray); bIsRO = false; }; 
+    var oReturn = {}
+    aArray.forEach(function(oEl) {
+      sEl = JSON.stringify(oEl);
+      if (oReturn[sEl]) {
+        oReturn[sEl] += 1;
+      } else {
+        oReturn[sEl] = 1;
+      }
+    })
+    
+    aReturn = Object.keys(oReturn).map(function(oEl) {
+      i = oReturn[oEl];
+      oObject = JSON.parse(oEl);
+      oObject.dupes = i;
+      return oObject;
+    })
+    if (bIsRO) { return aReturn; } else { return toValuesOriented(aReturn); }
+}
+
 /* BEGIN PANDAS-INSPIRED, LODASH-DEPENDENT FUNCTIONS */
 uniqueLodash = function(aArray, aColumns) {
     // eg uniqueLodash(aRO, ["Type", "Document Number", "Internal ID"])
-    if (isValuesOriented(aArray)) { aArray = toRecordsOriented(aArray); }
-
-    return _.uniqWith(
+    var bIsRO = true; if (isValuesOriented(aArray)) { aArray = toRecordsOriented(aArray); bIsRO = false; }; 
+    if (aColumns == undefined) {
+      aColumns = Object.keys(aArray[0]);
+    }
+    var aArrayReturn = _.uniqWith(
       aArray,
       (oA, oB) =>
         // oA[aColumns[0]] === oB[aColumns[0]]
@@ -238,7 +263,7 @@ uniqueLodash = function(aArray, aColumns) {
             return oAgg;
         }, true )
     );
-
+    if (bIsRO) { return aArrayReturn; } else { return toValuesOriented(aArrayReturn); }
 }
 
 lodashmerge = function(a, b, sKey) { return _.values(_.merge(_.keyBy(a, sKey), _.keyBy(b, sKey))); }
