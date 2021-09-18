@@ -246,6 +246,14 @@ function unique2D_getdupes(aArray) {
     })
     if (bIsRO) { return aReturn; } else { return toValuesOriented(aReturn); }
 }
+function unique2D_getdupesOverOne(aArray) {
+  var aArrayWDupes = unique2D_getdupes(aArray)
+  var bIsRO = true; if (isValuesOriented(aArrayWDupes)) { aArrayWDupes = toRecordsOriented(aArrayWDupes); bIsRO = false; }
+  var aArrayWDupesOverOne = aArrayWDupes.filter(function(oEl) { return oEl.dupes > 1; })
+  if (aArrayWDupesOverOne.length == 0) { aArrayWDupesOverOne = [{"dupes": "0"}]; }
+  if (!bIsRO) { aArrayWDupesOverOne = toValuesOriented(aArrayWDupesOverOne); }
+  return aArrayWDupesOverOne;
+}
 
 /* BEGIN PANDAS-INSPIRED, LODASH-DEPENDENT FUNCTIONS */
 uniqueLodash = function(aArray, aColumns) {
