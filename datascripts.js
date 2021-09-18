@@ -215,8 +215,8 @@ JSONObjectify = function(sString, sDelimiter, sColon) {
     })
     return aReturn.reduce(function(oAg, oEl) {
       oEl = oEl.replace(/\=/g, ":");
-      sKey = oEl.split(":")[0].trim();
-      sValue = oEl.split(":")[1].trim();
+      sKey = oEl.split(sColon)[0].trim();
+      sValue = oEl.split(sColon)[1].trim();
       oAg[sKey] = sValue;
       return oAg;
     }, {})
