@@ -149,7 +149,7 @@ replaceColumnNameInRecordsOrientedArray = function(aRecordsOriented, sMatchingSt
     // aRecordsOriented = replaceColumnNameInRecordsOrientedArray(aRecordsOriented, "Rack # / Location", "Bin");
     var aValuesOriented = toValuesOriented(aRecordsOriented);
     aValuesOriented[0] = aValuesOriented[0].map(function(oElement) {
-        console.log(oElement == sMatchingString)
+        // console.log(oElement == sMatchingString)
         if (oElement == sMatchingString) { oElement = sReplacementString; }
         return oElement;
     })
@@ -361,7 +361,7 @@ pivottable=function(aInputArray, aPivotInstructions) {
         // convert strs to int columns
         // aPivotInstructions2 = aPivotInstructions.map(function(oElement0, iIndex0) { return ((iIndex0 != 3 ) ? oElement0.map(function(oElement) { return Object.keys(aRecordsOrientation[0]).indexOf(oElement) }) : oElement0); })
         // convert int to str columns
-           console.log(aPivotInstructions)
+           //console.log(aPivotInstructions)
             aPivotInstructions = aPivotInstructions.map(function(oElement0, iIndex0) { return ((iIndex0 != 3 ) ? oElement0.map(function(oElement) {
                 sColumnNameFromInteger = Object.keys(aRecordsOrientation[0])[oElement.toString()];
                 // console.log(sColumnNameFromInteger);
@@ -372,7 +372,7 @@ pivottable=function(aInputArray, aPivotInstructions) {
                 }
             }) : oElement0); })
             if (aPivotInstructions[1][0] == "") { aPivotInstructions[1] = []; }
-            console.log(aPivotInstructions);
+            // console.log(aPivotInstructions);
         }
         // .replace(/[^A-Za-z_]+/g,"_")
         // REPLACE aRecordsOrientation with underscored keys and toString()'d values'
