@@ -62,12 +62,12 @@ findKeysIndex = function(aData,sKey,sVal) { return findKeyIndexes(aData,sKey,sVa
 findKeyIndexes = function(aData,sKey,sVal) { return JSON.parse(JSON.stringify(aData)).map(function(e, i) { e.index = i; return e; }).filter(function(e) { return e[sKey] == sVal; }).map(function(e) { return e.index }) }
 ObjectKeysRegex = function(oObject, rRegexKey) {
     return Object.keys(oObject).filter(function(oEl) {
-        return oEl.match(rRegex);
+        return oEl.match(rRegexKey);
     })
 }
 ObjectValuesRegex = function(oObject, rRegexKey) {
     return Object.keys(oObject).filter(function(oEl) {
-        return oEl.match(rRegex);
+        return oEl.match(rRegexKey);
     }).map(function(oEl) {
         return oObject[oEl];
     })
