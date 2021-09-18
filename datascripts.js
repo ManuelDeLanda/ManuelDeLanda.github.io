@@ -65,6 +65,8 @@ ObjectKeysRegex = function(oObject, rRegexKey) {
         return oEl.match(rRegexKey);
     })
 }
+function ObjectKeyRegex(oObject,rRegexKey) { return ObjectKeysRegex(oObject,rRegexKey)[0]; }
+
 ObjectValuesRegex = function(oObject, rRegexKey) {
     return Object.keys(oObject).filter(function(oEl) {
         return oEl.match(rRegexKey);
@@ -72,6 +74,7 @@ ObjectValuesRegex = function(oObject, rRegexKey) {
         return oObject[oEl];
     })
 }
+function ObjectValueRegex(oObject,rRegexKey) { return ObjectValuesRegex(oObject,rRegexKey)[0]; }
 
 toValuesOriented = function(aInputArray, aColumns) {
     // REFACTOR: replace aArrayOfAllPossibleColumnTitles now that there's a normalizeRecordsOriented function?
