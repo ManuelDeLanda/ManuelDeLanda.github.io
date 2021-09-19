@@ -343,6 +343,7 @@ flatten = function(aArray) {
 };
 
 explode = function (aInputArray, aColumns, sDelimiter) {
+    // explode is like excel's horizontal splitting/unnesting, but it unnests vertically
     if (typeof(aColumns) == "string" && aColumns.match(/^[0-9]*/)) {
         aColumns = aColumns.replace(/ /g, ","); aColumns = aColumns.split(",").map(function(o) { return parseInt(o); })
     }
