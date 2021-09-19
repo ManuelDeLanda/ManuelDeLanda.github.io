@@ -259,7 +259,7 @@ function unique2D_getdupesOverOne(aArray) {
 }
 
 /* BEGIN PANDAS-INSPIRED, LODASH-DEPENDENT FUNCTIONS */
-uniqueLodash = function(aArray, aColumns) {
+lodashunique = function(aArray, aColumns) {
     // eg uniqueLodash(aRO, ["Type", "Document Number", "Internal ID"])
     var bIsRO = true; if (isValuesOriented(aArray)) { aArray = toRecordsOriented(aArray); bIsRO = false; }; 
     if (aColumns == undefined) {
@@ -280,9 +280,11 @@ uniqueLodash = function(aArray, aColumns) {
 lodashmerge = function(a, b, sKey) { return _.values(_.merge(_.keyBy(a, sKey), _.keyBy(b, sKey))); }
 
 melt = function (aInputArray, aColumns) {
-// REFACTOR OUT .flat() in favor of flatten() to make this friendly with es5 servers?
-    // aColumns = ["COUNT(*)", "matrix_child", "matrix_child_2"];
-    // aColumns = [0,1,2];
+  if (isValuesOriented(aInputArray)) { aInputArray = toRecordsOriented(aInputArray); }
+  aInputArray = normalizeRecordsOriented(aInputArray);
+  // REFACTOR OUT .flat() in favor of flatten() to make this friendly with es5 servers?
+  // aColumns = ["COUNT(*)", "matrix_child", "matrix_child_2"];
+  // aColumns = [0,1,2];
   aRecordsOrientedArray = JSON.parse(JSON.stringify(aInputArray));
   
   sColumnsChecker = aColumns;
@@ -294,13 +296,12 @@ melt = function (aInputArray, aColumns) {
       aColumns.splice( aColumns.indexOf(oElement098), 1)
     })
   } else { if (!Array.isArray(aColumns)) { aColumns = sColumnsChecker.split(","); } }
-
   sColumns = aColumns.join(",")
   
-  
-    if (typeof(aColumns[0])=="number") {
-        aColumns = aColumns.map(function(oElement) { return Object.keys(aRecordsOrientedArray[0])[oElement] })
-    } else {}
+  if (parseInt(aColumns[0]) != NaN) { // convert ints to columnnames - old: typeof(aColumns[0])=="number" || 
+      aColumns = aColumns.map(function(oElement) { return Object.keys(aRecordsOrientedArray[0])[parseInt(oElement)] })
+  } else {}
+    // console.log(aColumns);
 
     return aRecordsOrientedArray.map(function(oElement) {
     // return flatten(aRecordsOrientedArray.map(function(oElement) {
@@ -309,6 +310,7 @@ melt = function (aInputArray, aColumns) {
             //console.log(oElement000)
             oElement.variable = oElement000;
             oElement.value = oElement[oElement000];
+            // console.log(oElement);
             oElement = JSON.parse(JSON.stringify(oElement));
             //delete oElement[oElement000];
             return JSON.parse(JSON.stringify(oElement));
