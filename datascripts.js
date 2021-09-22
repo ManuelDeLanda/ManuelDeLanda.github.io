@@ -277,7 +277,7 @@ lodashunique = function(aArray, aColumns) {
     if (bIsRO) { return aArrayReturn; } else { return toValuesOriented(aArrayReturn); }
 }
 
-lodashmerge = function(a, b, sKey) { return _.values(_.merge(_.keyBy(a, sKey), _.keyBy(b, sKey))); }
+lodashmerge = function(a, b, sKey, sKey2) { if (sKey2) {} else {sKey2 = sKey}; return _.values(_.merge(_.keyBy(a, sKey), _.keyBy(b, sKey2))); }
 
 melt = function (aInputArray, aColumns) {
   if (isValuesOriented(aInputArray)) { aInputArray = toRecordsOriented(aInputArray); }
@@ -379,15 +379,16 @@ explode = function (aInputArray, aColumns, sDelimiter) {
 // sanitizeRecordsOrientedData(toRecordsOriented(convertHTMLTableToValuesOriented("table.wikitable.plainrowheaders.wikiepisodetable")))
 explode.sample=function() { return 'var aRecordsOriented = [{"No.overall":1,"No. inseason":1,"Title":"Pilot?","Directed by":"Robert Mandel","Written by":"Chris Carter","Original air date":"September 10, 1993"},{"No.overall":2,"No. inseason":2,"Title":"Deep Throat?","Directed by":"Daniel Sackheim","Written by":"Chris Carter","Original air date":"September 17, 1993"},{"No.overall":3,"No. inseason":3,"Title":"Squeeze","Directed by":"Harry Longstreet","Written by":"Glen Morgan & James Wong","Original air date":"September 24, 1993"},{"No.overall":4,"No. inseason":4,"Title":"Conduit","Directed by":"Daniel Sackheim","Written by":"Alex Gansa & Howard Gordon","Original air date":"October 1, 1993"},{"No.overall":5,"No. inseason":5,"Title":"The Jersey Devil","Directed by":"Joe Napolitano","Written by":"Chris Carter","Original air date":"October 8, 1993"},{"No.overall":6,"No. inseason":6,"Title":"Shadows","Directed by":"Michael Katleman","Written by":"Glen Morgan & James Wong","Original air date":"October 22, 1993"},{"No.overall":7,"No. inseason":7,"Title":"Ghost in the Machine","Directed by":"Jerrold Freedman","Written by":"Alex Gansa & Howard Gordon","Original air date":"October 29, 1993"},{"No.overall":8,"No. inseason":8,"Title":"Ice","Directed by":"David Nutter","Written by":"Glen Morgan & James Wong","Original air date":"November 5, 1993"}]; explode(aRecordsOriented, ["Written by"], " & ")'; }
 
-pivottable=function(aInputArray, aPivotInstructions) {
+pivottable=function(aInputArray, aPivotInstructions, bReplaceColumnNames) {
     function parseFloatForSUM(sString) {
         if (isNaN(sString) || sString == "" || sString == undefined || sString == null || sString == NaN) { sString = 0 }
         return parseFloat(sString);
     }
     
-    function pivot_table(aRecordsOrientation, aPivotInstructions) {
+    function pivot_table(aRecordsOrientation, aPivotInstructions, bReplaceColumnNames) {
        // replace columns starting with an int with "num_" to temporarily fix bug
        aRecordsOrientation = toRecordsOriented(toValuesOriented(aRecordsOrientation));
+       aRecordsOrientationCOPY = toRecordsOriented(toValuesOriented(aRecordsOrientation));
        var aValuesaOriented = toValuesOriented(aRecordsOrientation);
        aValuesaOriented[0] = aValuesaOriented[0].map(function(oElement) { if (oElement.match(/^[0-9]/g)) { oElement = "num_" + oElement } return oElement; })
        aRecordsOrientation = toRecordsOriented(aValuesaOriented);
@@ -526,17 +527,30 @@ pivottable=function(aInputArray, aPivotInstructions) {
 
             sToEval = "var aPivotedData = _.map(oRecordsOrientationGroup, function(group){ return {\n" + sFirstPartOfReturn + sSecondPartOfReturn + "\n}; });"
             // console.log(sToEval); // eval(sToEval)
-            eval(sToEval)
+            eval(sToEval);
             // copy(JSON.stringify(aPivotedData))
             //console.log("oRecordsOrientationGroup = " + JSON.stringify(oRecordsOrientationGroup));
             //console.log("aColumnsIndexAllCombinations" + JSON.stringify(aColumnsIndexAllCombinations));
             //console.log(sToEval)
+            
+            if (bReplaceColumnNames) {
+                // this 3rd parameter (bReplaceColumnNames) only works when there's no more than 1 sAggInstruction AND when there's no columnColumns
+                aRenamedColumns = Object.keys(aRecordsOrientationCOPY[0]);
+                aPivotedData.forEach(function(oEl) {
+                    Object.keys(oEl).forEach(function(oEl0, iIn0) {
+                        if (iIn0 > 0) {
+                            oEl[aRenamedColumns[iIn0]] = oEl[oEl0];
+                            delete oEl[oEl0];
+                        }
+                    })
+                })
+            }
             return aPivotedData;
         } catch(eError) {
             return [eError, sToEval];
         }
     }
-    return pivot_table(aInputArray, aPivotInstructions);
+    return pivot_table(aInputArray, aPivotInstructions, bReplaceColumnNames);
 }
 /* END PANDAS-INSPIRED, LODASH-DEPENDENT FUNCTIONS */
 
