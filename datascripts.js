@@ -248,7 +248,7 @@ JSONObjectify.sample=function() { return 'JSONObjectify("branch:main,folder:data
 // unique2D vs uniqueLodash
 function unique2D(aArray) { return unique(aArray.map(function(o){ return JSON.stringify(o); })).map(function(o) { return JSON.parse(o); }) }
 function unique2D_getdupes(aArray) {
-    var bIsRO = true; if (isValuesOriented(aArray)) { aArray = toRecordsOriented(aArray); bIsRO = false; }; 
+    var bIsRO = true; if (isValuesOriented(aArray)) { aArray = toRecordsOriented(aArray); bIsRO = false; }; //   if (!bIsRO) { aReturn = toValuesOriented(aReturn); }
     var oReturn = {}
     aArray.forEach(function(oEl) {
       sEl = JSON.stringify(oEl);
@@ -298,7 +298,9 @@ lodashunique = function(aArray, aColumns) {
 lodashmerge = function(a, b, sKey, sKey2) { if (sKey2) {} else {sKey2 = sKey}; return _.values(_.merge(_.keyBy(a, sKey), _.keyBy(b, sKey2))); }
 
 melt = function (aInputArray, aColumns) {
-  if (isValuesOriented(aInputArray)) { aInputArray = toRecordsOriented(aInputArray); }
+  // if (isValuesOriented(aInputArray)) { aInputArray = toRecordsOriented(aInputArray); }
+  var bIsRO = true; if (isValuesOriented(aInputArray)) { aInputArray = toRecordsOriented(aInputArray); bIsRO = false; };
+
   aInputArray = normalizeRecordsOriented(aInputArray);
   // REFACTOR OUT .flat() in favor of flatten() to make this friendly with es5 servers?
   // aColumns = ["COUNT(*)", "matrix_child", "matrix_child_2"];
@@ -321,7 +323,7 @@ melt = function (aInputArray, aColumns) {
   } else {}
     // console.log(aColumns);
 
-    return aRecordsOrientedArray.map(function(oElement) {
+    var aReturn = aRecordsOrientedArray.map(function(oElement) {
     // return flatten(aRecordsOrientedArray.map(function(oElement) {
         oElement = JSON.parse(JSON.stringify(oElement));
         return aColumns.map(function(oElement000) {
@@ -341,7 +343,10 @@ melt = function (aInputArray, aColumns) {
         })
 
         return oElement; 
-    }) 
+    })
+    
+    if (!bIsRO) { aReturn = toValuesOriented(aReturn); };
+    return aReturn;
 }
 melt.sample=function() { return 'var aArray=[{"blank":0,"car_model":"Tesla Model S P100D","Sept 1 9am":2.5,"Sept 1 10am":2.51,"Sept 1 11am":2.54},{"blank":1,"car_model":"Tesla Model X P100D","Sept 1 9am":2.92,"Sept 1 10am":2.91,"Sept 1 11am":2.93},{"blank":2,"car_model":"Tesla Model 3 AWD Dual Motor","Sept 1 9am":3.33,"Sept 1 10am":3.31,"Sept 1 11am":3.35}];\nmelt(aArray, [2,3,4]);melt(aArray, "-0,1")' }
 
@@ -361,7 +366,8 @@ flatten = function(aArray) {
 };
 
 explode = function (aInputArray, aColumns, sDelimiter) {
-    if (isValuesOriented(aInputArray)) { aInputArray = toRecordsOriented(aInputArray); }
+    var bIsRO = true; if (isValuesOriented(aInputArray)) { aInputArray = toRecordsOriented(aInputArray); bIsRO = false; }; // if (!bIsRO) { aReturn = toValuesOriented(aReturn); };
+
     aInputArray = normalizeRecordsOriented(aInputArray);
     // explode is like excel's horizontal splitting/unnesting, but it unnests vertically
     if (typeof(aColumns) == "string" && aColumns.match(/^[0-9]*/)) {
@@ -377,7 +383,7 @@ explode = function (aInputArray, aColumns, sDelimiter) {
     if (typeof(aColumns[0]) == "number") {
         var sColumn = Object.keys(aInputArray[0])[aColumns[0]]
     } else { var sColumn = aColumns[0]; }
-    return flatten(aInputArray.map(function(oElement999) {
+    aReturn = flatten(aInputArray.map(function(oElement999) {
         if (oElement999[sColumn].split(sDelimiter).length > 1) { 
             return oElement999[sColumn].split(sDelimiter).map(function(oElement) {
                 return Object.keys(oElement999).reduce(function(oAgg000, oElemment000) {
@@ -394,13 +400,14 @@ explode = function (aInputArray, aColumns, sDelimiter) {
             }) 
         } else { return oElement999 }
     })); // .flat()
+    if (!bIsRO) { aReturn = toValuesOriented(aReturn); };
+    return aReturn;
 }
 // SAMPLE DATA FROM https://en.wikipedia.org/wiki/List_of_The_X-Files_episodes
 // sanitizeRecordsOrientedData(toRecordsOriented(convertHTMLTableToValuesOriented("table.wikitable.plainrowheaders.wikiepisodetable")))
-explode.sample=function() { return 'var aRecordsOriented = [{"No.overall":1,"No. inseason":1,"Title":"Pilot?","Directed by":"Robert Mandel","Written by":"Chris Carter","Original air date":"September 10, 1993"},{"No.overall":2,"No. inseason":2,"Title":"Deep Throat?","Directed by":"Daniel Sackheim","Written by":"Chris Carter","Original air date":"September 17, 1993"},{"No.overall":3,"No. inseason":3,"Title":"Squeeze","Directed by":"Harry Longstreet","Written by":"Glen Morgan & James Wong","Original air date":"September 24, 1993"},{"No.overall":4,"No. inseason":4,"Title":"Conduit","Directed by":"Daniel Sackheim","Written by":"Alex Gansa & Howard Gordon","Original air date":"October 1, 1993"},{"No.overall":5,"No. inseason":5,"Title":"The Jersey Devil","Directed by":"Joe Napolitano","Written by":"Chris Carter","Original air date":"October 8, 1993"},{"No.overall":6,"No. inseason":6,"Title":"Shadows","Directed by":"Michael Katleman","Written by":"Glen Morgan & James Wong","Original air date":"October 22, 1993"},{"No.overall":7,"No. inseason":7,"Title":"Ghost in the Machine","Directed by":"Jerrold Freedman","Written by":"Alex Gansa & Howard Gordon","Original air date":"October 29, 1993"},{"No.overall":8,"No. inseason":8,"Title":"Ice","Directed by":"David Nutter","Written by":"Glen Morgan & James Wong","Original air date":"November 5, 1993"}]; explode(aRecordsOriented, ["Written by"], " & ")'; }
 
 pivottable=function(aInputArray, aPivotInstructions, bReplaceColumnNames) {
-    if (isValuesOriented(aInputArray)) { aInputArray = toRecordsOriented(aInputArray); }
+    var bIsRO = true; if (isValuesOriented(aInputArray)) { aInputArray = toRecordsOriented(aInputArray); bIsRO = false; };
     aInputArray = normalizeRecordsOriented(aInputArray);
     
     function parseFloatForSUM(sString) {
@@ -573,7 +580,10 @@ pivottable=function(aInputArray, aPivotInstructions, bReplaceColumnNames) {
             return [eError, sToEval];
         }
     }
-    return pivot_table(aInputArray, aPivotInstructions, bReplaceColumnNames);
+    var aReturn = pivot_table(aInputArray, aPivotInstructions, bReplaceColumnNames);
+    if (!bIsRO) { aReturn = toValuesOriented(aReturn); };
+    return aReturn;
+
 }
 /* END PANDAS-INSPIRED, LODASH-DEPENDENT FUNCTIONS */
 
