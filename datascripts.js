@@ -80,6 +80,7 @@ ObjectValuesRegex = function(oObject, rRegexKey) {
 function ObjectValueRegex(oObject,rRegexKey) { return ObjectValuesRegex(oObject,rRegexKey)[0]; }
 
 toValuesOriented = function(aInputArray, aColumns) {
+    if (isValuesOriented(aInputArray)) { return aInputArray; }
     // REFACTOR: replace aArrayOfAllPossibleColumnTitles now that there's a normalizeRecordsOriented function?
     var aArrayOfAllPossibleColumnTitles = aInputArray.reduce(function(agg123, oElement123) {
         Object.keys(oElement123).forEach(function(oElement751) {
@@ -105,6 +106,7 @@ toValuesOriented = function(aInputArray, aColumns) {
     return aValuesOrientation;
 }
 toRecordsOriented = function(aInputArray) {
+    if (!isValuesOriented(aInputArray)) { return aInputArray; }
     var aValuesOrientation = normalizeValuesOriented(sanitizeValuesOrientedData(JSON.parse(JSON.stringify(aInputArray))));
     aValuesOrientation[0] = aValuesOrientation[0].slice().reverse().map(function(oElement, iIndex, aArray) {
         if (aValuesOrientation[0].indexOf(oElement) == aValuesOrientation[0].length - aArray.indexOf(oElement) - 1) {
