@@ -309,11 +309,14 @@ melt = function (aInputArray, aColumns) {
   // aColumns = [0,1,2];
   aRecordsOrientedArray = JSON.parse(JSON.stringify(aInputArray));
   
-  sColumnsChecker = aColumns;
+  var aColumnsIntegers = Object.keys(aRecordsOrientedArray[0]).map(function(oElement098, iIndex098) { return iIndex098.toString() });
+  if (aColumns) {} else { aColumns = "-0"; } // "-0" is the default parameter expectation from UNPIVOT or MELT.
+  if (aColumns == "*") { aColumns = aColumnsIntegers.join(","); } // melting all columns into just a variables and values columns is silly but it's good for demo purposes 
+  var sColumnsChecker = aColumns;
 
   if (sColumnsChecker[0] == "-") { // then inverse list of columns
     sColumnsChecker = sColumnsChecker.slice(1, sColumnsChecker.length);
-    aColumns = Object.keys(aRecordsOrientedArray[0]).map(function(oElement098, iIndex098) { return iIndex098.toString() })
+    aColumns = aColumnsIntegers; // Object.keys(aRecordsOrientedArray[0]).map(function(oElement098, iIndex098) { return iIndex098.toString() })
     sColumnsChecker.split(",").forEach(function(oElement098) {
       aColumns.splice( aColumns.indexOf(oElement098), 1)
     })
