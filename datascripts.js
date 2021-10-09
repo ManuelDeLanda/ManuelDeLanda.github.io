@@ -13,7 +13,7 @@ count=function(s, c) { var result = 0, i = 0; for(i;i<s.length;i++)if(s[i]==c)re
 // count=function(c) { var result = 0, i = 0; for(i;i<this.length;i++)if(this[i]==c)result++; return result; };
 // Array.prototype.unique = function() { var a = []; for (var i=0, l=this.length; i<l; i++) if (a.indexOf(this[i]) === -1) a.push(this[i]); return a; };
 unique = function(aArray) { var a = []; for (var i=0, l=aArray.length; i<l; i++) if (a.indexOf(aArray[i]) === -1) a.push(aArray[i]); return a; };
-//Object.prototype.toArray = function () { var _this = this; var array = []; Object.keys(this).map(function (key) { array.push(_this[key]); }); return array; };
+// Object.prototype.toArray = function () { var _this = this; var array = []; Object.keys(this).map(function (key) { array.push(_this[key]); }); return array; };
 // sCF = String.fromCharCode(13); sLF = String.fromCharCode(10); sTB = String.fromCharCode(9);
 // sCarriageReturn = sCF; sLineFeed = sLF; sTab = sTB;                                                                       
 /* END no brainer / polyfilles for es5 */
@@ -25,6 +25,9 @@ unique = function(aArray) { var a = []; for (var i=0, l=aArray.length; i<l; i++)
 findKeys = function(aRO,sKey,sVal) {
     // consider refactoring this to make it more concise, eg 
     // interesting notes: my intuition says sKey can be string, regex or array, whereas sVal should be string or regex (and never array?)
+    
+    // obligatory convert aVO to aRO
+    if (isValuesOriented(aRO)) { aRO = toRecordsOriented(aRO); }
 
     // normalize in order to get first row and all its keys / columns that way
     aRO = normalizeRecordsOriented(JSON.parse(JSON.stringify(aRO)));
@@ -101,7 +104,22 @@ toValuesOriented = function(aInputArray, aColumns) {
     aValuesOrientation.unshift(aColumns);
     return aValuesOrientation;
 }
-toRecordsOriented = function(aInputArray) { var aValuesOrientation = JSON.parse(JSON.stringify(aInputArray)); aValuesOrientation[0] = aValuesOrientation[0].slice().reverse().map(function(oElement, iIndex, aArray) { if ( aValuesOrientation[0].indexOf(oElement) == aValuesOrientation[0].length - aArray.indexOf(oElement) - 1 ) { return oElement.toString().trim(); } else { return oElement.toString().trim() + "_" + (aValuesOrientation[0].length - iIndex) } }).reverse(); return aValuesOrientation.reduce(function(agg, oElement, iIndex, aArray) { return (iIndex != 0) ? agg.concat(aArray[0].reduce(function(oagg0, oElement0, iIndex0) { oagg0[oElement0] = oElement[iIndex0]; return oagg0 }, {})) : [] }, []) }
+toRecordsOriented = function(aInputArray) {
+    var aValuesOrientation = normalizeValuesOriented(sanitizeValuesOrientedData(JSON.parse(JSON.stringify(aInputArray))));
+    aValuesOrientation[0] = aValuesOrientation[0].slice().reverse().map(function(oElement, iIndex, aArray) {
+        if (aValuesOrientation[0].indexOf(oElement) == aValuesOrientation[0].length - aArray.indexOf(oElement) - 1) {
+            return oElement.toString().trim();
+        } else {
+            return oElement.toString().trim() + "_" + (aValuesOrientation[0].length - iIndex)
+        }
+    }).reverse();
+    return aValuesOrientation.reduce(function(agg, oElement, iIndex, aArray) {
+        return (iIndex != 0) ? agg.concat(aArray[0].reduce(function(oagg0, oElement0, iIndex0) {
+            oagg0[oElement0] = oElement[iIndex0];
+            return oagg0
+        }, {})) : []
+    }, [])
+}
 toXXXOriented = function (aInputArray, sXXX) { var aRecordsOrientation = JSON.parse(JSON.stringify(aInputArray)); return aRecordsOrientation.reduce(function (agg, oElement) { if (agg[oElement[sXXX]]==undefined) { agg[oElement[sXXX]] = oElement; } else { if (!Array.isArray(agg[oElement[sXXX]])) { agg[oElement[sXXX]] = [agg[oElement[sXXX]]].concat(oElement) } else { agg[oElement[sXXX]] = agg[oElement[sXXX]].concat(oElement) } } return agg; }, {}); }
 toXXXOrientedDEDUPED = function(aInputArray, sXXX)  { var aRecordsOrientation = JSON.parse(JSON.stringify(aInputArray)); var o_XXX_Orientation = aRecordsOrientation.reduce(function (agg, oElement) { if (agg[oElement[sXXX]]==undefined) { agg[oElement[sXXX]] = oElement; } else { if (!Array.isArray(agg[oElement[sXXX]])) { agg[oElement[sXXX]] = [agg[oElement[sXXX]]].concat(oElement) } else { agg[oElement[sXXX]] = agg[oElement[sXXX]].concat(oElement) } } return agg; }, {}); return Object.keys(o_XXX_Orientation).reduce(function(agg777, oElement777) { if (Array.isArray(o_XXX_Orientation[oElement777])) { agg777[oElement777] = o_XXX_Orientation[oElement777].reduce(function(agg778, oElement778) { return Object.keys(oElement778).reduce(function(agg779, oElement779) { if (agg778[oElement779] == undefined) { agg778[oElement779] = oElement778[oElement779]; } else { agg778[oElement779] = agg778[oElement779] + ";" + oElement778[oElement779]; } return agg778; }, "") }, {}) } else { agg777[oElement777] = o_XXX_Orientation[oElement777]; } return agg777; }, {}) }
 toTabDelimited = function (aInputArray, sDelimiter, sQualifier) {
@@ -343,6 +361,8 @@ flatten = function(aArray) {
 };
 
 explode = function (aInputArray, aColumns, sDelimiter) {
+    if (isValuesOriented(aInputArray)) { aInputArray = toRecordsOriented(aInputArray); }
+    aInputArray = normalizeRecordsOriented(aInputArray);
     // explode is like excel's horizontal splitting/unnesting, but it unnests vertically
     if (typeof(aColumns) == "string" && aColumns.match(/^[0-9]*/)) {
         aColumns = aColumns.replace(/ /g, ","); aColumns = aColumns.split(",").map(function(o) { return parseInt(o); })
@@ -380,6 +400,9 @@ explode = function (aInputArray, aColumns, sDelimiter) {
 explode.sample=function() { return 'var aRecordsOriented = [{"No.overall":1,"No. inseason":1,"Title":"Pilot?","Directed by":"Robert Mandel","Written by":"Chris Carter","Original air date":"September 10, 1993"},{"No.overall":2,"No. inseason":2,"Title":"Deep Throat?","Directed by":"Daniel Sackheim","Written by":"Chris Carter","Original air date":"September 17, 1993"},{"No.overall":3,"No. inseason":3,"Title":"Squeeze","Directed by":"Harry Longstreet","Written by":"Glen Morgan & James Wong","Original air date":"September 24, 1993"},{"No.overall":4,"No. inseason":4,"Title":"Conduit","Directed by":"Daniel Sackheim","Written by":"Alex Gansa & Howard Gordon","Original air date":"October 1, 1993"},{"No.overall":5,"No. inseason":5,"Title":"The Jersey Devil","Directed by":"Joe Napolitano","Written by":"Chris Carter","Original air date":"October 8, 1993"},{"No.overall":6,"No. inseason":6,"Title":"Shadows","Directed by":"Michael Katleman","Written by":"Glen Morgan & James Wong","Original air date":"October 22, 1993"},{"No.overall":7,"No. inseason":7,"Title":"Ghost in the Machine","Directed by":"Jerrold Freedman","Written by":"Alex Gansa & Howard Gordon","Original air date":"October 29, 1993"},{"No.overall":8,"No. inseason":8,"Title":"Ice","Directed by":"David Nutter","Written by":"Glen Morgan & James Wong","Original air date":"November 5, 1993"}]; explode(aRecordsOriented, ["Written by"], " & ")'; }
 
 pivottable=function(aInputArray, aPivotInstructions, bReplaceColumnNames) {
+    if (isValuesOriented(aInputArray)) { aInputArray = toRecordsOriented(aInputArray); }
+    aInputArray = normalizeRecordsOriented(aInputArray);
+    
     function parseFloatForSUM(sString) {
         if (isNaN(sString) || sString == "" || sString == undefined || sString == null || sString == NaN) { sString = 0 }
         return parseFloat(sString);
