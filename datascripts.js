@@ -1,4 +1,4 @@
-/* datascripts => isomorphic, vanilla-ish (uses lodash lightly for ?pivottable and unique?), ES5-safe functions inspired from Python Pandas  */
+/* datascripts => isomorphic, vanilla-ish ES5-safe functions inspired from Python Pandas, uses lodash lightly  */
 
 /* prototype altering functions */
 //Array.prototype.toDelimited ="";
@@ -27,7 +27,7 @@ findKeys = function(aRO,sKey,sVal) {
     // interesting notes: my intuition says sKey can be string, regex or array, whereas sVal should be string or regex (and never array?)
     
     // obligatory convert aVO to aRO
-    if (isValuesOriented(aRO)) { aRO = toRecordsOriented(aRO); }
+    if (isVO(aRO)) { aRO = toRO(aRO); }
 
     // normalize in order to get first row and all its keys / columns that way
     aRO = normalizeRecordsOriented(JSON.parse(JSON.stringify(aRO)));
@@ -79,8 +79,8 @@ ObjectValuesRegex = function(oObject, rRegexKey) {
 }
 function ObjectValueRegex(oObject,rRegexKey) { return ObjectValuesRegex(oObject,rRegexKey)[0]; }
 
-toValuesOriented = function(aInputArray, aColumns) {
-    if (isValuesOriented(aInputArray)) { return aInputArray; }
+toVO = function(aInputArray, aColumns) {
+    if (isVO(aInputArray)) { return aInputArray; }
     // REFACTOR: replace aArrayOfAllPossibleColumnTitles now that there's a normalizeRecordsOriented function?
     var aArrayOfAllPossibleColumnTitles = aInputArray.reduce(function(agg123, oElement123) {
         Object.keys(oElement123).forEach(function(oElement751) {
@@ -104,9 +104,9 @@ toValuesOriented = function(aInputArray, aColumns) {
     });
     aValuesOrientation.unshift(aColumns);
     return aValuesOrientation;
-}
-toRecordsOriented = function(aInputArray) {
-    if (!isValuesOriented(aInputArray)) { return aInputArray; }
+}; toValuesOriented = function(aInputArray, aColumns) { return toVO(aInputArray, aColumns); }
+toRO = function(aInputArray) {
+    if (!isVO(aInputArray)) { return aInputArray; }
     var aValuesOrientation = normalizeValuesOriented(sanitizeValuesOrientedData(JSON.parse(JSON.stringify(aInputArray))));
     aValuesOrientation[0] = aValuesOrientation[0].slice().reverse().map(function(oElement, iIndex, aArray) {
         if (aValuesOrientation[0].indexOf(oElement) == aValuesOrientation[0].length - aArray.indexOf(oElement) - 1) {
@@ -121,7 +121,7 @@ toRecordsOriented = function(aInputArray) {
             return oagg0
         }, {})) : []
     }, [])
-}
+}; toRecordsOriented = function(aInputArray) { return toRO(aInputArray); }
 toXXXOriented = function (aInputArray, sXXX) { var aRecordsOrientation = JSON.parse(JSON.stringify(aInputArray)); return aRecordsOrientation.reduce(function (agg, oElement) { if (agg[oElement[sXXX]]==undefined) { agg[oElement[sXXX]] = oElement; } else { if (!Array.isArray(agg[oElement[sXXX]])) { agg[oElement[sXXX]] = [agg[oElement[sXXX]]].concat(oElement) } else { agg[oElement[sXXX]] = agg[oElement[sXXX]].concat(oElement) } } return agg; }, {}); }
 toXXXOrientedDEDUPED = function(aInputArray, sXXX)  { var aRecordsOrientation = JSON.parse(JSON.stringify(aInputArray)); var o_XXX_Orientation = aRecordsOrientation.reduce(function (agg, oElement) { if (agg[oElement[sXXX]]==undefined) { agg[oElement[sXXX]] = oElement; } else { if (!Array.isArray(agg[oElement[sXXX]])) { agg[oElement[sXXX]] = [agg[oElement[sXXX]]].concat(oElement) } else { agg[oElement[sXXX]] = agg[oElement[sXXX]].concat(oElement) } } return agg; }, {}); return Object.keys(o_XXX_Orientation).reduce(function(agg777, oElement777) { if (Array.isArray(o_XXX_Orientation[oElement777])) { agg777[oElement777] = o_XXX_Orientation[oElement777].reduce(function(agg778, oElement778) { return Object.keys(oElement778).reduce(function(agg779, oElement779) { if (agg778[oElement779] == undefined) { agg778[oElement779] = oElement778[oElement779]; } else { agg778[oElement779] = agg778[oElement779] + ";" + oElement778[oElement779]; } return agg778; }, "") }, {}) } else { agg777[oElement777] = o_XXX_Orientation[oElement777]; } return agg777; }, {}) }
 toTabDelimited = function (aInputArray, sDelimiter, sQualifier) {
@@ -141,16 +141,16 @@ toTabDelimited = function (aInputArray, sDelimiter, sQualifier) {
 }
 toDelimited = function(aInputArray, sDelimiter, sQualifier) { function returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented) { return aRecordsOriented.reduce(function(agg, oElement313) { agg = agg.concat(Object.keys(oElement313)); agg = unique(agg); return agg; }, []) } var aColumns = returnAllKeysAmongAllObjectsInRecordsOrientedArray(aInputArray); return aInputArray.reduce(function(agg, oElement) { return agg + "\n" + aColumns.filter(function(oElement777) { return oElement777.trim() != "" }).reduce(function(agg001, oElement001, iIndex001) { return agg001 + ((iIndex001 == 0) ? "" : sDelimiter) + sQualifier + ((oElement[oElement001] == undefined ? "" : oElement[oElement001])).toString().replace(/\r\n/g, "<br>").replace(/\n/g, "<br>") + sQualifier; }, "") }, aColumns.map(function(oElement002) { return sQualifier + oElement002 + sQualifier; }).join(sDelimiter)) }
 convertTabDelimitedToValuesOriented = function(sText) { return sText.split(String.fromCharCode(10)).map(function(oElement) { return oElement.split(String.fromCharCode(9)); }); }
-convertTabDelimitedToRecordsOriented = function(sText) { return toRecordsOriented(convertTabDelimitedToValuesOriented(sText)); }
+convertTabDelimitedToRecordsOriented = function(sText) { return toRO(convertTabDelimitedToValuesOriented(sText)); }
 toXXXOrientated=toXXXOriented;toXXXOrientatedDEDUPED=toXXXOrientedDEDUPED;
 
-isValuesOriented = function(aArray) { return Array.isArray(aArray[0]); }
+isVO = function(a) { return Array.isArray(a[0]); }; isValuesOriented = function(a) { return isVO(a); }
 /* END values oriented / records oriented / tab delimited converter functions */
 
 /* BEGIN CLEANER/NORMALIZER/SANITIZER FUNCTIONS */
 // sanitizeValues I think puts an empty string in cells that are ambiguous, sanitizeRecords just gets rid of line breaks in keys
 sanitizeValuesOrientedData = function(aValuesOriented) { return aValuesOriented.map(function(oElement) { return oElement.map(function(oElement0) { if (oElement0 == null || oElement == undefined || oElement == NaN ) { return ""; } else { return oElement0; } }) }) }
-sanitizeRecordsOrientedData = function(aRecordsOriented) { var aValuesOriented = toValuesOriented(aRecordsOriented); aValuesOriented[0] = aValuesOriented[0].map(function(oEl) { return oEl.replace(/\n/g, "") }); return toRecordsOriented(aValuesOriented); }
+sanitizeRecordsOrientedData = function(aRecordsOriented) { var aValuesOriented = toVO(aRecordsOriented); aValuesOriented[0] = aValuesOriented[0].map(function(oEl) { return oEl.replace(/\n/g, "") }); return toRO(aValuesOriented); }
 normalizeValuesOriented = function (aValuesOriented) {
     // normalizeValuesOriented([["a", "b", "c"], ["e", "f"], ["t", "h", {"blah": "hello" } ]])
     iMaxLength = aValuesOriented.reduce(function(oAg, oEl, iIn) {
@@ -181,13 +181,13 @@ replaceColumnNameInRecordsOrientedArray = function(aRecordsOriented, sMatchingSt
 // vs function renameColumnNameInRecordsOrientedArray(aRecordsOriented, sMatchingString, sReplacementString) {
     // SAMPLE CALL:
     // aRecordsOriented = replaceColumnNameInRecordsOrientedArray(aRecordsOriented, "Rack # / Location", "Bin");
-    var aValuesOriented = toValuesOriented(aRecordsOriented);
+    var aValuesOriented = toVO(aRecordsOriented);
     aValuesOriented[0] = aValuesOriented[0].map(function(oElement) {
         // console.log(oElement == sMatchingString)
         if (oElement == sMatchingString) { oElement = sReplacementString; }
         return oElement;
     })
-    return toRecordsOriented(aValuesOriented);
+    return toRO(aValuesOriented);
 }
 /* END CLEANER/NORMALIZER/SANITIZER FUNCTIONS */
 
@@ -250,7 +250,7 @@ JSONObjectify.sample=function() { return 'JSONObjectify("branch:main,folder:data
 // unique2D vs uniqueLodash
 function unique2D(aArray) { return unique(aArray.map(function(o){ return JSON.stringify(o); })).map(function(o) { return JSON.parse(o); }) }
 function unique2D_getdupes(aArray) {
-    var bIsRO = true; if (isValuesOriented(aArray)) { aArray = toRecordsOriented(aArray); bIsRO = false; }; //   if (!bIsRO) { aReturn = toValuesOriented(aReturn); }
+    var bIsRO = true; if (isVO(aArray)) { aArray = toRO(aArray); bIsRO = false; }; //   if (!bIsRO) { aReturn = toValuesOriented(aReturn); }
     var oReturn = {}
     aArray.forEach(function(oEl) {
       sEl = JSON.stringify(oEl);
@@ -267,21 +267,21 @@ function unique2D_getdupes(aArray) {
       oObject.dupes = i;
       return oObject;
     })
-    if (bIsRO) { return aReturn; } else { return toValuesOriented(aReturn); }
+    if (bIsRO) { return aReturn; } else { return toVO(aReturn); }
 }
 function unique2D_getdupesOverOne(aArray) {
   var aArrayWDupes = unique2D_getdupes(aArray)
-  var bIsRO = true; if (isValuesOriented(aArrayWDupes)) { aArrayWDupes = toRecordsOriented(aArrayWDupes); bIsRO = false; }
+  var bIsRO = true; if (isVO(aArrayWDupes)) { aArrayWDupes = toRO(aArrayWDupes); bIsRO = false; }
   var aArrayWDupesOverOne = aArrayWDupes.filter(function(oEl) { return oEl.dupes > 1; })
   if (aArrayWDupesOverOne.length == 0) { aArrayWDupesOverOne = [{"dupes": "0"}]; }
-  if (!bIsRO) { aArrayWDupesOverOne = toValuesOriented(aArrayWDupesOverOne); }
+  if (!bIsRO) { aArrayWDupesOverOne = toVO(aArrayWDupesOverOne); }
   return aArrayWDupesOverOne;
 }
 
 /* BEGIN PANDAS-INSPIRED, LODASH-DEPENDENT FUNCTIONS */
 lodashunique = function(aArray, aColumns) {
     // eg uniqueLodash(aRO, ["Type", "Document Number", "Internal ID"])
-    var bIsRO = true; if (isValuesOriented(aArray)) { aArray = toRecordsOriented(aArray); bIsRO = false; }; 
+    var bIsRO = true; if (isVO(aArray)) { aArray = toRO(aArray); bIsRO = false; }; 
     if (aColumns == undefined) {
       aColumns = Object.keys(aArray[0]);
     }
@@ -294,14 +294,14 @@ lodashunique = function(aArray, aColumns) {
             return oAgg;
         }, true )
     );
-    if (bIsRO) { return aArrayReturn; } else { return toValuesOriented(aArrayReturn); }
+    if (bIsRO) { return aArrayReturn; } else { return toVO(aArrayReturn); }
 }
 
 lodashmerge = function(a, b, sKey, sKey2) { if (sKey2) {} else {sKey2 = sKey}; return _.values(_.merge(_.keyBy(a, sKey), _.keyBy(b, sKey2))); }
 
 melt = function (aInputArray, aColumns) {
-  // if (isValuesOriented(aInputArray)) { aInputArray = toRecordsOriented(aInputArray); }
-  var bIsRO = true; if (isValuesOriented(aInputArray)) { aInputArray = toRecordsOriented(aInputArray); bIsRO = false; };
+  // if (isVO(aInputArray)) { aInputArray = toRecordsOriented(aInputArray); }
+  var bIsRO = true; if (isVO(aInputArray)) { aInputArray = toRO(aInputArray); bIsRO = false; };
 
   aInputArray = normalizeRecordsOriented(aInputArray);
   // REFACTOR OUT .flat() in favor of flatten() to make this friendly with es5 servers?
@@ -350,7 +350,7 @@ melt = function (aInputArray, aColumns) {
         return oElement; 
     })
     
-    if (!bIsRO) { aReturn = toValuesOriented(aReturn); };
+    if (!bIsRO) { aReturn = toVO(aReturn); };
     return aReturn;
 }
 melt.sample=function() { return 'var aArray=[{"blank":0,"car_model":"Tesla Model S P100D","Sept 1 9am":2.5,"Sept 1 10am":2.51,"Sept 1 11am":2.54},{"blank":1,"car_model":"Tesla Model X P100D","Sept 1 9am":2.92,"Sept 1 10am":2.91,"Sept 1 11am":2.93},{"blank":2,"car_model":"Tesla Model 3 AWD Dual Motor","Sept 1 9am":3.33,"Sept 1 10am":3.31,"Sept 1 11am":3.35}];\nmelt(aArray, [2,3,4]);melt(aArray, "-0,1")' }
@@ -371,7 +371,7 @@ flatten = function(aArray) {
 };
 
 explode = function (aInputArray, aColumns, sDelimiter) {
-    var bIsRO = true; if (isValuesOriented(aInputArray)) { aInputArray = toRecordsOriented(aInputArray); bIsRO = false; }; // if (!bIsRO) { aReturn = toValuesOriented(aReturn); };
+    var bIsRO = true; if (isVO(aInputArray)) { aInputArray = toRO(aInputArray); bIsRO = false; }; // if (!bIsRO) { aReturn = toVO(aReturn); };
 
     aInputArray = normalizeRecordsOriented(aInputArray);
     // explode is like excel's horizontal splitting/unnesting, but it unnests vertically
@@ -405,14 +405,14 @@ explode = function (aInputArray, aColumns, sDelimiter) {
             }) 
         } else { return oElement999 }
     })); // .flat()
-    if (!bIsRO) { aReturn = toValuesOriented(aReturn); };
+    if (!bIsRO) { aReturn = toVO(aReturn); };
     return aReturn;
 }
 // SAMPLE DATA FROM https://en.wikipedia.org/wiki/List_of_The_X-Files_episodes
 // sanitizeRecordsOrientedData(toRecordsOriented(convertHTMLTableToValuesOriented("table.wikitable.plainrowheaders.wikiepisodetable")))
 
 pivottable=function(aInputArray, aPivotInstructions, bReplaceColumnNames) {
-    var bIsRO = true; if (isValuesOriented(aInputArray)) { aInputArray = toRecordsOriented(aInputArray); bIsRO = false; };
+    var bIsRO = true; if (isVO(aInputArray)) { aInputArray = toRO(aInputArray); bIsRO = false; };
     aInputArray = normalizeRecordsOriented(aInputArray);
     
     function parseFloatForSUM(sString) {
@@ -422,11 +422,11 @@ pivottable=function(aInputArray, aPivotInstructions, bReplaceColumnNames) {
     
     function pivot_table(aRecordsOrientation, aPivotInstructions, bReplaceColumnNames) {
        // replace columns starting with an int with "num_" to temporarily fix bug
-       aRecordsOrientation = toRecordsOriented(toValuesOriented(aRecordsOrientation));
-       aRecordsOrientationCOPY = toRecordsOriented(toValuesOriented(aRecordsOrientation));
-       var aValuesaOriented = toValuesOriented(aRecordsOrientation);
+       aRecordsOrientation = toRO(toVO(aRecordsOrientation));
+       aRecordsOrientationCOPY = toRO(toVO(aRecordsOrientation));
+       var aValuesaOriented = toVO(aRecordsOrientation);
        aValuesaOriented[0] = aValuesaOriented[0].map(function(oElement) { if (oElement.match(/^[0-9]/g)) { oElement = "num_" + oElement } return oElement; })
-       aRecordsOrientation = toRecordsOriented(aValuesaOriented);
+       aRecordsOrientation = toRO(aValuesaOriented);
 
       // aPivotInstructions = "2 4,5 7 listaggU";
       if (typeof(aPivotInstructions) == "string") {
@@ -586,7 +586,7 @@ pivottable=function(aInputArray, aPivotInstructions, bReplaceColumnNames) {
         }
     }
     var aReturn = pivot_table(aInputArray, aPivotInstructions, bReplaceColumnNames);
-    if (!bIsRO) { aReturn = toValuesOriented(aReturn); };
+    if (!bIsRO) { aReturn = toVO(aReturn); };
     return aReturn;
 
 }
@@ -695,7 +695,7 @@ strip_tags.sample=function() { return '"<table><tr><td>blah</td></tr><tr><td>bla
 superhtmlEntities=function(e){return String(e).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&apos;").replace(/`/g,"&#96;")},superencode=function(e){return encodeURIComponent(e).replace(/'/g,"%27")},superHtmlDecode=function(e){var r={"&amp;":"&","&lt;":"<","&gt;":">","&quot;":'"',"&apos;":"'","&#96;":"`"};for(var t in r)r.hasOwnProperty(t)&&(e=e.replace(new RegExp(t,"g"),r[t]));return e};
 
 // domscripts.serversafe.minified.js
-convertRecordsOrientedArrayToHTMLTable=function(e,t,n){return null==n&&(n=""),null==t&&(t=function(e){return e.reduce(function(e,t){return e=e.concat(Object.keys(t)),e=unique(e)},[])}(e)),sHTMLTable="<table id='"+n+"' class='RecordsOrientedArrayToHTML gsws gsws_"+n+"' style='margin: 0 auto; text-align: center;'>"+e.reduce(function(e,o,r){return e=e+"<tr>"+t.reduce(function(e,t,l){var s=columnToLetter(l+1)+(r+2);return e=e+"<td title='"+s+"' class='"+("gsws gscell gsws_"+n+" "+s+" row"+(r+2)+" column"+columnToLetter(l+1)+" cellcolumn"+l)+"'>"+o[t]+"</td>"},"")+"</tr>"},"<tr>"+t.reduce(function(e,t,o){var r=columnToLetter(o+1)+"1";return e+"<th title='"+r+"' class='"+("gsws gscell gsws_"+n+" "+r+" row1 column"+columnToLetter(o+1)+" cellcolumn"+o)+"'>"+t+"</th>"},"")+"</tr>")+"</table>",sHTMLTable},convertValuesOrientedToHTMLTable=function(e,t,n){return null==n&&(n=""),sHTMLTable="<table id='"+n+"' class='convertValuesOrientedToHTMLTable gsws gsws_"+n+"' style='margin: 0 auto; text-align: center;'>"+e.reduce(function(e,t,o){return e=e+"<tr>"+t.reduce(function(e,t,r){var l=columnToLetter(r+1)+(o+1);return e=e+"<td title='"+l+"' class='"+("gsws gscell gsws_"+n+" "+l+" row"+(o+1)+" column"+columnToLetter(r+1)+" cellcolumn"+r)+"'>"+t+"</td>"},"")+"</tr>"},"")+"</table>",sHTMLTable.replace(/ id=''/g,"")},convertRecordsOrientedArrayToExcelXML=function(e,t){toRecordsOriented(toValuesOriented(e));if(null==(t=t||void 0))t=Object.keys(e[0]);function n(e){return"<Row>"+e.reduce(function(e,t,n){return Array.isArray(t)&&(t=JSON.stringify(t)),e=e+'<Cell><Data ss:Type="String">'+(t=t.toString()).replace(/</g,"").replace(/>/g,"").replace(/\"/g,"").replace(/\n/g," ")+"</Data></Cell>"},"")+"</Row>"}return'<?xml version="1.0"?><?mso-application progid="Excel.Sheet"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet" xmlns:html="http://www.w3.org/TR/REC-html40"><Worksheet ss:Name="Sheet1"><Table>'+e.reduce(function(e,o,r){return e+n(t.map(function(e){return o[e]}))},n(t))+"</Table></Worksheet></Workbook>"},convertaRecordsOrientedToInputBoxesForm=function(e,t){return null==t&&(t=Object.keys(e)),t.reduce(function(t,n,o){return null==e[n]&&(e[n]=""),sValue=e[n],"string"!=typeof sValue&&(sValue=JSON.stringify(sValue)),t=e[n].toString().indexOf("\n")>-1?t+"<tr><td><b>"+n+": </b></td><td><textarea rows='10' cols='30' class='inputtedObject' id='label_"+n+"' name='label_"+n+"' />"+superhtmlEntities(sValue)+"</textarea></td>":t+"<tr><td><b>"+n+": </b></td><td><input style='width:100%' class='inputtedObject' type='text' id='label_"+n+"' name='label_"+n+"' value='"+superhtmlEntities(sValue)+"' /><td>"},"<table>")+"</table>"},GSDS_disjointedRangeToAVO=function(e){return e.match(/\*/g)?"ERROR - ASTERISK functions are for domTable ONLY!":(e=e.replace(/\-/g,":").replace(/,/g,";"),a1DCells=unique(e.split(";").map(function(e){return(e=e.trim()).match("^:")&&(e="A1"+e),e.match(":$")?"ERROR - ASTERISK IS ASSUMED HERE.":e.indexOf(":")>-1?getGoogleSheetRange(e):e}).flat().sort(sortAlphaNum)),iHighestColumn=a1DCells.reduce(function(e,t){return e<letterToColumn(cellToColumn(t))?letterToColumn(cellToColumn(t)):e},0),iLowestColumn=a1DCells.reduce(function(e,t){return e>letterToColumn(cellToColumn(t))?letterToColumn(cellToColumn(t)):e},iHighestColumn),iHighestRow=a1DCells.reduce(function(e,t){return e<parseInt(cellToRow(t))?parseInt(cellToRow(t)):e},0),iLowestRow=a1DCells.reduce(function(e,t){return e>parseInt(cellToRow(t))?parseInt(cellToRow(t)):e},iHighestRow),sExpansiverRange=columnToLetter(iLowestColumn)+iLowestRow+":"+columnToLetter(iHighestColumn)+iHighestRow,getGoogleSheetRangeValuesOriented(sExpansiverRange).map(function(e){return e.map(function(e){if(a1DCells.indexOf(e)>-1)return e})}))},GSDS_disjointedRangeToAVO.sample=function(){return'GSDS_disjointedRangeToAVO("-A2;A2:B4; D4,E5:F5;G1:H2,H1-H9,L8,:B2, G8")'},GSDS_disjointedRangeToArray=function(e){return GSDS_disjointedRangeToAVO(e).flat().filter(function(e){return e})},toHTMLSelect=function(e,t){return null==t&&(t="aArraySelect"),"<select class='"+t+"'><option></option>"+e.map(function(e){return"<option>"+e+"</option>"}).join("")+"</select>"};
+convertRecordsOrientedArrayToHTMLTable=function(e,t,n){return null==n&&(n=""),null==t&&(t=function(e){return e.reduce(function(e,t){return e=e.concat(Object.keys(t)),e=unique(e)},[])}(e)),sHTMLTable="<table id='"+n+"' class='RecordsOrientedArrayToHTML gsws gsws_"+n+"' style='margin: 0 auto; text-align: center;'>"+e.reduce(function(e,o,r){return e=e+"<tr>"+t.reduce(function(e,t,l){var s=columnToLetter(l+1)+(r+2);return e=e+"<td title='"+s+"' class='"+("gsws gscell gsws_"+n+" "+s+" row"+(r+2)+" column"+columnToLetter(l+1)+" cellcolumn"+l)+"'>"+o[t]+"</td>"},"")+"</tr>"},"<tr>"+t.reduce(function(e,t,o){var r=columnToLetter(o+1)+"1";return e+"<th title='"+r+"' class='"+("gsws gscell gsws_"+n+" "+r+" row1 column"+columnToLetter(o+1)+" cellcolumn"+o)+"'>"+t+"</th>"},"")+"</tr>")+"</table>",sHTMLTable},convertValuesOrientedToHTMLTable=function(e,t,n){return null==n&&(n=""),sHTMLTable="<table id='"+n+"' class='convertValuesOrientedToHTMLTable gsws gsws_"+n+"' style='margin: 0 auto; text-align: center;'>"+e.reduce(function(e,t,o){return e=e+"<tr>"+t.reduce(function(e,t,r){var l=columnToLetter(r+1)+(o+1);return e=e+"<td title='"+l+"' class='"+("gsws gscell gsws_"+n+" "+l+" row"+(o+1)+" column"+columnToLetter(r+1)+" cellcolumn"+r)+"'>"+t+"</td>"},"")+"</tr>"},"")+"</table>",sHTMLTable.replace(/ id=''/g,"")},convertRecordsOrientedArrayToExcelXML=function(e,t){toRO(toVO(e));if(null==(t=t||void 0))t=Object.keys(e[0]);function n(e){return"<Row>"+e.reduce(function(e,t,n){return Array.isArray(t)&&(t=JSON.stringify(t)),e=e+'<Cell><Data ss:Type="String">'+(t=t.toString()).replace(/</g,"").replace(/>/g,"").replace(/\"/g,"").replace(/\n/g," ")+"</Data></Cell>"},"")+"</Row>"}return'<?xml version="1.0"?><?mso-application progid="Excel.Sheet"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet" xmlns:html="http://www.w3.org/TR/REC-html40"><Worksheet ss:Name="Sheet1"><Table>'+e.reduce(function(e,o,r){return e+n(t.map(function(e){return o[e]}))},n(t))+"</Table></Worksheet></Workbook>"},convertaRecordsOrientedToInputBoxesForm=function(e,t){return null==t&&(t=Object.keys(e)),t.reduce(function(t,n,o){return null==e[n]&&(e[n]=""),sValue=e[n],"string"!=typeof sValue&&(sValue=JSON.stringify(sValue)),t=e[n].toString().indexOf("\n")>-1?t+"<tr><td><b>"+n+": </b></td><td><textarea rows='10' cols='30' class='inputtedObject' id='label_"+n+"' name='label_"+n+"' />"+superhtmlEntities(sValue)+"</textarea></td>":t+"<tr><td><b>"+n+": </b></td><td><input style='width:100%' class='inputtedObject' type='text' id='label_"+n+"' name='label_"+n+"' value='"+superhtmlEntities(sValue)+"' /><td>"},"<table>")+"</table>"},GSDS_disjointedRangeToAVO=function(e){return e.match(/\*/g)?"ERROR - ASTERISK functions are for domTable ONLY!":(e=e.replace(/\-/g,":").replace(/,/g,";"),a1DCells=unique(e.split(";").map(function(e){return(e=e.trim()).match("^:")&&(e="A1"+e),e.match(":$")?"ERROR - ASTERISK IS ASSUMED HERE.":e.indexOf(":")>-1?getGoogleSheetRange(e):e}).flat().sort(sortAlphaNum)),iHighestColumn=a1DCells.reduce(function(e,t){return e<letterToColumn(cellToColumn(t))?letterToColumn(cellToColumn(t)):e},0),iLowestColumn=a1DCells.reduce(function(e,t){return e>letterToColumn(cellToColumn(t))?letterToColumn(cellToColumn(t)):e},iHighestColumn),iHighestRow=a1DCells.reduce(function(e,t){return e<parseInt(cellToRow(t))?parseInt(cellToRow(t)):e},0),iLowestRow=a1DCells.reduce(function(e,t){return e>parseInt(cellToRow(t))?parseInt(cellToRow(t)):e},iHighestRow),sExpansiverRange=columnToLetter(iLowestColumn)+iLowestRow+":"+columnToLetter(iHighestColumn)+iHighestRow,getGoogleSheetRangeValuesOriented(sExpansiverRange).map(function(e){return e.map(function(e){if(a1DCells.indexOf(e)>-1)return e})}))},GSDS_disjointedRangeToAVO.sample=function(){return'GSDS_disjointedRangeToAVO("-A2;A2:B4; D4,E5:F5;G1:H2,H1-H9,L8,:B2, G8")'},GSDS_disjointedRangeToArray=function(e){return GSDS_disjointedRangeToAVO(e).flat().filter(function(e){return e})},toHTMLSelect=function(e,t){return null==t&&(t="aArraySelect"),"<select class='"+t+"'><option></option>"+e.map(function(e){return"<option>"+e+"</option>"}).join("")+"</select>"};
 
 // datagsscripts.minified.js
 function convertCellToArray(r){return[letterToColumn(r.replace(/[0-9]*$/g,"")),parseInt(r.replace(/^[A-Z]*/g,""))]}function convertArrayToCell(r){return columnToLetter(r[0])+r[1]}sortAlphaNum=function(r,e){return r.localeCompare(e,"en",{numeric:!0})},cellToColumn=function(r){return r.toUpperCase().match(/^[A-Z]+/g)[0]},cellToRow=function(r){return r.toUpperCase().match(/[0-9]+$/g)[0]},columnToLetter=function(r){for(var e,t="";r>0;)e=(r-1)%26,t=String.fromCharCode(e+65)+t,r=(r-e-1)/26;return t},letterToColumn=function(r){for(var e=0,t=r.length,n=0;n<t;n++)e+=(r.charCodeAt(n)-64)*Math.pow(26,t-n-1);return parseInt(e)},subtractCells=function(r,e){if("string"==typeof r)var t=convertCellToArray(r);else t=r;if("string"==typeof e)var n=convertCellToArray(e);else n=e;return t.map(function(r,e){return r-parseInt(n[e])})},addCells=function(r,e){if("string"==typeof r)var t=convertCellToArray(r);else t=r;if("string"==typeof e)var n=convertCellToArray(e);else n=e;return t.map(function(r,e){return r+parseInt(n[e])})},addA1Notation=function(r,e){if(Array.isArray(r)&&(r=convertArrayToCell(r)),Array.isArray(e)&&(e=convertArrayToCell(e)),r.match(/!/g)){var t=r.split("!")[0]+"!";r=r.split("!")[1]}else t="";return sA1NotationOffset=convertArrayToCell(addCells(r,e)),t+sA1NotationOffset},subtractA1Notation=function(r,e){if(Array.isArray(r)&&(r=convertArrayToCell(r)),Array.isArray(e)&&(e=convertArrayToCell(e)),r.match(/!/g)){var t=r.split("!")[0]+"!";r=r.split("!")[1]}else t="";return sA1NotationOffset=convertArrayToCell(subtractCells(r,e)),t+sA1NotationOffset},getGoogleSheetRange=function(r){return aReturn=[],r.replace(/;/,",").split(",").forEach(function(r){if(r.indexOf(":")>-1){var e=convertCellToArray(r.toString().split(":")[0]),t=convertCellToArray(r.toString().split(":")[1]);aReturn=aReturn.concat(combineArraysRecursivelyCartesian([getRange3(e[0],t[0]),getRange3(e[1],t[1])]).map(function(r){return convertArrayToCell(r)}))}else aReturn.push(r)}),aReturn},getGoogleSheetRangeValuesOriented=function(r){return aArray=getGoogleSheetRange(r).filter(function(r){return r.match(/[A-Z]+[0-9]+/)}).reduce(function(r,e,t){return 0==t?(r[0].push(e),r):(bCompletedMatrixingTask=!1,r.forEach(function(t,n){t[0].match(/[0-9]+/)[0]==e.match(/[0-9]+/)[0]&&(r[n].push(e),bCompletedMatrixingTask=!0)}),bCompletedMatrixingTask||r.push([e]),r)},[[]]),aArray};
