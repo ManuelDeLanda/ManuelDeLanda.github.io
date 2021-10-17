@@ -1,13 +1,16 @@
 try { // domscripts.serverUNsafe and ES5_UNsafe
   /* BEGIN - THESE FUNCTIONS SHOULD NEVER BE ADDED TO datascripts.js? */
   // REFACTORING NOTES:
+  // refactor: convertRecordsOrientedArrayToHTMLTable(), convertValuesOrientedToHTMLTable(), convertRecordsOrientedArrayToExcelXML(), convertaRecordsOrientedToInputBoxesForm(), GSDS_disjointedRangeToAVO(), GSDS_disjointedRangeToArray(), toHTMLSelect() into datahtmlscripts.js?
   // cellToColumn("C10") vs columnToLetter(convertCellToArray("C10")[0])?
   // function consolelog(sReturn) {   setTimeout (console.log.bind(console, sReturn)); }
   // function dumpCSSText(element){ var s = ''; var o = getComputedStyle(element); for(var i = 0; i < o.length; i++){ s+=o[i] + ':' + o.getPropertyValue(o[i])+';'; } return s; }
 
     // BEGIN useful vanilla dom scripts - consider refactoring out the overloading prototypes?
     var $$$ = document.querySelectorAll.bind(document);
+    var $$ = document.querySelector.bind(document);
     HTMLElement.prototype.$$$ = function (element) { return this.querySelectorAll(element); }; 
+    HTMLElement.prototype.$$ = function (element) { return this.querySelector(element); }; 
   
     domAppendStyle = function(e){const t=document.createElement("style");t.textContent=e,document.head.append(t)}; addStyle = domAppendStyle;
     domAppendToHead = function(s){ $$$('head')[0].append(s); }
@@ -600,7 +603,7 @@ domSetTDTextOrValue = function(domTD, sString) {
         }
     }
 
-} catch(e) { console.log(e) }
+} catch(e) { console.log("ERROR in domscripts.js " - e) }
 
 // domscripts.serversafe
 convertRecordsOrientedArrayToHTMLTable = function (aRecordsOriented, aColumns, sTableID) {
