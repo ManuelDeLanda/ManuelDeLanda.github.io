@@ -8,9 +8,9 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
 
     // BEGIN useful vanilla dom scripts - consider refactoring out the overloading prototypes?
     var $$$ = document.querySelectorAll.bind(document);
-    var $$ = document.querySelector.bind(document);
+    var $$$$ = document.querySelector.bind(document);
     HTMLElement.prototype.$$$ = function (element) { return this.querySelectorAll(element); }; 
-    HTMLElement.prototype.$$ = function (element) { return this.querySelector(element); }; 
+    HTMLElement.prototype.$$$$ = function (element) { return this.querySelector(element); }; 
   
     domAppendStyle = function(e){const t=document.createElement("style");t.textContent=e,document.head.append(t)}; addStyle = domAppendStyle;
     domAppendToHead = function(s){ $$$('head')[0].append(s); }
