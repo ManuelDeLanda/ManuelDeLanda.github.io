@@ -21,6 +21,75 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
     domTableToValuesOrientedTDs = function(domTable) { domTable = domTableAssumed(domTable); return Array.prototype.slice.call((domTable).$$$("tr")).map(function(oElement) { return Array.prototype.slice.call(oElement.$$$("th,td")); }) }
     domTableToValuesOrientedDomTDs = domTableToValuesOrientedTDs;
 
+    // 4 SCRIPTS - INJECT STYLES AND SCRIPTS
+    // these two <style>-related functions nudged me to refactor domLoadScripts into domLoadScripts_Link and domLoadScripts_Script, where the latter is actual script code
+    domLoadStyles_CSS = function(aCSS){ // creates <style> tags
+        // eg domLoadStyles_CSS("* {font-size: 4px}")
+        // eg domLoadStyles_CSS(["* {font-size: 4px}", "* {color: red; }"])
+        // function addcss(css){
+        if (Array.isArray(aCSS)) {} else { aCSS = [aCSS]; } 
+        aCSS.forEach(function(css) {
+            var head = document.getElementsByTagName('head')[0];
+            var s = document.createElement('style');
+            s.setAttribute('type', 'text/css');
+            if (s.styleSheet) {   // IE
+            s.styleSheet.cssText = css;
+            } else {                // the world
+            s.appendChild(document.createTextNode(css));
+            }
+            head.appendChild(s);
+        })
+    }
+    domLoadStyles_Link = function(aLinks){ // creates <link> tags
+        // eg domLoadStyles_Link("https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css")
+        // eg domLoadStyles_Link(["https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css", "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"])
+        // `<link rel="stylesheet" href="${e}" type="text/css" />`
+        // function addcss(css){
+        if (Array.isArray(aLinks)) {} else { aLinks = [aLinks]; }
+        aLinks.forEach(function(sLink) {
+            var head = document.getElementsByTagName('head')[0];
+            var s = document.createElement('link');
+            s.setAttribute('rel', 'stylesheet');
+            s.setAttribute('type', 'text/css');
+            s.setAttribute('href', sLink);
+            head.appendChild(s);
+        })
+    }
+    // these two were refactored from domLoadScripts
+    domLoadScripts_SCRIPT = function(aScripts){ // injects <script> tags
+        // eg domLoadScripts_SCRIPT("var sGlobal = 'blah';")
+        // eg domLoadScripts_SCRIPT(["var sGlobal1 = 'global 1';", "var sGlobal2 = 'global 2';"])
+        if (Array.isArray(aScripts)) {} else { aScripts = [aScripts]; } 
+        aScripts.forEach(function(sScript) {
+            var head = document.getElementsByTagName('head')[0];
+            var s = document.createElement('script');
+            s.appendChild(document.createTextNode(sScript));
+            head.appendChild(s);                 
+        })
+    }
+    domLoadScripts_Link = function (aLinks){ // creates <script src='whatever.js'> tags
+        // eg domLoadScripts_Link("https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js")
+        // eg domLoadScripts_Link(["https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js", "https://code.jquery.com/jquery-3.6.0.min.js"])
+        // `<link rel="stylesheet" href="${e}" type="text/css" />`
+        // function addcss(css){
+        if (Array.isArray(aLinks)) {} else { aLinks = [aLinks]; }
+        aLinks.forEach(function(sLink) {
+            var head = document.getElementsByTagName('head')[0];
+            var s = document.createElement('script');
+            s.setAttribute('src', sLink.trim());
+            head.appendChild(s);
+        })
+    }
+    /* // this is already minified in domscripts so don't run it
+    domLoadScripts = function(e, n) {
+        ! function t() {
+            var a, o, c;
+            0 != e.length ? (a = e.shift(), o = t, (c = document.createElement("script")).src = a, c.onload = c.onreadystatechange = function() {
+                c.onreadystatechange = c.onload = null, o()
+            }, (document.getElementsByTagName("head")[0] || document.body).appendChild(c)) : n && n()
+        }()
+    }
+    */
 
     function domReplaceDom(oEl, oEl2) { // simplifies .replaceChild()
         // domReplaceDom($$$("table")[0], '<div id="my_dataviz">test!</div>');
