@@ -1,4 +1,4 @@
-/* datascripts => isomorphic, vanilla-ish ES5-safe functions inspired from Python Pandas, uses lodash lightly  */
+/* datascripts => isomorphic, vanilla-ish ES5-safe functions inspired from Python Pandas, uses lodash lightly.  */
 
 /* prototype altering functions */
 //Array.prototype.toDelimited ="";
