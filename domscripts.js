@@ -783,6 +783,7 @@ function HTMLify(aCQPRecordsOriented, bSansHTMLTag) {
   var sHTML = undefined;
   var sHead = "";
   var sHeadStyles = "";
+  var sHeadBabel = "";
   var sHeadScripts = "";
   var sDomContentLoaded = "";
   var sBody = ""; 
@@ -816,7 +817,12 @@ function HTMLify(aCQPRecordsOriented, bSansHTMLTag) {
       sHeadScripts += "<script>\n//" + sLabel + ":";
       sHeadScripts += "\n" + oEl["js"] + "\n</script>\n";
       sDomContentLoaded += HTMLDOMContentLoadedify(oEl["js"]);
-    }    
+    }
+    if (oEl["babel"]) { //<script type="text/babel"></script> 
+      sHeadBabel = "<script src='https://unpkg.com/@babel/standalone/babel.min.js'></script>";
+      sHeadScripts += "<script type='text/babel' charset='utf-8'>\n//" + sLabel + ":";
+      sHeadScripts += "\n" + oEl["babel"] + "\n</script>\n";
+    }
     if (oEl["style"]) {
       // sHeadStyles += "<style>\n//" + sLabel + ":";
       sHeadStyles += "<style>\n" + oEl["style"] + "\n</style>\n";
@@ -850,7 +856,7 @@ function HTMLify(aCQPRecordsOriented, bSansHTMLTag) {
   });
   
   ((sDomContentLoaded) ? sDomContentLoadedHEADSCRIPT = "<script>\n\n" + sDomContentLoaded + "\n\n</script>" : sDomContentLoadedHEADSCRIPT = "");
-  sHead = sHead + sHeadStyles + sHeadScripts + sDomContentLoadedHEADSCRIPT;
+  sHead = sHead + sHeadStyles + sHeadBabel + sHeadScripts + sDomContentLoadedHEADSCRIPT;
   if (sHTML) { // sHTML is defined, therefore I need to DOMParse it and append all data thru DOMContentLoaded.  Sike I'm just doing a replace on the opening <head> tag, probably making my HTMLify solution less browser-tolerant but I can refactor/task/TODO this out later...
      // debugging - sHTML = "<html><head></head><body></body></html>"; sDomContentLoaded = "";
      sHelpfulDOMScripts = getHelpfulDOMScripts();
@@ -1015,59 +1021,11 @@ toHTMLSelect=function(aArray, sClassList) { // refractor this to accept array of
   return "<select class='" + sClassList + "'><option></option>" + aArray.map(function(oElement) { return "<option>" + oElement + "</option>"; }).join("")+"</select>";
 }
 
-
-function deconstructDOM(sType, bDelete50000) {
-    if (sType == undefined) {    
-        var aArray = Array.from(document.head.children).concat(Array.from(document.body.children));
-    } else if (sType == "head") {
-        var aArray = Array.from(document.head.children);
-    } else if (sType == "body") {
-        var aArray = Array.from(document.body.children);
-    }
-    var aReturn = aArray.map((o,i)=>{
-        if (o.nodeName == "SCRIPT") {
-            if (o.src && o.src.match(/js$/) ) {
-                // return { "head": o.outerHTML }
-                return { "library": o.src }
-            } else {
-                // if (o.innerHTML.trim().match(/document\.addEventListener\('DOMContentLoaded'\, \(event\) \=\> \{(.*)\}\)\;/)) {
-                if (o.outerHTML.trim().match(/addEventListener/)) {
-                    console.log("test")
-                }
-                return { "script": o.innerText }
-            }
-        } else if (o.nodeName == "LINK" && o.href.match(/css$/) ) {
-            return { "library": o.href };
-        } else if (o.nodeName == "STYLE") {
-            return { "css": o.innerText }
-        } else {
-            var bDontDelete50000 = !bDelete50000;
-                //if (bDelete50000) {
-                //    return {"script": ""};
-                //} else 
-            sText = o.outerHTML;
-            if (sText.length > 49000) {
-                try {
-                    sDeconstructionNotes = "yikes, @" + i + " - " + sText.length + " cannot be deconstructed into a gscell, but o has " + o.children.length + " children and can be deconstructed maybe? " + (Array.from(o.children).map(oo=>oo.children.length).join(",") );
-                    // o.children.map(oo=>console.log(oo.children));
-                } catch(e) { sDeconstructionNotes = ""; } 
-            }
-            oReturn = {};
-            oReturn[o.parentNode.nodeName.toLowerCase()] = (o.outerHTML.length > 49000 && bDelete50000 ? `<pre>${o.outerHTML.length} was removed per bDelete50000; sDeconstructionNotes = ${sDeconstructionNotes}</pre>` : o.outerHTML);
-            return oReturn;
-        }
-    }).flat();
-
-    // begin reduce
-    // consolidate library into single cell
-    aLibraries = [];
-    aReturn = aReturn.reduce((a,e,i) => { if (e.library) { aLibraries.push(e.library); } else { a=a.concat(e) }; return a; }, [])
-    aReturn[0].library = aLibraries.join("\n");
-
-    // remove blanks
-    aReturn = toRO(toVO(aReturn).filter(o=>o.join("")))
-    // end reduce
-
-    return aReturn;
-
+function hyperlink(sURL, sName, bNoTarget) {
+   if (sName) {} else {sName = "link"}
+   if (sName.match(/hyperlink/)) { // html ahref hyperlink
+     return "=hyperlink(\"" + sURL + "\", \"" + sName + "\")";
+   } else { // googlesheets hyperlink
+     return "<a " + ((bNoTarget) ? "": "target='_blank' ") + "href='" + sURL + "'>link</a>";
+   }
 }
