@@ -213,7 +213,7 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
         // convertHTMLTableToValuesOriented(".convertValuesOrientedToHTMLTable");
         // sHTMLTable = ".convertValuesOrientedToHTMLTable";
         return Array.prototype.slice.call($(sHTMLTable)[0].querySelectorAll("tr")).map(function(oElement) {
-            return Array.prototype.slice.call(oElement.querySelectorAll("td")).map(function(oElement0) {
+            return Array.prototype.slice.call(oElement.querySelectorAll("th, td")).map(function(oElement0) {
                 if (oElement0.querySelectorAll("select")[0]) {
                     return oElement0.querySelectorAll("select")[0].value; //[0].value;
                 } else {
