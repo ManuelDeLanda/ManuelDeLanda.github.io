@@ -784,6 +784,7 @@ function HTMLify(aCQPRecordsOriented, bSansHTMLTag) {
   var sHead = "";
   var sHeadStyles = "";
   var sHeadBabel = "";
+  var sBodyTypeScript = "";
   var sHeadScripts = "";
   var sDomContentLoaded = "";
   var sBody = ""; 
@@ -822,6 +823,11 @@ function HTMLify(aCQPRecordsOriented, bSansHTMLTag) {
       sHeadBabel = "<script src='https://unpkg.com/@babel/standalone/babel.min.js'></script>";
       sHeadScripts += "<script type='text/babel' charset='utf-8'>\n//" + sLabel + ":";
       sHeadScripts += "\n" + oEl["babel"] + "\n</script>\n";
+    }
+    if (oEl["typescript"]) {
+      sBodyTypeScript = '<script type="text/javascript" src="https://niutech.github.io/typescript-compile/js/typescript.min.js"></script><script type="text/javascript" src="https://niutech.github.io/typescript-compile/js/typescript.compile.min.js"></script>';
+      sHeadScripts += "<script type='text/typescript' charset='utf-8'>\n//" + sLabel + ":";
+      sHeadScripts += "\n" + oEl["typescript"] + "\n</script>\n";      
     }
     if (oEl["style"]) {
       // sHeadStyles += "<style>\n//" + sLabel + ":";
@@ -862,12 +868,12 @@ function HTMLify(aCQPRecordsOriented, bSansHTMLTag) {
      sHelpfulDOMScripts = getHelpfulDOMScripts();
      sHead = sHelpfulDOMScripts + sHead;
      sHTML = sHTML.replace(/\<head\>/, `<head>\n${sHead}`);
-     if (sBody) { sHTML = sHTML.replace(/\<body\>/, `<body>\n${sBody}`); } // a little charity for the body tag I guess
+     if (sBody) { sHTML = sHTML.replace(/\<body\>/, `<body>\n${sBody + sBodyTypeScript}`); } // a little charity for the body tag I guess
   } else { // sHTML is undefined, therefore define it using the usual vanilla html CQPify way
     if (bSansHTMLTag) { // then generate html without the <html> opening/closing tag
-        sHTML = "<head>" + sHead + "</head>\n<body>" + sBody + "</body>";     
+        sHTML = "<head>" + sHead + "</head>\n<body>" + sBody + sBodyTypeScript + "</body>";     
     } else {
-        sHTML = "<html><head>" + sHead + "</head>\n<body>" + sBody + "</body></html>"; 
+        sHTML = "<html><head>" + sHead + "</head>\n<body>" + sBody + sBodyTypeScript + "</body></html>"; 
     }
   }
   return sHTML;
