@@ -258,6 +258,17 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
 
         node.addEventListener('animationend', handleAnimationEnd, {once: true});
       });      
+
+      function $$$a_animate(el,animation,idelay) {
+          if (animation) {} else { animation = "random"; }
+          if (el) {} else { el = "*"; }
+          if (idelay) {} else { idelay = 200; }
+          $$$a(e).forEach((o,i)=>{
+              setTimeout(() => {
+                  animateCSS(o, s);
+              }, i*idelay);
+          });
+      }      
       
     // END animate.css scripts
 
