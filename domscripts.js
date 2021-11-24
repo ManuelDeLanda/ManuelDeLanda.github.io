@@ -263,9 +263,9 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
           if (animation) {} else { animation = "random"; }
           if (el) {} else { el = "*"; }
           if (idelay) {} else { idelay = 200; }
-          $$$a(e).forEach((o,i)=>{
+          $$$a(el).forEach((o,i)=>{
               setTimeout(() => {
-                  animateCSS(o, s);
+                  animateCSS(o,animation);
               }, i*idelay);
           });
       }      
