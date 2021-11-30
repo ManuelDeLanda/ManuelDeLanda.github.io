@@ -273,7 +273,8 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
     // END animate.css scripts
 
 // 
-function addEL(oElements, sType, fFunction, iIndex) {
+function addEL(oElements, sType, iIndex, fFunction) { // vs addEventListenerClickXYZ's o, i, f
+    if (fFunction) {} else { f = function() { alert("undefined ? and ?"); } }
     if (typeof(oElements) == "string") { oElements = $$$a(oElements); }
     if (Array.isArray(oElements)) { } else { oElements = [oElements]; }
     oElements.forEach(oElement=>{
@@ -282,12 +283,11 @@ function addEL(oElements, sType, fFunction, iIndex) {
         })
     })
 }
-function addEventListenerClickXYZ(o,f,i) {
+function addEventListenerClickXYZ(o,i,f) { // vs addEL's o, t, i, f
     // defaults
     if (o) {} else { o = "body"; }
-    if (f) {} else { f = function() { alert("blank f"); } }
     if (i) {} else { i=2; }
-    addEL(o, "click", f, i);
+    addEL(o, "click", i, f);
 }
 
 
