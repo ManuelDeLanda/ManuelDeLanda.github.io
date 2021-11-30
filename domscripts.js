@@ -277,9 +277,8 @@ function addEL(oElements, sType, fFunction, iIndex) {
     if (typeof(oElements) == "string") { oElements = $$$a(oElements); }
     if (Array.isArray(oElements)) { } else { oElements = [oElements]; }
     oElements.forEach(oElement=>{
-        console.log(oElement);
         oElement.addEventListener(sType, function (evt) {
-            if (evt.detail === iIndex) { f(); }
+            if (evt.detail === iIndex) { fFunction(); }
         })
     })
 }
