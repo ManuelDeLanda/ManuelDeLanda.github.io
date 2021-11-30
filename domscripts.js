@@ -279,7 +279,7 @@ function addEL(oElements, sType, fFunction, iIndex) {
     oElements.forEach(oElement=>{
         console.log(oElement);
         oElement.addEventListener(sType, function (evt) {
-            if (evt.detail === i) { f(); }
+            if (evt.detail === iIndex) { f(); }
         })
     })
 }
