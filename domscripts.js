@@ -272,6 +272,27 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
       
     // END animate.css scripts
 
+// 
+function addEL(oElements, sType, fFunction, iIndex) {
+    if (typeof(oElements) == "string") { oElements = $$$a(oElements); }
+    if (Array.isArray(oElements)) { } else { oElements = [oElements]; }
+    oElements.forEach(oElement=>{
+        console.log(oElement);
+        oElement.addEventListener(sType, function (evt) {
+            if (evt.detail === i) { f(); }
+        })
+    })
+}
+function addEventListenerClickXYZ(o,f,i) {
+    // defaults
+    if (o) {} else { o = "body"; }
+    if (f) {} else { f = function() { alert("blank f"); } }
+    if (i) {} else { i=2; }
+    addEL(o, "click", f, i);
+}
+
+
+
 // NEW googlesheets scripts
 // domscriptsSTEROIDS.js
 GSDS_CELL = function(domTable, sA1Notation) { return GSDS_RANGE1D(domTable, sA1Notation)[0]; }
