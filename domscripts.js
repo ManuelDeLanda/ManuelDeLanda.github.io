@@ -14,12 +14,17 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
     // BEGIN useful vanilla dom scripts - consider refactoring out the overloading prototypes?
     
     // BEGIN VANILLA-FIED JQUERY
-    var $$$ = document.querySelectorAll.bind(document);
+    // var $$$ = document.querySelectorAll.bind(document);
+    function $$$(el) { if (typeof(el) == "string") { return document.querySelectorAll(el) } else { return el; } ; };    
     function $$$a(el) { return Array.prototype.slice.call($$$(el)); };    
-    var $$$$ = document.querySelector.bind(document);
-    HTMLElement.prototype.$$$ = function (element) { return this.querySelectorAll(element); }; 
+    // var $$$$ = document.querySelector.bind(document);
+    function $$$$(el) { if (typeof(el) == "string") { return document.querySelector(el) } else { return el; } ; };    
+
+    // HTMLElement.prototype.$$$ = function (element) { return this.querySelectorAll(element); }; 
+    HTMLElement.prototype.$$$ = function (element) { if (typeof(element) == "string") { return this.querySelectorAll(element) } else { return element; } ; };
     HTMLElement.prototype.$$$a = function (element) { return Array.prototype.slice.call(this.querySelectorAll(element)); }; 
-    HTMLElement.prototype.$$$$ = function (element) { return this.querySelector(element); }; 
+    // HTMLElement.prototype.$$$$ = function (element) { return this.querySelector(element); }; 
+    HTMLElement.prototype.$$$$ = function (element) { if (typeof(element) == "string") { return this.querySelector(element) } else { return element; } ; };
     // END VANILLA-FIED JQUERY
   
     domRemoveNode = function(domEl) { domEl.parentNode.removeChild(domEl); }
