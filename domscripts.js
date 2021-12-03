@@ -139,7 +139,24 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
         while (div.children.length > 0) {
             this.appendChild(div.children[0]);
         }
-    }; HTMLElement.prototype.appendHTML = HTMLElement.prototype.appendHtml;
+    }; HTMLElement.prototype.appendHTML = HTMLElement.prototype.appendHtml;  
+    HTMLElement.prototype.insertAfterDOM = function (newNode) {
+        if (typeof(newNode)=="string") {
+            var div = document.createElement('div');
+            div.innerHTML = newNode;
+            newNode = div;
+        }
+        this.parentNode.insertBefore(newNode, this.nextSibling);
+    };
+
+    HTMLElement.prototype.insertBeforeDOM = function (newNode) {
+        if (typeof(newNode)=="string") {
+            var div = document.createElement('div');
+            div.innerHTML = newNode;
+            newNode = div;
+        }
+        this.parentNode.insertBefore(newNode, this);
+    };
     HTMLElement.prototype.getElementsByInnerText = function (text, escape) {
         var nodes  = this.querySelectorAll("*"); //  this.$$$("*"); doesn't work
         var matches = [];
