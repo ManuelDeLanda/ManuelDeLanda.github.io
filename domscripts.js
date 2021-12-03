@@ -281,7 +281,7 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
         node.addEventListener('animationend', handleAnimationEnd, {once: true});
       });      
 
-      function $$$a_animate(el,animation,idelay,fFunction) {
+      function $$$animate(el,animation,idelay,fFunction) {
           // fFunction = function(o) { o.style.display=""; }
           if (animation) {} else { animation = "random"; }
           if (el) {} else { el = "*"; }
@@ -295,7 +295,7 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
                   animateCSS(o,animation);
               }, i*idelay);
           });
-      }   
+      }; function $$$a_animate(el,animation,idelay,fFunction) { return $$$animate(el,animation,idelay,fFunction); };
       
     // END animate.css scripts
 
