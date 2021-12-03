@@ -281,16 +281,21 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
         node.addEventListener('animationend', handleAnimationEnd, {once: true});
       });      
 
-      function $$$a_animate(el,animation,idelay) {
+      function $$$a_animate(el,animation,idelay,fFunction) {
+          // fFunction = function(o) { o.style.display=""; }
           if (animation) {} else { animation = "random"; }
           if (el) {} else { el = "*"; }
-          if (idelay) {} else { idelay = 200; }
+          if (idelay != undefined) {} else { idelay = 200; }
+          if (fFunction=="display") { fFunction = function(o) { o.style.display=""; } } else {};
+          if (fFunction=="displaynone") { fFunction = function(o) { o.style.display="none"; } } else {};
+          if (fFunction) {} else { fFunction = function(o) {}; }
           $$$a(el).forEach((o,i)=>{
               setTimeout(() => {
+                  fFunction(o);
                   animateCSS(o,animation);
               }, i*idelay);
           });
-      }      
+      }   
       
     // END animate.css scripts
 
