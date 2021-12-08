@@ -984,7 +984,7 @@ toHTMLTable = function(aArrayOrObject, aColumns, sTableID) {
 // refactoring opportunities for returnIDAndOrClasses, convertRecordsOrientedArrayToHTMLTable, and convertValuesOrientedToHTMLTable
 // get rid of try/catches in favor of the es6-friendly versions (these are es5-friendly only for NS purposes), get rid of fFunction = function() format, use destructuring in convertRecordsOrientedArrayToHTMLTable and convertValuesOrientedToHTMLTable rather than calling returnIDAndOrClasses() twice, etc etc
 returnIDAndOrClasses = function(sIDAndOrClasses) {
-    sIDAndOrClasses = sIDAndOrClasses.replace(" ", "_");
+    try { sIDAndOrClasses = sIDAndOrClasses.replace(" ", "_"); } catch(e) {}
     var sID = ""; var sClasses = ""; var aMatches;
     try { aMatches = sIDAndOrClasses.match(/(\#|\.)(\w*)/g); } catch(e) {}
     if (aMatches) { // try to find an id and/or classes
