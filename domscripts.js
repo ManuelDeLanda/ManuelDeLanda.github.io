@@ -981,17 +981,44 @@ toHTMLTable = function(aArrayOrObject, aColumns, sTableID) {
     return convertRecordsOrientedArrayToHTMLTable(aArrayOrObject, aColumns, sTableID);
   }
 }
-convertRecordsOrientedArrayToHTMLTable = function (aRecordsOriented, aColumns, sTableID) {
+// refactoring opportunities for returnIDAndOrClasses, convertRecordsOrientedArrayToHTMLTable, and convertValuesOrientedToHTMLTable
+// get rid of try/catches in favor of the es6-friendly versions (these are es5-friendly only for NS purposes), get rid of fFunction = function() format, use destructuring in convertRecordsOrientedArrayToHTMLTable and convertValuesOrientedToHTMLTable rather than calling returnIDAndOrClasses() twice, etc etc
+returnIDAndOrClasses = function(sIDAndOrClasses) {
+    sIDAndOrClasses = sIDAndOrClasses.replace(" ", "_");
+    var sID = ""; var sClasses = ""; var aMatches;
+    try { aMatches = sIDAndOrClasses.match(/(\#|\.)(\w*)/g); } catch(e) {}
+    if (aMatches) { // try to find an id and/or classes
+        // console.log(aMatches);
+        try { sID = sIDAndOrClasses.match(/(\#)(\w*)/)[2]; } catch(e) {} // just match the first (ie 2th) match - eg returnIDAndOrClasses(".blah#wat#what#whatever"); returns id=wat
+        try { sClasses = sIDAndOrClasses.match(/(\.)(\w*)/g).map(function(ooo) { return ooo.replace(/\./g, "").replace(" ", "_") }).join(" "); } catch(e) {}
+        // sTableID = "";
+    } else { // if (sID) { // assume it's an id being passed through if no # and . indicators
+        sID = (sIDAndOrClasses ? sIDAndOrClasses : "" );
+        // sTableID = sTableID;
+        // sClasses = "aRO aRecordsOriented convertRecordsOrientedArrayToHTMLTable _gsws gsws";
+    }
+    // if (sID == undefined || sID.length==0 ) { sID = ""; } else { sID = " id='" + sID + "'"; }
+    return {id: sID, classes: sClasses};
+}
+// convertValuesOrientedToHTMLTable(toVO(toRO([["one","two","three"],[4,5,6],[7,8,9]])), undefined, "#wat")
+// convertRecordsOrientedToHTMLTable((toRO([["one","two","three"],[4,5,6],[7,8,9]])), undefined, "#wat")
+// returnIDAndOrClasses(".blah");
+// returnIDAndOrClasses("#blah.wat#what.whatever.whateverblah");
+// returnIDAndOrClasses("#blah.testing_12.hello.wat");
+// returnIDAndOrClasses("blah");
+// returnIDAndOrClasses(".blah# blah2");
+convertRecordsOrientedArrayToHTMLTable = function(aRecordsOriented, aColumns, sTableIDOrClasses) {
+    // sTableID = "#blah.testing_12.hello"; sTableID = "asdfasf";
+    var sTableID = returnIDAndOrClasses(sTableIDOrClasses).id;
+    var sTableClasses = (returnIDAndOrClasses(sTableIDOrClasses).classes + " aRO aRecordsOriented convertRecordsOrientedArrayToHTMLTable _gsws gsws").trim();
+    if (sTableID) { sTableID = " id='" + sTableID + "'"; }
     // convertRecordsOrientedArrayToHTMLTable(aRecordsOriented)
     function returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented) { return aRecordsOriented.reduce(function(agg, oElement313) { agg = agg.concat(Object.keys(oElement313)); agg = unique(agg); return agg; }, []) }
-    if (sTableID == undefined) { sTableID = ""; }
-
     if (aColumns == undefined) {
         // var aColumns = Object.keys(aRecordsOriented[0]);
                  aColumns = returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented);
     }
-    // gsws gsws_SDJOWholeForm A4 gscell columnA row4
-    sHTMLTable = "<table id='" + sTableID + "' class='RecordsOrientedArrayToHTML gsws gsws_" + sTableID + "' style='margin: 0 auto; text-align: center;'>" + aRecordsOriented.reduce(function(agg, oElement, iIndex) {
+    sHTMLTable = "<table " + sTableID + " class='" + sTableClasses + "' style='margin: 0 auto; text-align: center;'>" + aRecordsOriented.reduce(function(agg, oElement, iIndex) {
         agg = agg + "<tr>" + aColumns.reduce(function(agg000, oElement000, iIndex000) {
             var sCell = columnToLetter(iIndex000+1) + (iIndex+2);
             var sClasses = "gsws gscell gsws_" + sTableID + " " + sCell + " row" + (iIndex+2) + " column" + columnToLetter(iIndex000+1) + " cellcolumn" + iIndex000;
@@ -1008,19 +1035,22 @@ convertRecordsOrientedArrayToHTMLTable = function (aRecordsOriented, aColumns, s
         }, "") + "</tr>"
     ) + "</table>";
         return sHTMLTable;
-}
+}; convertRecordsOrientedToHTMLTable = function(aRO, aColumns, sTableIDOrClasses) { return convertRecordsOrientedArrayToHTMLTable(aRO, aColumns, sTableIDOrClasses) }
 
-convertValuesOrientedToHTMLTable = function(aValuesOriented, aColumns, sTableID) {
+convertValuesOrientedArrayToHTMLTable = function(aValuesOriented, aColumns, sTableIDOrClasses) {
+    var sTableID = returnIDAndOrClasses(sTableIDOrClasses).id;
+    var sTableClasses = (returnIDAndOrClasses(sTableIDOrClasses).classes + " aVO aValuesOriented convertValuesOrientedToHTMLTable _gsws gsws").trim();
+    if (sTableID) { sTableID = " id='" + sTableID + "'"; }
     /// convertValuesOrientedToHTMLTable([[1,2,3,4],[0,0,0,0],[9,9,9,9]], undefined, "gswsvo")
     function returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented) { return aRecordsOriented.reduce(function(agg, oElement313) { agg = agg.concat(Object.keys(oElement313)); agg = unique(agg); return agg; }, []) }
-    if (sTableID == undefined) { sTableID = ""; }
 
     if (aColumns == undefined) {
         // var aColumns = Object.keys(aRecordsOriented[0]);
                  // aColumns = returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented);
     }
     // gsws gsws_SDJOWholeForm A4 gscell columnA row4
-    sHTMLTable = "<table id='" + sTableID + "' class='convertValuesOrientedToHTMLTable gsws gsws_" + sTableID + "' style='margin: 0 auto; text-align: center;'>" + aValuesOriented.reduce(function(agg, oElement, iIndex) {
+    sHTMLTable = "<table " + sTableID + " class='" + sTableClasses + "'" + " style='margin: 0 auto; text-align: center;'>" + aValuesOriented.reduce(function(agg, oElement, iIndex) {
+    // sHTMLTable = "<table id='" + sTableID + "' class='convertValuesOrientedToHTMLTable gsws gsws_" + sTableID + "' style='margin: 0 auto; text-align: center;'>" + aValuesOriented.reduce(function(agg, oElement, iIndex) {
         agg = agg + "<tr>" + oElement.reduce(function(agg000, oElement000, iIndex000) {
             //console.log(oElement);
             var sCell = columnToLetter(iIndex000+1) + (iIndex+1);
@@ -1031,7 +1061,8 @@ convertValuesOrientedToHTMLTable = function(aValuesOriented, aColumns, sTableID)
         return agg;
     }, "") + "</table>";
     return sHTMLTable.replace(/ id=''/g, "");
-}
+}; convertValuesOrientedToHTMLTable = function(aVO, aColumns, sTableIDOrClasses) { return convertValuesOrientedArrayToHTMLTable(aVO, aColumns, sTableIDOrClasses) }
+
 convertRecordsOrientedArrayToExcelXML = function(aArray, aColumns) {
   // convertRecordsOrientedArrayToExcelXML
   // normalize aRecordsOriented
