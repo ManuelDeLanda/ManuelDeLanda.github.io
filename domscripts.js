@@ -1010,7 +1010,7 @@ returnIDAndOrClasses = function(sIDAndOrClasses) {
 convertRecordsOrientedArrayToHTMLTable = function(aRecordsOriented, aColumns, sTableIDOrClasses) {
     // sTableID = "#blah.testing_12.hello"; sTableID = "asdfasf";
     var sTableID = returnIDAndOrClasses(sTableIDOrClasses).id;
-    var sTableClasses = (returnIDAndOrClasses(sTableIDOrClasses).classes + " aRO aRecordsOriented convertRecordsOrientedArrayToHTMLTable _gsws gsws").trim();
+    var sTableClasses = (returnIDAndOrClasses(sTableIDOrClasses).classes + " aRO aRecordsOriented convertRecordsOrientedArrayToHTMLTable convertRecordsOrientedToHTMLTable _gsws gsws").trim();
     if (sTableID) { sTableID = " id='" + sTableID + "'"; }
     // convertRecordsOrientedArrayToHTMLTable(aRecordsOriented)
     function returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented) { return aRecordsOriented.reduce(function(agg, oElement313) { agg = agg.concat(Object.keys(oElement313)); agg = unique(agg); return agg; }, []) }
@@ -1039,7 +1039,7 @@ convertRecordsOrientedArrayToHTMLTable = function(aRecordsOriented, aColumns, sT
 
 convertValuesOrientedArrayToHTMLTable = function(aValuesOriented, aColumns, sTableIDOrClasses) {
     var sTableID = returnIDAndOrClasses(sTableIDOrClasses).id;
-    var sTableClasses = (returnIDAndOrClasses(sTableIDOrClasses).classes + " aVO aValuesOriented convertValuesOrientedToHTMLTable _gsws gsws").trim();
+    var sTableClasses = (returnIDAndOrClasses(sTableIDOrClasses).classes + " aVO aValuesOriented convertValuesOrientedArrayToHTMLTable convertValuesOrientedToHTMLTable _gsws gsws").trim();
     if (sTableID) { sTableID = " id='" + sTableID + "'"; }
     /// convertValuesOrientedToHTMLTable([[1,2,3,4],[0,0,0,0],[9,9,9,9]], undefined, "gswsvo")
     function returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented) { return aRecordsOriented.reduce(function(agg, oElement313) { agg = agg.concat(Object.keys(oElement313)); agg = unique(agg); return agg; }, []) }
