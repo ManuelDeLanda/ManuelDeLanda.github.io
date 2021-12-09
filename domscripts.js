@@ -285,9 +285,12 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
           // fFunction = function(o) { o.style.display=""; }
           if (animation) {} else { animation = "random"; }
           if (el) {} else { el = "*"; }
-          if (idelay != undefined) {} else { idelay = 200; }
+          if (idelay != undefined) {} else { idelay = 10; }
           if (fFunction=="display") { fFunction = function(o) { o.style.display=""; } } else {};
           if (fFunction=="displaynone") { fFunction = function(o) { o.style.display="none"; } } else {};
+          if (fFunction=="displaynonedisplay") { fFunction = function(o) { o.style.display="none"; setTimeout(() => { o.style.display=""; }, idelay) } } else {};
+          if (fFunction=="displaydisplaynone") { fFunction = function(o) { o.style.display=""; setTimeout(() => { o.style.display="none"; }, idelay) } } else {};
+
           if (fFunction) {} else { fFunction = function(o) {}; }
           $$$a(el).forEach((o,i)=>{
               setTimeout(() => {
