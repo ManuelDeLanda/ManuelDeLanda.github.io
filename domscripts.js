@@ -282,33 +282,45 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
         node.addEventListener('animationend', handleAnimationEnd, {once: true});
       });      
 
-      function $$$animate(el,animation,idelay,fFunction) {
+      function $$$animate(el,animation,idelay, fFunction1, fFunction2) {
+          // fFunction1=fFunction_beforeAnimation, fFunction2=fFunction2_afterAnimation
           // fFunction = function(o) { o.style.display=""; }
           if (animation) {} else { animation = "random"; }
           if (el) {} else { el = "*"; }
           if (idelay != undefined) {} else { idelay = 10; }
-          
+          fNada = function(o) {};
           oAnimateFunctions = {
-              "display": function(o) { o.style.display=""; o.style.visibility="" },
-              "displaynone": function(o) { o.style.display="none"; },
-              "displayhidden": function(o) { o.style.visibility="hidden"; },
-              "displaynonedisplay": function(o) { o.style.display="none"; setTimeout(() => { o.style.display=""; ; o.style.visibility=""; }, idelay) },
-              "displayhiddendisplay": function(o) { o.style.visibility="hidden"; setTimeout(() => { o.style.visibility=""; }, idelay) } ,
-              "displaydisplaynone": function(o) { o.style.display=""; o.style.visibility=""; setTimeout(() => { o.style.display="none"; }, idelay) },
-              "displaydisplayhidden": function(o) { o.style.display=""; o.style.visibility=""; setTimeout(() => { o.style.visibility="hidden"; }, idelay) },
+              "display": { "fFunction1": function(o) { o.style.display=""; o.style.visibility="visible" }, "fFunction2": function(o) { o.style.display=""; o.style.visibility="visible" } },
+              "displaynone": { "fFunction1": fNada, "fFunction2": function(o) { o.style.display="none"; } },
+              "displayhidden": { "fFunction1": fNada, "fFunction2": function(o) { o.style.visibility="hidden"; } },
+
+              "displaynonedisplay": { "fFunction1": fNada, "fFunction2": fNada, },
+              "displayhiddendisplay": { "fFunction1": fNada, "fFunction2": fNada, },
+              "displaydisplaynone": { "fFunction1": fNada, "fFunction2": fNada, },
+              "displaydisplayhidden": { "fFunction1": fNada, "fFunction2": fNada, },
+
+              // "displaynonedisplay": function(o) { o.style.display="none"; setTimeout(() => { o.style.display=""; ; o.style.visibility=""; }, idelay) },
+              // "displayhiddendisplay": function(o) { o.style.visibility="hidden"; setTimeout(() => { o.style.visibility=""; }, idelay) } ,
+              // "displaydisplaynone": function(o) { o.style.display=""; o.style.visibility=""; setTimeout(() => { o.style.display="none"; }, idelay) },
+              // "displaydisplayhidden": function(o) { o.style.display=""; o.style.visibility=""; setTimeout(() => { o.style.visibility="hidden"; }, idelay) },
               "": function(o) {},
           }
 
-          if (typeof(fFunction)=="string") { fFunction = oAnimateFunctions[fFunction]; } else {};
-                  
-          if (fFunction) {} else { fFunction = function(o) {}; }
+          if (typeof(fFunction1)=="string") {
+              if (oAnimateFunctions[fFunction1]) {} else { fFunction1 = ""; }
+              fFunction2 = oAnimateFunctions[fFunction1]["fFunction2"];
+              fFunction1 = oAnimateFunctions[fFunction1]["fFunction1"];
+          } else {};
+
+          if (fFunction1) {} else { fFunction1 = fNada; }
+          if (fFunction2) {} else { fFunction2 = fNada; }
           $$$a(el).forEach((o,i)=>{
               setTimeout(() => {
-                  // fFunction1(o); vs fFunction2?
-                  animateCSS(o,animation).then(o=>fFunction(o)); // o.addEventListener('animationend', () => {
+                  fFunction1(o)
+                  animateCSS(o,animation).then(o=>fFunction2(o)); // o.addEventListener('animationend', () => {
               }, i*idelay);
           });
-      }; function $$$a_animate(el,animation,idelay,fFunction) { return $$$animate(el,animation,idelay,fFunction); };
+      }; function $$$a_animate(el,animation,idelay,fFunction1,fFunction2) { return $$$animate(el,animation,idelay,fFunction1,fFunction2); };
       
     // END animate.css scripts
 
@@ -815,7 +827,7 @@ GSDS_disjointedRangeToAVO("A2;A2:B4;D4,E5:F5;G1:H2,H1-H9,L8,:B2, G8")
 // GSDS_inputifyTDRANGE("A1:B2", undefined, "input");
 // GSDS_inputifyTDRANGE("A3:B3", undefined, "textarea");
 // GSDS_GSDSifyTDRANGE("A1:*", undefined, "textarea", undefined, undefined, "=89");
-// GSDS_RANGE1D("A1:*").forEach(function(domTD, iIn) { ((iIn%2==0) ? sType = "textarea" : sType = "input"); GSDS_GSDSifyTDRANGE(domTD, undefined, sType); });
+// GSDS_RANGE1D("A1:*").forEach(function(domTD, iIn) { ((iIn%2==0) ? sType = "textarea" : sType = "input"); GSDS_GSDSifyTDRANGE(domTD, undefined, sType); });).then
 
 /* datahtmlscripts.js => isomorphic, vanilla, es5-ish datascripts that are related to HTML and datascripts, without needing libraries (the dom, jquery, or lodash */
 // server and client-side friendly vanilla es5-ish data scripts that are related to HTML and datascripts, without needing librarys (the dom, jquery, or lodash)
