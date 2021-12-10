@@ -275,7 +275,8 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
         function handleAnimationEnd(event) {
           event.stopPropagation();
           node.classList.remove(`${prefix}animated`, animationName);
-          resolve('Animation ended');
+          // resolve('Animation ended');
+          resolve(event.target);
         }
 
         node.addEventListener('animationend', handleAnimationEnd, {once: true});
@@ -286,19 +287,25 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
           if (animation) {} else { animation = "random"; }
           if (el) {} else { el = "*"; }
           if (idelay != undefined) {} else { idelay = 10; }
-          if (fFunction=="display") { fFunction = function(o) { o.style.display=""; o.style.visibility=""; } } else {};
-          if (fFunction=="displaynone") { fFunction = function(o) { o.style.display="none"; } } else {};
-          if (fFunction=="displayhidden") { fFunction = function(o) { o.style.visibility="hidden"; } } else {};
-          if (fFunction=="displaynonedisplay") { fFunction = function(o) { o.style.display="none"; setTimeout(() => { o.style.display=""; ; o.style.visibility=""; }, idelay) } } else {};
-          if (fFunction=="displayhiddendisplay") { fFunction = function(o) { o.style.visibility="hidden"; setTimeout(() => { o.style.visibility=""; }, idelay) } } else {};
-          if (fFunction=="displaydisplaynone") { fFunction = function(o) { o.style.display=""; o.style.visibility=""; setTimeout(() => { o.style.display="none"; }, idelay) } } else {};
-          if (fFunction=="displaydisplayhidden") { fFunction = function(o) { o.style.display=""; o.style.visibility=""; setTimeout(() => { o.style.visibility="hidden"; }, idelay) } } else {};
+          
+          oAnimateFunctions = {
+              "display": function(o) { o.style.display=""; o.style.visibility="" },
+              "displaynone": function(o) { o.style.display="none"; },
+              "displayhidden": function(o) { o.style.visibility="hidden"; },
+              "displaynonedisplay": function(o) { o.style.display="none"; setTimeout(() => { o.style.display=""; ; o.style.visibility=""; }, idelay) },
+              "displayhiddendisplay": function(o) { o.style.visibility="hidden"; setTimeout(() => { o.style.visibility=""; }, idelay) } ,
+              "displaydisplaynone": function(o) { o.style.display=""; o.style.visibility=""; setTimeout(() => { o.style.display="none"; }, idelay) },
+              "displaydisplayhidden": function(o) { o.style.display=""; o.style.visibility=""; setTimeout(() => { o.style.visibility="hidden"; }, idelay) },
+              "": function(o) {},
+          }
 
+          if (typeof(fFunction)=="string") { fFunction = oAnimateFunctions[fFunction]; } else {};
+                  
           if (fFunction) {} else { fFunction = function(o) {}; }
           $$$a(el).forEach((o,i)=>{
               setTimeout(() => {
-                  fFunction(o);
-                  animateCSS(o,animation);
+                  // fFunction1(o); vs fFunction2?
+                  animateCSS(o,animation).then(o=>fFunction(o)); // o.addEventListener('animationend', () => {
               }, i*idelay);
           });
       }; function $$$a_animate(el,animation,idelay,fFunction) { return $$$animate(el,animation,idelay,fFunction); };
