@@ -259,13 +259,31 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
         return "bounce\nflash\npulse\nrubberBand\nshakeX\nshakeY\nheadShake\nswing\ntada\nwobble\njello\nheartBeat\nbackInDown\nbackInLeft\nbackInRight\nbackInUp\nbackOutDown\nbackOutLeft\nbackOutRight\nbackOutUp\nbounceIn\nbounceInDown\nbounceInLeft\nbounceInRight\nbounceInUp\nbounceOut\nbounceOutDown\nbounceOutLeft\nbounceOutRight\nbounceOutUp\nfadeIn\nfadeInDown\nfadeInDownBig\nfadeInLeft\nfadeInLeftBig\nfadeInRight\nfadeInRightBig\nfadeInUp\nfadeInUpBig\nfadeInTopLeft\nfadeInTopRight\nfadeInBottomLeft\nfadeInBottomRight\nfadeOut\nfadeOutDown\nfadeOutDownBig\nfadeOutLeft\nfadeOutLeftBig\nfadeOutRight\nfadeOutRightBig\nfadeOutUp\nfadeOutUpBig\nfadeOutTopLeft\nfadeOutTopRight\nfadeOutBottomRight\nfadeOutBottomLeft\nflip\nflipInX\nflipInY\nflipOutX\nflipOutY\nlightSpeedInRight\nlightSpeedInLeft\nlightSpeedOutRight\nlightSpeedOutLeft\nrotateIn\nrotateInDownLeft\nrotateInDownRight\nrotateInUpLeft\nrotateInUpRight\nrotateOut\nrotateOutDownLeft\nrotateOutDownRight\nrotateOutUpLeft\nrotateOutUpRight\nhinge\njackInTheBox\nrollIn\nrollOut\nzoomIn\nzoomInDown\nzoomInLeft\nzoomInRight\nzoomInUp\nzoomOut\nzoomOutDown\nzoomOutLeft\nzoomOutRight\nzoomOutUp\nslideInDown\nslideInLeft\nslideInRight\nslideInUp\nslideOutDown\nslideOutLeft\nslideOutRight\nslideOutUp".split("\n");
 
     }
+function toggleAnimationVisbDisp(o,sVHvsDN,animation,i) {
+    // sVHvsDN is sVisibilityHiddenVsDisplayNone
+    if (sVHvsDN == "none") {
+        sVHvsDN = "displaynone";
+    } else {
+        sVHvsDN = "displayhidden";
+    }
+    if (o) {} else { o="*"; }
+    if (i) {} else { i=0; }
+    if (animation) {
 
-    function getAnimateCSSAnimationsIn() { return getAnimateCSSAnimations().filter(o=>o.match(/In/g)); }
-    function getAnimateCSSAnimationsOut() { return getAnimateCSSAnimations().filter(o=>o.match(/Out/g)); }
-    function getAnimateCSSAnimationsRight() { return getAnimateCSSAnimations().filter(o=>o.match(/Right/g)); }
-    function getAnimateCSSAnimationsLeft() { return getAnimateCSSAnimations().filter(o=>o.match(/Left/g)); }
-    function getAnimateCSSAnimationsDown() { return getAnimateCSSAnimations().filter(o=>o.match(/Down/g)); }
-    function getAnimateCSSAnimationsUp() { return getAnimateCSSAnimations().filter(o=>o.match(/Up/g)); }
+    } else {
+        sInAnimation = getRandomArrayToken(getAnimateCSSAnimationsMatch("In"));
+        sOutAnimation = getRandomArrayToken(getAnimateCSSAnimationsMatch("Out"));
+    }
+    if ($$$$(o).style.visibility == "hidden" || $$$$(o).style.display == "none") {
+
+        $$$animate(o, sInAnimation, i, "display");
+
+    } else {
+        $$$animate(o, sOutAnimation, i, sVHvsDN)
+    }
+
+}
+    function getAnimateCSSAnimationsMatch(s) { return getAnimateCSSAnimations().filter(o=>o.match(new RegExp(s, "g"))); }
     getRandomArrayToken = function(a,i) { // consider refactoring this into datascripts.js?  make es5-friendly
         if (i) {} else (i = 1);
         if (i==1) {
