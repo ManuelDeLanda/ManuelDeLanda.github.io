@@ -185,9 +185,6 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
     }
     document.getElementByInnerText = HTMLElement.prototype.getElementByInnerText;
     // END EXTREMELY USEFUL vanilla dom scripts
-  
-    // SubmitSuperNinjaForm,fetch_XMLHttpRequest,oGetAllParameters_CLIENT()
-    fetch_XMLHttpRequest=function(e){superencode=function(e){return encodeURIComponent(e).replace(/'/g,"%27")};var t="",n=new XMLHttpRequest;return new Promise(function(o,r){var a;n.onreadystatechange=function(){if(4==this.readyState&&200==this.status){t=this.responseText;(new DOMParser).parseFromString(t,"text/html");o(t)}},n.open(e.type,e.url,!0),null!=e.payload&&(a=Object.keys(e.payload).map(function(t){return superencode(t)+"="+superencode(e.payload[t])}).join("&")),n.setRequestHeader("Content-type","application/x-www-form-urlencoded"),n.send(a)})},SubmitSuperNinjaForm=function(e,t){if(superencode=function(e){return encodeURIComponent(e).replace(/'/g,"%27")},null==e||null==e||""==e){(e={type:"POST",payload:{script:84,deploy:1,context:"llave",payload:"just testing"}}).url="https://example.com/app/site/hosting/scriptlet.nl?script=84&deploy=1&context=llave"}var n=document.createElement("form");n.setAttribute("target",t),n.name="superninjaform",n.id="superninjaform",n.method=e.type,n.action=null!=e.url?e.url:window.location.href.split("?")[0],document.body.appendChild(n),n.innerHTML=Object.keys(e.payload).reduce(function(t,n){return t+='<input type="hidden" name="'+n+'" id="'+n+'" value="'+superencode(e.payload[n])+'" />'+String.fromCharCode(10)+String.fromCharCode(13)},""),n.submit()},SubmitSuperNinjaForm.sample=function(){console.log('\n              var oTypeURLPayload = { type:"POST", url: "https://cdg.com/wp-json/api/v1/author/2", payload: {filter: "2asdf"}};\n              \n              SubmitSuperNinjaForm(oTypeURLPayload);\n  fetch_XMLHttpRequest(oTypeURLPayload).then(function(sResponse) { console.log(sResponse.trim()); });\n  sResponse = await fetch_XMLHttpRequest(oTypeURLPayload);\n  ')},fetch_XMLHttpRequest.sample=SubmitSuperNinjaForm.sample,oGetAllParameters_CLIENT=function(){return location.search.substring(1)?JSON.parse('{"'+location.search.substring(1).split("&").map(function(e){return-1==e.indexOf("=")?e+"=":e}).join("&").replace(/&/g,'","').replace(/=/g,'":"')+'"}',function(e,t){return""===e?t:decodeURIComponent(t)}):{}};
     
     // random vanilla DOM manipulation scripts
     // // replace body tag's innerHTML with div
@@ -864,6 +861,83 @@ GSDS_disjointedRangeToAVO("A2;A2:B4;D4,E5:F5;G1:H2,H1-H9,L8,:B2, G8")
 // GSDS_inputifyTDRANGE("A3:B3", undefined, "textarea");
 // GSDS_GSDSifyTDRANGE("A1:*", undefined, "textarea", undefined, undefined, "=89");
 // GSDS_RANGE1D("A1:*").forEach(function(domTD, iIn) { ((iIn%2==0) ? sType = "textarea" : sType = "input"); GSDS_GSDSifyTDRANGE(domTD, undefined, sType); });).then
+
+// SubmitSuperNinjaForm,fetch_XMLHttpRequest,oGetAllParameters_CLIENT()
+
+fetch_XMLHttpRequest=function(oTypeURLPayload) {
+    superencode = function (str){  return encodeURIComponent(str).replace(/'/g, "%27"); }
+
+    var sXMLHttpRequestResponseText = "";
+    var xmlhttp = new XMLHttpRequest();
+    return new Promise(function (resolve, reject) {
+        xmlhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            sXMLHttpRequestResponseText = this.responseText;
+            // console.log(sXMLHttpRequestResponseText);
+            /* my solution currently responds with html, so I need to parse out the body's innerText */
+            var parser = new DOMParser();
+            var domXMLHttpRequestResponseText = parser.parseFromString(sXMLHttpRequestResponseText, "text/html");
+            //sXMLHttpRequestResponseText = domXMLHttpRequestResponseText.getElementsByTagName('body')[0].innerText;
+
+            resolve(sXMLHttpRequestResponseText);
+          } else {}
+        };
+        xmlhttp.open(oTypeURLPayload.type, oTypeURLPayload.url, true);
+        var sParams;
+        if (oTypeURLPayload.payload != undefined) {
+            sParams = Object.keys(oTypeURLPayload.payload).map(function(oElement) {
+                return superencode(oElement) + "=" + superencode(oTypeURLPayload.payload[oElement]);
+            }).join("&");
+        }
+
+        xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        // JSON SENDING DOESN'T WORK!  HELP!
+        //xmlhttp.setRequestHeader("Content-type","application/json;charset=UTF-8");
+
+        xmlhttp.send(sParams);
+    })
+// }.then(function(sResponse) {  console.log(sResponse.trim());  })
+} 
+
+SubmitSuperNinjaForm=function (oTypeURLPayload, sTarget) {
+  superencode = function (str){  return encodeURIComponent(str).replace(/'/g, "%27"); }
+  if ((oTypeURLPayload == null) || (oTypeURLPayload == undefined) || (oTypeURLPayload == "")) {
+    var oTypeURLPayload = { type:"POST", payload: {script: 84, deploy: 1, context: "llave", payload: "just testing" } }; 
+    var sURL = "https://example.com/app/site/hosting/scriptlet.nl?script=84&deploy=1&context=llave";
+    oTypeURLPayload.url = sURL;
+  } 
+  var dom_form = document.createElement('form');
+  dom_form.setAttribute("target",sTarget);
+  dom_form.name = 'superninjaform';
+  dom_form.id = 'superninjaform';
+  dom_form.method = oTypeURLPayload.type;
+  dom_form.action = ((oTypeURLPayload.url != undefined) ? oTypeURLPayload.url : window.location.href.split("?")[0] ); 
+  document.body.appendChild(dom_form);
+  dom_form.innerHTML = Object.keys(oTypeURLPayload.payload).reduce(function(agg, oElement) {
+    agg += '<input type="hidden" name="' + oElement + '" id="' + oElement + '" value="' + superencode(oTypeURLPayload.payload[oElement]) + '" />' + String.fromCharCode(10) + String.fromCharCode(13);
+    return agg;
+  }, "")
+  dom_form.submit();
+}
+SubmitSuperNinjaForm.sample = function() { 
+  console.log(`
+              var oTypeURLPayload = { type:"POST", url: "https://cdg.com/wp-json/api/v1/author/2", payload: {filter: "2asdf"}};
+              
+              SubmitSuperNinjaForm(oTypeURLPayload);
+  fetch_XMLHttpRequest(oTypeURLPayload).then(function(sResponse) { console.log(sResponse.trim()); });
+  sResponse = await fetch_XMLHttpRequest(oTypeURLPayload);
+  `)
+}; fetch_XMLHttpRequest.sample = SubmitSuperNinjaForm.sample;
+  
+  
+oGetAllParameters_CLIENT = function(sURL) {
+        if (sURL) { var sURL_location_search = "?" + sURL.split("?")[1]; } else { var sURL_location_search = location.search; }
+    return sURL_location_search.substring(1) ? JSON.parse('{"' + sURL_location_search.substring(1).split("&").map(function(e) {
+        return -1 == e.indexOf("=") ? e + "=" : e
+    }).join("&").replace(/&/g, '","').replace(/=/g, '":"') + '"}', function(e, t) {
+        return "" === e ? t : decodeURIComponent(t)
+    }) : {}
+}
 
 /* datahtmlscripts.js => isomorphic, vanilla, es5-ish datascripts that are related to HTML and datascripts, without needing libraries (the dom, jquery, or lodash */
 // server and client-side friendly vanilla es5-ish data scripts that are related to HTML and datascripts, without needing librarys (the dom, jquery, or lodash)
