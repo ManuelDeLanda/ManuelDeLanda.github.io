@@ -942,19 +942,19 @@ oGetAllParameters_CLIENT = function(sURL) {
 function oSetAParameter_CLIENT(oParameters) {
     // this function resets a parameter(s) from oGetAllParameters_CLIENT()
     // defaults to resetting &DOMContentLoaded parameter when a string and not an object is passed
-    if (typeof(oParameters=="string")) {
-        oParameters = { "DOMContentLoaded": oParameters}
+    if (typeof(oParameters)=="string") {
+        oParameters = { "DOMContentLoaded": oParameters }
     }
 
     var sURL = window.location.origin + window.location.pathname;
 
-    oGetAllParametersCopy = JSON.parse(JSON.stringify(oGetAllParameters_CLIENT()));
+    oGetAllParameters_COPY = JSON.parse(JSON.stringify(oGetAllParameters_CLIENT()));
     Object.keys(oParameters).forEach(o=>{
-        oGetAllParametersCopy[o] = oParameters[o];
+        console.log(o)
+        oGetAllParameters_COPY[o] = oParameters[o];
     })
-    // oGetAllParametersCopy.DOMContentLoaded = sCode;
 
-    sURL = sURL + "?" + Object.keys(oGetAllParametersCopy).map(o=>o + "=" + superencode(oGetAllParametersCopy[o])).join("&");
+    sURL = sURL + "?" + Object.keys(oGetAllParameters_COPY).map(o=>o + "=" + superencode(oGetAllParameters_COPY[o])).join("&");
     return sURL;
 }
 
