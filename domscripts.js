@@ -939,6 +939,25 @@ oGetAllParameters_CLIENT = function(sURL) {
     }) : {}
 }
 
+function oSetAParameter_CLIENT(oParameters) {
+    // this function resets a parameter(s) from oGetAllParameters_CLIENT()
+    // defaults to resetting &DOMContentLoaded parameter when a string and not an object is passed
+    if (typeof(oParameters=="string")) {
+        oParameters = { "DOMContentLoaded": oParameters}
+    }
+
+    var sURL = window.location.origin + window.location.pathname;
+
+    oGetAllParametersCopy = JSON.parse(JSON.stringify(oGetAllParameters_CLIENT()));
+    Object.keys(oParameters).forEach(o=>{
+        oGetAllParametersCopy[o] = oParameters[o];
+    })
+    // oGetAllParametersCopy.DOMContentLoaded = sCode;
+
+    sURL = sURL + "?" + Object.keys(oGetAllParametersCopy).map(o=>o + "=" + superencode(oGetAllParametersCopy[o])).join("&");
+    return sURL;
+}
+
 /* datahtmlscripts.js => isomorphic, vanilla, es5-ish datascripts that are related to HTML and datascripts, without needing libraries (the dom, jquery, or lodash */
 // server and client-side friendly vanilla es5-ish data scripts that are related to HTML and datascripts, without needing librarys (the dom, jquery, or lodash)
 // "FIRST PRINCIPLES FRAMEWORKING"
