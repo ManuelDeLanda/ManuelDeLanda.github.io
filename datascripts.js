@@ -30,7 +30,7 @@ findKeys = function(aRO,sKey,sVal) {
     if (isVO(aRO)) { aRO = toRO(aRO); }
 
     // normalize in order to get first row and all its keys / columns that way
-    aRO = normalizeRecordsOriented(JSON.parse(JSON.stringify(aRO)));
+    aRO = normalizeRecordsOriented(JSONPS(aRO));
     
     if (sKey instanceof RegExp) { // regex
         sKey = Object.keys(aRO[0]).filter(function(k) { return k.match(sKey); }); // to array;
@@ -62,7 +62,7 @@ findKeys = function(aRO,sKey,sVal) {
 }
 findKey = function(aData,sKey,sVal) { return findKeys(aData,sKey,sVal)[0]; }
 findKeysIndex = function(aData,sKey,sVal) { return findKeyIndexes(aData,sKey,sVal)[0]; }
-findKeyIndexes = function(aData,sKey,sVal) { return JSON.parse(JSON.stringify(aData)).map(function(e, i) { e.index = i; return e; }).filter(function(e) { return e[sKey] == sVal; }).map(function(e) { return e.index }) }
+findKeyIndexes = function(aData,sKey,sVal) { return JSONPS(aData).map(function(e, i) { e.index = i; return e; }).filter(function(e) { return e[sKey] == sVal; }).map(function(e) { return e.index }) }
 ObjectKeysRegex = function(oObject, rRegexKey) {
     return Object.keys(oObject).filter(function(oEl) {
         return oEl.match(rRegexKey);
@@ -107,7 +107,7 @@ toVO = function(aInputArray, aColumns) {
 }; toValuesOriented = function(aInputArray, aColumns) { return toVO(aInputArray, aColumns); }
 toRO = function(aInputArray) {
     if (!isVO(aInputArray)) { return aInputArray; }
-    var aValuesOrientation = normalizeValuesOriented(sanitizeValuesOrientedData(JSON.parse(JSON.stringify(aInputArray))));
+    var aValuesOrientation = normalizeValuesOriented(sanitizeValuesOrientedData(JSONPS(aInputArray)));
     aValuesOrientation[0] = aValuesOrientation[0].slice().reverse().map(function(oElement, iIndex, aArray) {
         if (aValuesOrientation[0].indexOf(oElement) == aValuesOrientation[0].length - aArray.indexOf(oElement) - 1) {
             return oElement.toString().trim();
@@ -122,8 +122,8 @@ toRO = function(aInputArray) {
         }, {})) : []
     }, [])
 }; toRecordsOriented = function(aInputArray) { return toRO(aInputArray); }
-toXXXOriented = function (aInputArray, sXXX) { var aRecordsOrientation = JSON.parse(JSON.stringify(aInputArray)); return aRecordsOrientation.reduce(function (agg, oElement) { if (agg[oElement[sXXX]]==undefined) { agg[oElement[sXXX]] = oElement; } else { if (!Array.isArray(agg[oElement[sXXX]])) { agg[oElement[sXXX]] = [agg[oElement[sXXX]]].concat(oElement) } else { agg[oElement[sXXX]] = agg[oElement[sXXX]].concat(oElement) } } return agg; }, {}); }
-toXXXOrientedDEDUPED = function(aInputArray, sXXX)  { var aRecordsOrientation = JSON.parse(JSON.stringify(aInputArray)); var o_XXX_Orientation = aRecordsOrientation.reduce(function (agg, oElement) { if (agg[oElement[sXXX]]==undefined) { agg[oElement[sXXX]] = oElement; } else { if (!Array.isArray(agg[oElement[sXXX]])) { agg[oElement[sXXX]] = [agg[oElement[sXXX]]].concat(oElement) } else { agg[oElement[sXXX]] = agg[oElement[sXXX]].concat(oElement) } } return agg; }, {}); return Object.keys(o_XXX_Orientation).reduce(function(agg777, oElement777) { if (Array.isArray(o_XXX_Orientation[oElement777])) { agg777[oElement777] = o_XXX_Orientation[oElement777].reduce(function(agg778, oElement778) { return Object.keys(oElement778).reduce(function(agg779, oElement779) { if (agg778[oElement779] == undefined) { agg778[oElement779] = oElement778[oElement779]; } else { agg778[oElement779] = agg778[oElement779] + ";" + oElement778[oElement779]; } return agg778; }, "") }, {}) } else { agg777[oElement777] = o_XXX_Orientation[oElement777]; } return agg777; }, {}) }
+toXXXOriented = function (aInputArray, sXXX) { var aRecordsOrientation = JSONPS(aInputArray); return aRecordsOrientation.reduce(function (agg, oElement) { if (agg[oElement[sXXX]]==undefined) { agg[oElement[sXXX]] = oElement; } else { if (!Array.isArray(agg[oElement[sXXX]])) { agg[oElement[sXXX]] = [agg[oElement[sXXX]]].concat(oElement) } else { agg[oElement[sXXX]] = agg[oElement[sXXX]].concat(oElement) } } return agg; }, {}); }
+toXXXOrientedDEDUPED = function(aInputArray, sXXX)  { var aRecordsOrientation = JSONPS(aInputArray); var o_XXX_Orientation = aRecordsOrientation.reduce(function (agg, oElement) { if (agg[oElement[sXXX]]==undefined) { agg[oElement[sXXX]] = oElement; } else { if (!Array.isArray(agg[oElement[sXXX]])) { agg[oElement[sXXX]] = [agg[oElement[sXXX]]].concat(oElement) } else { agg[oElement[sXXX]] = agg[oElement[sXXX]].concat(oElement) } } return agg; }, {}); return Object.keys(o_XXX_Orientation).reduce(function(agg777, oElement777) { if (Array.isArray(o_XXX_Orientation[oElement777])) { agg777[oElement777] = o_XXX_Orientation[oElement777].reduce(function(agg778, oElement778) { return Object.keys(oElement778).reduce(function(agg779, oElement779) { if (agg778[oElement779] == undefined) { agg778[oElement779] = oElement778[oElement779]; } else { agg778[oElement779] = agg778[oElement779] + ";" + oElement778[oElement779]; } return agg778; }, "") }, {}) } else { agg777[oElement777] = o_XXX_Orientation[oElement777]; } return agg777; }, {}) }
 toTabDelimited = function (aInputArray, sDelimiter, sQualifier) {
   // get rid of stray tabs in array so it doesn't create duplciate tabs in tab delimited data
   Object.keys(normalizeRecordsOriented(aInputArray)[0]).forEach(function(oElement) {
@@ -143,7 +143,7 @@ toDelimited = function(aInputArray, sDelimiter, sQualifier) { function returnAll
 convertTabDelimitedToValuesOriented = function(sText) { return sText.split(String.fromCharCode(10)).map(function(oElement) { return oElement.split(String.fromCharCode(9)); }); }
 convertTabDelimitedToRecordsOriented = function(sText) { return toRO(convertTabDelimitedToValuesOriented(sText)); };toXXXOrientatedDEDUPED=toXXXOrientedDEDUPED;
 
-toXXXOrientated = function (aInputArray, sXXX) { var aRecordsOrientation = JSON.parse(JSON.stringify(aInputArray)); return aRecordsOrientation.reduce(function (agg, oElement) { if (agg[oElement[sXXX]]==undefined) { agg[oElement[sXXX]] = oElement; } else { if (!Array.isArray(agg[oElement[sXXX]])) { agg[oElement[sXXX]] = [agg[oElement[sXXX]]].concat(oElement) } else { agg[oElement[sXXX]] = agg[oElement[sXXX]].concat(oElement) } } return agg; }, {}); }
+toXXXOrientated = function (aInputArray, sXXX) { var aRecordsOrientation = JSONPS(aInputArray); return aRecordsOrientation.reduce(function (agg, oElement) { if (agg[oElement[sXXX]]==undefined) { agg[oElement[sXXX]] = oElement; } else { if (!Array.isArray(agg[oElement[sXXX]])) { agg[oElement[sXXX]] = [agg[oElement[sXXX]]].concat(oElement) } else { agg[oElement[sXXX]] = agg[oElement[sXXX]].concat(oElement) } } return agg; }, {}); }
 
 isVO = function(a) { return Array.isArray(a[0]); }; isValuesOriented = function(a) { return isVO(a); }
 /* END values oriented / records oriented / tab delimited converter functions */
@@ -536,7 +536,7 @@ melt = function (aInputArray, aColumns) {
   // REFACTOR OUT .flat() in favor of flatten() to make this friendly with es5 servers?
   // aColumns = ["COUNT(*)", "matrix_child", "matrix_child_2"];
   // aColumns = [0,1,2];
-  aRecordsOrientedArray = JSON.parse(JSON.stringify(aInputArray));
+  aRecordsOrientedArray = JSONPS(aInputArray);
   
   var aColumnsIntegers = Object.keys(aRecordsOrientedArray[0]).map(function(oElement098, iIndex098) { return iIndex098.toString() });
   if (aColumns) {} else { aColumns = "-0"; } // "-0" is the default parameter expectation from UNPIVOT or MELT.
@@ -559,19 +559,19 @@ melt = function (aInputArray, aColumns) {
 
     var aReturn = aRecordsOrientedArray.map(function(oElement) {
     // return flatten(aRecordsOrientedArray.map(function(oElement) {
-        oElement = JSON.parse(JSON.stringify(oElement));
+        oElement = JSONPS(oElement);
         return aColumns.map(function(oElement000) {
             //console.log(oElement000)
             oElement.variable = oElement000;
             oElement.value = oElement[oElement000];
             // console.log(oElement);
-            oElement = JSON.parse(JSON.stringify(oElement));
+            oElement = JSONPS(oElement);
             //delete oElement[oElement000];
-            return JSON.parse(JSON.stringify(oElement));
+            return JSONPS(oElement);
         })
     }).flat().map(function(oElement) {
     // }) ).map(function(oElement) {
-        oElement = JSON.parse(JSON.stringify(oElement));
+        oElement = JSONPS(oElement);
         aColumns.forEach(function(oElement000) {
             delete oElement[oElement000];
         })
@@ -847,7 +847,7 @@ pivottable=function(aInputArray, aPivotInstructions, bReplaceColumnNames) {
 /* END PANDAS-INSPIRED, LODASH-DEPENDENT FUNCTIONS */
 
 
-/* dataENCODEScripts => superhtmlEntities/superencode/superHtmlDecode.minified.js */
+/* dataENCODEscripts => superhtmlEntities/superencode/superHtmlDecode.minified.js */
 superhtmlEntities = function(str) {
   // superhtmlEntities=function(e){return String(e).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&apos;").replace(/`/,"&#96;")};
   return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;').replace(/`/g, '&#96;'); //.replace(/?/g, '&#xB4;');
