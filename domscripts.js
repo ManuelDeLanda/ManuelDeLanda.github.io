@@ -1,3 +1,4 @@
+// domBASICscripts => domscripts.serverUNsafe and ES5_UNsafe
 try { // domscripts.serverUNsafe and ES5_UNsafe
   /* BEGIN - THESE FUNCTIONS SHOULD NEVER BE ADDED TO datascripts.js? */
   // REFACTORING NOTES:
@@ -862,8 +863,7 @@ GSDS_disjointedRangeToAVO("A2;A2:B4;D4,E5:F5;G1:H2,H1-H9,L8,:B2, G8")
 // GSDS_GSDSifyTDRANGE("A1:*", undefined, "textarea", undefined, undefined, "=89");
 // GSDS_RANGE1D("A1:*").forEach(function(domTD, iIn) { ((iIn%2==0) ? sType = "textarea" : sType = "input"); GSDS_GSDSifyTDRANGE(domTD, undefined, sType); });).then
 
-// SubmitSuperNinjaForm,fetch_XMLHttpRequest,oGetAllParameters_CLIENT()
-
+// domFETCHscripts => SubmitSuperNinjaForm,fetch_XMLHttpRequest,oGetAllParameters_CLIENT(), oSetAParameter_CLIENT
 fetch_XMLHttpRequest=function(oTypeURLPayload) {
     superencode = function (str){  return encodeURIComponent(str).replace(/'/g, "%27"); }
 
@@ -958,7 +958,7 @@ function oSetAParameter_CLIENT(oParameters) {
     return sURL;
 }
 
-/* datahtmlscripts.js => isomorphic, vanilla, es5-ish datascripts that are related to HTML and datascripts, without needing libraries (the dom, jquery, or lodash */
+/* domDATAHTMLscripts => datahtmlscripts.js => isomorphic, vanilla, es5-ish datascripts that are related to HTML and datascripts, without needing libraries (the dom, jquery, or lodash */
 // server and client-side friendly vanilla es5-ish data scripts that are related to HTML and datascripts, without needing librarys (the dom, jquery, or lodash)
 // "FIRST PRINCIPLES FRAMEWORKING"
 // obviously not a lot of these are pure es5 so I guess refactor this
