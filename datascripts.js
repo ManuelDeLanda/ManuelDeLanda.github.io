@@ -1,4 +1,4 @@
-/* datascripts => isomorphic, vanilla-ish ES5-safe functions inspired from Python Pandas, uses lodash lightly  */
+/* dataBASICscripts => isomorphic, vanilla-ish ES5-safe functions inspired from Python Pandas, uses lodash lightly  */
 
 /* prototype altering functions */
 //Array.prototype.toDelimited ="";
@@ -396,7 +396,7 @@ strip_tags.sample=function() { return '"<table><tr><td>blah</td></tr><tr><td>bla
 
 // aun no
 
-/* datascripts => BEGIN PANDAS-INSPIRED, LODASH-DEPENDENT FUNCTIONS */
+/* dataLODASHscripts => BEGIN PANDAS-INSPIRED, LODASH-DEPENDENT FUNCTIONS */
 
 
 // these lodash-related functions are minified into datascripts so I can keep datascripts under 50000 characters, also so I can focus on the "lodash"-ness of these data-related functions.
@@ -847,7 +847,7 @@ pivottable=function(aInputArray, aPivotInstructions, bReplaceColumnNames) {
 /* END PANDAS-INSPIRED, LODASH-DEPENDENT FUNCTIONS */
 
 
-/* datascripts => superhtmlEntities/superencode/superHtmlDecode.minified.js */
+/* dataENCODEScripts => superhtmlEntities/superencode/superHtmlDecode.minified.js */
 superhtmlEntities = function(str) {
   // superhtmlEntities=function(e){return String(e).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&apos;").replace(/`/,"&#96;")};
   return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;').replace(/`/g, '&#96;'); //.replace(/?/g, '&#xB4;');
@@ -883,7 +883,7 @@ superHtmlDecode = function(sString) {
   return sString;
 }
 
-/* datagsscripts.js => isomorphic, maybe es5 idk, maybe vanilla idk functions that are inspired by and complement googlesheets functions */
+/* dataSHEETSscripts.js => isomorphic, maybe es5 idk, maybe vanilla idk functions that are inspired by and complement googlesheets functions */
 // REMOVE dataGSscripts.js from github in favor of datagsscripts.js (make sure I dont do a "Border Gateway Protocol fiasco" like Facebook did)
 // 12/15/21 - REMOVE datagsscripts.js entirely from existence and refactor it into permanent part of datascripts.js
 
