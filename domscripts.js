@@ -253,34 +253,37 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
           $(this).removeClass(sClass);
        });
     }
+    
     function getAnimateCSSAnimations() {
         return "bounce\nflash\npulse\nrubberBand\nshakeX\nshakeY\nheadShake\nswing\ntada\nwobble\njello\nheartBeat\nbackInDown\nbackInLeft\nbackInRight\nbackInUp\nbackOutDown\nbackOutLeft\nbackOutRight\nbackOutUp\nbounceIn\nbounceInDown\nbounceInLeft\nbounceInRight\nbounceInUp\nbounceOut\nbounceOutDown\nbounceOutLeft\nbounceOutRight\nbounceOutUp\nfadeIn\nfadeInDown\nfadeInDownBig\nfadeInLeft\nfadeInLeftBig\nfadeInRight\nfadeInRightBig\nfadeInUp\nfadeInUpBig\nfadeInTopLeft\nfadeInTopRight\nfadeInBottomLeft\nfadeInBottomRight\nfadeOut\nfadeOutDown\nfadeOutDownBig\nfadeOutLeft\nfadeOutLeftBig\nfadeOutRight\nfadeOutRightBig\nfadeOutUp\nfadeOutUpBig\nfadeOutTopLeft\nfadeOutTopRight\nfadeOutBottomRight\nfadeOutBottomLeft\nflip\nflipInX\nflipInY\nflipOutX\nflipOutY\nlightSpeedInRight\nlightSpeedInLeft\nlightSpeedOutRight\nlightSpeedOutLeft\nrotateIn\nrotateInDownLeft\nrotateInDownRight\nrotateInUpLeft\nrotateInUpRight\nrotateOut\nrotateOutDownLeft\nrotateOutDownRight\nrotateOutUpLeft\nrotateOutUpRight\nhinge\njackInTheBox\nrollIn\nrollOut\nzoomIn\nzoomInDown\nzoomInLeft\nzoomInRight\nzoomInUp\nzoomOut\nzoomOutDown\nzoomOutLeft\nzoomOutRight\nzoomOutUp\nslideInDown\nslideInLeft\nslideInRight\nslideInUp\nslideOutDown\nslideOutLeft\nslideOutRight\nslideOutUp".split("\n");
 
     }
-function toggleAnimationVisbDisp(o,sVHvsDN,animation,i) {
-    // sVHvsDN is sVisibilityHiddenVsDisplayNone
-    if (sVHvsDN == "none") {
-        sVHvsDN = "displaynone";
-    } else {
-        sVHvsDN = "displayhidden";
+    
+    function toggleAnimationVisbDisp(o,sVHvsDN,animation,i) {
+        // sVHvsDN is sVisibilityHiddenVsDisplayNone
+        if (sVHvsDN == "none") {
+            sVHvsDN = "displaynone";
+        } else {
+            sVHvsDN = "displayhidden";
+        }
+        if (o) {} else { o="*"; }
+        if (i) {} else { i=0; }
+        if (animation) {
+
+        } else {
+            sInAnimation = getRandomArrayToken(getAnimateCSSAnimationsMatch("In"));
+            sOutAnimation = getRandomArrayToken(getAnimateCSSAnimationsMatch("Out"));
+        }
+        if ($$$$(o).style.visibility == "hidden" || $$$$(o).style.display == "none") {
+
+            $$$animate(o, sInAnimation, i, "display");
+
+        } else {
+            $$$animate(o, sOutAnimation, i, sVHvsDN)
+        }
+
     }
-    if (o) {} else { o="*"; }
-    if (i) {} else { i=0; }
-    if (animation) {
-
-    } else {
-        sInAnimation = getRandomArrayToken(getAnimateCSSAnimationsMatch("In"));
-        sOutAnimation = getRandomArrayToken(getAnimateCSSAnimationsMatch("Out"));
-    }
-    if ($$$$(o).style.visibility == "hidden" || $$$$(o).style.display == "none") {
-
-        $$$animate(o, sInAnimation, i, "display");
-
-    } else {
-        $$$animate(o, sOutAnimation, i, sVHvsDN)
-    }
-
-}
+    
     function getAnimateCSSAnimationsMatch(s) { return getAnimateCSSAnimations().filter(o=>o.match(new RegExp(s, "g"))); }
     getRandomArrayToken = function(a,i) { // consider refactoring this into datascripts.js?  make es5-friendly
         if (i) {} else (i = 1);
@@ -359,411 +362,22 @@ function toggleAnimationVisbDisp(o,sVHvsDN,animation,i) {
     // END animate.css scripts
 
 // 
-function addEL(oElements, sType, iIndex, fFunction) { // vs addEventListenerClickXYZ's o, i, f
-    if (fFunction) {} else { f = function() { alert("undefined ? and ?"); } }
-    if (typeof(oElements) == "string") { oElements = $$$a(oElements); }
-    if (Array.isArray(oElements)) { } else { oElements = [oElements]; }
-    oElements.forEach(oElement=>{
-        oElement.addEventListener(sType, function (evt) {
-            if (evt.detail === iIndex) { fFunction(); }
+    function addEL(oElements, sType, iIndex, fFunction) { // vs addEventListenerClickXYZ's o, i, f
+        if (fFunction) {} else { f = function() { alert("undefined ? and ?"); } }
+        if (typeof(oElements) == "string") { oElements = $$$a(oElements); }
+        if (Array.isArray(oElements)) { } else { oElements = [oElements]; }
+        oElements.forEach(oElement=>{
+            oElement.addEventListener(sType, function (evt) {
+                if (evt.detail === iIndex) { fFunction(); }
+            })
         })
-    })
-}
-function addEventListenerClickXYZ(o,i,f) { // vs addEL's o, t, i, f
-    // defaults
-    if (o) {} else { o = "body"; }
-    if (i) {} else { i=2; }
-    addEL(o, "click", i, f);
-}
-
-
-
-// NEW googlesheets scripts
-// domscriptsSTEROIDS.js
-GSDS_CELL = function(domTable, sA1Notation) { return GSDS_RANGE1D(domTable, sA1Notation)[0]; }
-GSDS_RANGE1D = function(domTable, sA1Notation) { return GSDS_disjointedRangeToAVOdomTDs(domTable, sA1Notation).flat().filter(function(oEl) { return oEl }); }
-GSDS_RANGE2D = function(domTable, sA1Notation) { return GSDS_disjointedRangeToAVOdomTDs(domTable, sA1Notation); }
-
-GSDS_CELL_value = function (domTable, sA1Notation) { return domGetTDTextOrValue(GSDS_CELL(domTable, sA1Notation)); }
-GSDS_CELL_valueParseInt = function (domTable, sA1Notation) { return domGetTDTextOrValueParseInt(GSDS_CELL(domTable, sA1Notation)); }
-
-GSDS_RANGE1D_values = function (domTable, sA1Notation) { return GSDS_RANGE1D(domTable, sA1Notation).map(function(oEl) { return domGetTDTextOrValue(oEl) }); }
-GSDS_RANGE2D_values = function (domTable, sA1Notation) { return GSDS_RANGE2D(domTable, sA1Notation).map(function(oEl) { return oEl.map(function(oEl2) { return domGetTDTextOrValue(oEl2) }) }) }
-
-GSDS_GSDSifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes, fOptionsFunction, sFormula) {
-    GSDS_inputifyTDRANGE(domTable, sA1Notation, sElementType, sAttributes, fOptionsFunction);
-    GSDS_evalifyTDRANGE(domTable, sA1Notation, sFormula);
-}
-GSDS_disjointedRangeToAVOdomTDs = function(domTable, sA1Notation) { // this function IS FOR DOM-ONLY.
-  var oDomTableAndA1Notation=GSDS_distinguishDomTableAndA1Notation(domTable, sA1Notation); domTable = oDomTableAndA1Notation["domTable"]; sA1Notation = oDomTableAndA1Notation["sA1Notation"];
-  // console.log(sA1Notation);
-  if (domTable.oSmartRange == undefined) {
-    GSDS_setOSR(domTable);
-  }
-  // sA1Notation = GSDS_domReplaceAsterisksInA1Notation(domTable, sA1Notation);
-  var aCellsFromRange = GSDS_disjointedRangeToAVO(sA1Notation).flat();
-  // console.log(sA1Notation);
-  return domTable.oSmartRange.allcells_valuesoriented.map(function(oEl) {
-    return oEl.map(function(oEl2) {
-      return ((aCellsFromRange.indexOf(oEl2) > -1) ? domTable.oSmartRange[oEl2].tdcell : null );
-    })
-  })
-}
-      
-GSDS_distinguishDomTableAndA1Notation = function(domTable, sA1Notation) {
-    // GSDS_distinguishDomTableAndA1Notation($$$('table'), "A1:*") vs GSDS_distinguishDomTableAndA1Notation("table!A1:A*")
-    if (domTable.nodeName == "TD") {
-        sA1Notation = GSDS_domTDToA1Notation(domTable);
-        domTable = domTable.closest("table");
     }
-    if (sA1Notation == undefined) { // && typeof(domTable) != "object") {
-        sA1Notation = domTable;
-        domTable = undefined;
-    } else {
-        if (typeof(domTable) == "object") {
-            if (domTable[0]!=undefined) { domTable = domTable[0]; } // just in case I didn't [0] already
-        } else {
-            domTable = $$$(domTable)[0];
-        }
+    function addEventListenerClickXYZ(o,i,f) { // vs addEL's o, t, i, f
+        // defaults
+        if (o) {} else { o = "body"; }
+        if (i) {} else { i=2; }
+        addEL(o, "click", i, f);
     }
-    // console.log(sA1Notation);
-    aA1Notation = sA1Notation.split("!");
-    if (aA1Notation.length == 1) {
-        if (domTable == undefined) {
-            sSelector = "table"; // christ, just grab first table
-            domTable = $$$(sSelector)[0]
-        }
-        sRange = aA1Notation[0];
-    } else { // .length == 2 I hope?
-        sSelector = aA1Notation[0];
-        sRange = aA1Notation[1];
-        domTable = $$$(sSelector)[0];
-    }
-    sA1Notation = GSDS_domReplaceAsterisksInA1Notation(domTable, sRange);
-    // domTable.oSmartRange.sA1Notation should be used to replace asterisks
-    return { "domTable": domTable, "sA1Notation": sA1Notation }
-}
-
-GSDS_domReplaceAsterisksInA1Notation = function(domTable, sA1Notation) {
-    var domTableAVO = Array.from(domTable.$$$("tr")).map(oEl => Array.from(oEl.$$$("th,td")) );
-    var sLastRow = domTableAVO.length; // do domTable.oSmartRange.width/height instead? of this?
-    var sLastColumn = columnToLetter(domTableAVO[0].length);
-    sA1Notation = sA1Notation.replace(/\-/g, ":").replace(/,/g, ";"); // sanitize
-    sA1Notation = sA1Notation.split(";").map(function(oEl0) {
-        oEl0=oEl0.trim();
-        if (oEl0.match("^:")) { oEl0 = "A1" + oEl0;  }
-        if (oEl0.match(":$")) { oEl0 = oEl0 + "*";  }
-        return oEl0.split(":").map(function(oEl) {
-          oEl=oEl.trim();
-          if (oEl=="*") { oEl = sLastColumn+sLastRow.toString(); }
-          oEl = oEl.replace(/^\*/, sLastColumn).replace(/\*$/, sLastRow);
-          return oEl;
-    }).join(":") }).join(";");
-    return sA1Notation;
-} 
-GSDS_getOSR = function(domTable, sA1Notation) {
-    var oDomTableAndA1Notation=GSDS_distinguishDomTableAndA1Notation(domTable, sA1Notation); domTable = oDomTableAndA1Notation["domTable"]; sA1Notation = oDomTableAndA1Notation["sA1Notation"];  
-    var domTableAVO = Array.from(domTable.$$$("tr")).map(oEl => Array.from(oEl.$$$("th,td")) );
-    // sA1Notation = GSDS_domReplaceAsterisksInA1Notation(domTable, sA1Notation);
-    // aVirtualRange = getGoogleSheetRangeValuesOriented(sRange);
-    // aVirtualRange = GSDS_disjointedRangeToAVO(sA1Notation);
-
-    oSmartRange = {};
-    oSmartRange.range = sA1Notation;
-    oSmartRange.allcells_valuesoriented = GSDS_disjointedRangeToAVO(sA1Notation); // getGoogleSheetRangeValuesOriented(oSmartRange.range);
-    oSmartRange.height = oSmartRange.allcells_valuesoriented.length;
-    oSmartRange.width = oSmartRange.allcells_valuesoriented[0].length;
-    oSmartRange.allcells_valuesoriented.flat().filter(function(oEl) { return oEl; }).forEach(function(oEl) {
-    // getGoogleSheetRange(oSmartRange.range).forEach(function(oEl) {
-        iCurrentColumn = letterToColumn(oEl.match(/[A-Z]+/g)[0]);
-        iCurrentRow = parseInt(oEl.match(/[0-9]+/g)[0]);
-        // console.log(iCurrentColumn)
-        oSmartRange[oEl] = {"tdcell": domTableAVO[iCurrentRow-1][iCurrentColumn-1] };
-    })
-    return oSmartRange;
-}
-GSDS_setOSR = function(domTable) { // accept domTable only?  never selector strings?
-    domTable.oSmartRange = GSDS_getOSR(domTable, "A1:*"); // ALWAYS set a <table>'s OSR to ENTIRE table ("A1:*").
-    return domTable.oSmartRange;
-}
-GSDS_getTDRANGE = function(domTable, sA1Notation) {
-    var oDomTableAndA1Notation=GSDS_distinguishDomTableAndA1Notation(domTable, sA1Notation); domTable = oDomTableAndA1Notation["domTable"]; sA1Notation = oDomTableAndA1Notation["sA1Notation"];
-    // sA1Notation = "table!*1:*";
-    // sA1Notation = "table!A*:*";
-    // sA1Notation = "table!B5";
-    // sA1Notation = "table!*1";
-    // sA1Notation = "table!*";
-    // sA1Notation = "table!D*";
-    // sA1Notation = "table!A*:*5";
-    // sA1Notation = "table!*2:*7";
-    oSmartRange = GSDS_getOSR(domTable, sA1Notation);
-    return oSmartRange.allcells_valuesoriented.map(function(oEl) { return oEl.map(function(oEl1) { return oSmartRange[oEl1]["tdcell"] }) })
-}
-
-// domDebuggingElement = {};
-// domDebuggingElement2 = {};
-oGlobalXXX = {};
-GSDS_inputifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes, fOptionsFunction) { // REFACTOR THIS - change to removeChild and appendChildHTML instead of hardcoding the html strings!        
-  if ((sElementType == undefined) || ((sElementType != "textarea") && (sElementType != "select") && (sElementType != "button")) ) { sElementType="input"; }        
-  // console.log(sElementType);        
-  GSDS_getTDRANGE(domTable, sA1Notation).flat().forEach(function(domTD, iDomTD) {        
-        //if (domTD.querySelectorAll("input, select, textarea") == undefined) {        
-            if (iDomTD == 0) { domTD.closest("table").style.borderCollapse = "collapse"; domTD.closest("table").style.tableLayout = "fixed"; } // domTable isn't a real domTable sometimes it's a string.  gets rid of spaces between cells         
-            domTD.style = "padding: 0 0 0 0 !important; !important; margin: 0 0 0 0 !important;";        
-            var sValue = superhtmlEntities(domGetTDTextOrValue(domTD))        
-            domTD.innerHTML = ""; // have to do this since removing all children nodes doesn't remove innerText!        
-            // oElement.innerHTML = "<input style='width:100%; height:100%; padding: 0 0 0 0 !important; margin: 0 0 0 0 !important;' value='" + superhtmlEntities(oElement.innerHTML) + "'></input>";        
-            //sAttributes += " onClick=this.select();' style='padding: 0 0 0 0 !important; margin: 0 0 0 0 !important;' "        
-            var domElement = document.createElement(sElementType);        
-            Array.from(domTD.children).forEach(function(oEl) { domTD.removeChild(oEl) }); // remove ALL children from a node        
-            domTD.appendChild(domElement);        
-            // domTD.width = "50px !important"; domTD.height = "20px !important";        
-            domTD.style.width = "50px"; domTD.style.height = "20px";
-            // var sDefaultStyle = "padding: 0 0 0 0 !important; margin: 0 0 0 0 !important; height:100% !important; width: 100% !important;";
-            var sDefaultStyle = "padding: 0 0 0 0 !important; margin: 0 0 0 0 !important; height:100%; width: 100%;";
-            if (sAttributes == undefined) { sAttributes = sDefaultStyle; }
-            if (sAttributes.match(/^\;/)) { sAttributes = sDefaultStyle+=sAttributes; }
-            domElement.style = sAttributes;        
-        
-            domDebuggingElement = domTD; domDebuggingElement2 = domElement;        
-            if (domTD.$$$("input")[0]) {        
-              domElement.value = sValue;        
-              // domElement.onclick=function(this){this.select()}        
-              domElement.addEventListener("click", function(){this.select()}); // selects all contents inside cell        
-            } else if (domTD.$$$("textarea")[0]) {        
-              domElement.innerText = sValue;        
-              domElement.style.resize = "none";        
-              domElement.addEventListener("click", function(){this.select()}); // selects all contents inside cell        
-            } else if (domTD.$$$("select")[0]) {        
-              // domSelect = domDebuggingElement("select")[0];        
-              if (fOptionsFunction) { } else { fOptionsFunction = function() { return ["","1","2","3"]; } }        
-              domElement.innerHTML = fOptionsFunction().map(function(oEl) { return "<option>" + oEl + "</option>"; }).join();        
-            }        
-            $(domElement).on('keypress', function (e) {        
-                if (e.which == 13) {        
-                    e.preventDefault();        
-                    domWhatever = e.target;        
-                    // console.log(oGlobalXXX);        
-                    oSmartRange = domWhatever.closest("table").oSmartRange;        
-                    sA1Notation = GSDS_domTDToA1Notation(domWhatever.closest("td"));        
-                    sLastCell = oSmartRange.range.split(":")[1];        
-                    sLastColumn = cellToColumn(sLastCell);        
-                    iLastRow = parseInt(cellToRow(sLastCell));        
-                    // console.log("iLastRow =" + iLastRow + "; sLastColumn=" + sLastColumn + "; sLastCell=" + sLastCell)        
-                    if(!!e.shiftKey) {        
-                        if (sA1Notation == "A1") {        
-                            sNextA1Notation = sLastCell;        
-                        } else if ((parseInt(cellToRow(sA1Notation))) == 1) {        
-                            sNextA1Notation = columnToLetter(letterToColumn(cellToColumn(sA1Notation))-1) + iLastRow;        
-                        } else {        
-                            sNextA1Notation = cellToColumn(sA1Notation) + (parseInt(cellToRow(sA1Notation))-1);        
-                        }        
-                    } else {        
-                        if (sA1Notation == sLastCell) {        
-                            sNextA1Notation = "A1"        
-                        } else if (parseInt(cellToRow(sA1Notation)) == iLastRow) {        
-                            sNextA1Notation = columnToLetter(parseInt(letterToColumn(cellToColumn(sA1Notation)))+1) + "1";        
-                        } else {        
-                            sNextA1Notation = cellToColumn(sA1Notation) + (parseInt(cellToRow(sA1Notation))+1);        
-                        }        
-                    }        
-                    // console.log("sA1Notation = " + sA1Notation + "; sNextA1Notation " + sNextA1Notation);         
-                    //oSmartRange[sBelowA1Notation].gscell.select();        
-                    //console.log(oSmartRange);        
-                    oSmartRange[sNextA1Notation].tdcell.$$$("input,select,textarea")[0].select();        
-                    oSmartRange[sNextA1Notation].tdcell.$$$("input,select,textarea")[0].focus();        
-                    oSmartRange[sNextA1Notation].tdcell.$$$("input,select,textarea")[0].scrollIntoViewIfNeeded();        
-                    //sCurrentColumn = this.parentNode.classList.value.match(/column[A-Z]+/g)[0]        
-                    //sNextColumn = "column" + columnToLetter(letterToColumn(sCurrentColumn.replace(/column/g, "")) + 1)        
-                    //aArrayOfTDs = Array.prototype.slice.call(document.querySelectorAll(".gsws td." + sCurrentColumn)).concat( Array.prototype.slice.call( document.querySelectorAll(".gsws td." + sNextColumn) ) );        
-                    //iIndex = Array.prototype.indexOf.call(aArrayOfTDs, this.parentNode);        
-                    //aArrayOfTDs[iIndex+1].querySelectorAll("input, select, textarea")[0].focus();        
-                }        
-            });        
-        //}        
-    })        
-}
-
-GSDS_eval = function(oThis, sCellContents) {
-    sCellContents = sCellContents.replace(/^\=/g, "").trim();
-    var domTable = oThis.closest("table");
-    if (domTable.oSmartRange==undefined) {
-        GSDS_setOSR(domTable);
-    }
-    sCellContents = sCellContents.replace(/\{COLUMN/, "{COL")
-    if (sCellContents.match(/\{COL(\-|\+|)[0-9]*\}/g)) {
-        sA1Notation = GSDS_domTDToA1Notation(oThis.closest("td"));
-        sColumn = cellToColumn(sA1Notation);
-
-        //  REFACTOR IN COL+1 COL-1 SORT OF LOGIC HERE?
-        if (sCellContents.match(/COL(\-|\+)[0-9]+}/g)) {
-            sOperation = sCellContents.match(/COL(\-|\+)[0-9]+\}/g)[0].replace(/COL/, "").replace(/\}/, "");
-            sColumn = columnToLetter(eval(letterToColumn(sColumn).toString()+sOperation))
-        }        
-        sCellContents = sCellContents.replace(/\{COL(\-|\+|)[0-9]*\}/g, sColumn);
-    }
-    
-    if (sCellContents.match(/\{ROW(\-|\+|)[0-9]*\}/g)) {
-        sA1Notation = GSDS_domTDToA1Notation(oThis.closest("td"));
-        sRow = cellToRow(sA1Notation);
-        if (sCellContents.match(/ROW(\-|\+)[0-9]+}/g)) {
-            sOperation = sCellContents.match(/ROW(\-|\+)[0-9]+\}/g)[0].replace(/ROW/, "").replace(/\}/, "");
-            sRow = eval(sRow.toString()+sOperation)
-        }    
-        sCellContents = sCellContents.replace(/\{ROW(\-|\+|)[0-9]*\}/g, sRow)
-    }
-
-    try {
-        // sCellContents = sCellContents.replace(/([A-Z]+[0-9]+)/g, "GSDS_CELL_value('$1')");
-        // sCellContents = "D1";
-        if (sCellContents.match(/^[A-Z]+[0-9]+$/)) { // vanilla one cell
-            domTD = domTable.oSmartRange[sCellContents].tdcell;
-            return domGetTDTextOrValue(domTD);
-        // } else if (sCellContents.match(/^[A-Z]+[0-9]+:[A-Z]+[0-9]+$/)) { // vanilla one A1Notation range
-        } else if (sCellContents.match(/\:|\,|\;/g)) { // dirty A1Notation range
-            aGSRange = GSDS_disjointedRangeToAVOdomTDs(domTable, sCellContents).flat().filter(function(oEl) { return oEl });
-
-            /* this horrible section of code is like O(n*n), refactor it out! */
-            // it's the only way I can convert a domTD to a a1Notation? Certainly a more clever and higher performance solution exists?
-            aGSRange = aGSRange.map(function(oEl0) {    
-                return domTable.oSmartRange.allcells_valuesoriented.flat().reduce(function(oAg, oEl) {
-                    if (!oAg) { if (domTable.oSmartRange[oEl]?.tdcell == oEl0) { oAg = oEl; } }
-                    // console.log(oSmartRange[oEl]?.tdcell);
-                    return oAg;
-                }, undefined)
-            })
-            /* end this horrible thing? */
-
-            aActualRange = domTable.oSmartRange.allcells_valuesoriented.flat().filter(function(oEl) {
-                return aGSRange.indexOf(oEl)>-1; // filters out range cells that are not in table;
-            })
-            // vs return GSDS_getTDRANGE(domTable, sCellContents);?  wouldn't this be less lines of code?  worse performance tho?
-            return aActualRange.map(function(oEl) {
-                return domGetTDTextOrValue(domTable.oSmartRange[oEl].tdcell);
-            }).join(";");
-
-            // console.log(sCellContents);
-            // return JSON.stringify(GSDS_disjointedRangeToAVO(sCellContents))
-
-        } else if (sCellContents.match(/([A-Z]+[0-9]+)/g)) { // "D1+20", "D1*+E1*12", "SUM(D1:D2)"
-            sCellContents = sCellContents.replace(/([A-Z]+[0-9]+)/g, "GSDS_CELL_valueParseInt(domTable, '$1')")
-            // console.log("var sCellContents = " + sCellContents);
-            return eval(sCellContents);
-        } else if (false) {
-        } else {
-            return eval(sCellContents);
-        }
-
-    } catch(e) {
-        // alert(e);
-        return e;
-    }
-}
-GSDS_domTDToA1Notation = function(domTD) {
-    domTable = domTD.closest("table");
-    if (!(domTable.oSmartRange)) {
-        GSDS_setOSR(domTable);
-    }
-    return domTable.oSmartRange.allcells_valuesoriented.flat().reduce(function(oAg, oEl) {
-        if (oAg == undefined) {
-            // console.log(oEl);
-            if (domTable.oSmartRange[oEl].tdcell == domTD) {
-                oAg = oEl;
-            }
-        }
-        return oAg;
-    }, undefined)
-}
-GSDS_evalifyCell = function(domTable, sCellA1Notation, sFormula) {
-    // GSDS_evalifyCell("table!E6", "=A1:B2") // refactor this to accept dom and sCellA1Notation?
-    // sFormula = "=A1:A2";
-    // sCellA1Notation = "table!D6";
-    // if (sFormula) { } else { sFormula = decodeURIComponent(domInput.dataset.gseval); }
-    // domTD = GSDS_getTDRANGE(domTable, sCellA1Notation)[0][0];
-    // domInput = domTD.$$$("input,select,textarea")[0];
-    // domInput.dataset.gseval = superencode(sFormula);
-    GSDS_evalifyTDRANGE(domTable, sCellA1Notation, sFormula);
-}
-
-//var oThis;
-//var domTD;
-GSDS_evalifyTDRANGE = function(domTable, sA1Notation, sFormula) {
-    GSDS_getTDRANGE(domTable, sA1Notation).flat().forEach(function(domTD) {
-        var domInput = domTD.$$$("input,select,textarea")[0];
-        if (domInput) {
-            if (sFormula) {
-                domInput.dataset.gseval = superencode(sFormula);
-                domInput.closest("td").dataset.gseval = superencode(sFormula);
-            }
-            if (domInput.dataset.gseval) {
-               domInput.value = GSDS_eval(domInput, decodeURIComponent(domInput.dataset.gseval));
-               // domInput.style.backgroundColor="honeydew";
-            } else {
-               // domInput.style.backgroundColor="azure";
-            }
-            // var domInput = $$$(sSelector)[0];
-            // Array.from($$$(sSelector)).forEach(function(domInput) {
-            domInput.onblur = function(e) {
-                oThis = e.target;
-
-                if (oThis.value.match(/^\=/)) {
-                    sGSEVAL = oThis.value;
-                    oThis.closest("td").dataset.gseval = superencode(sGSEVAL);
-                    oThis.dataset.gseval = superencode(sGSEVAL); // CONSIDER REMOVING INPUTS' dataset.gseval in favor of TD's  
-                    oThis.value = GSDS_eval(oThis, oThis.value);
-                    // oThis.style.backgroundColor="honeydew";
-                } else if (oThis.closest("td").dataset.gseval) {
-                    if (oThis.value != GSDS_eval(oThis, oThis.value)) {
-                        oThis.closest("td").dataset.gseval = "";
-                        oThis.dataset.gseval = "";
-                    }
-                    // oThis.style.backgroundColor="honeydew";
-                } else {
-                    oThis.closest("td").dataset.gseval = "";
-                    oThis.dataset.gseval = "";
-                    // oThis.style.backgroundColor="azure";
-                }
-                // maybe get rid of this below? it re-evaluates whole table in order to achieve the ability for all cells to remain live evaluations.
-                domTable = oThis.closest("table");
-                GSDS_evalifyTDRANGE(domTable, "A1:*");
-                // console.log(e.target)
-            }
-            domInput.onfocus = null;
-
-            domInput.addEventListener('dblclick', function (e) {
-                oThis = e.target;
-                if (oThis.dataset.gseval) {
-                   oThis.value = decodeURIComponent(oThis.dataset.gseval);
-                }
-                // console.log(e.target.dataset.gseval)
-            })
-        } else {
-            // REFACTOR / ADD FUNCTIONALITY - IF NO domInput then just do something with domTD instead?????
-        }
-    });
-}
-domGetTDTextOrValue = function(domTD) {
-    if (domTD.$$$("input,textarea,select")[0]?.value) {
-        return domTD.$$$("input,textarea,select")[0].value;
-    } else if (domTD.$$$("input,textarea,select")[0]?.innerText) {
-        return domTD.$$$("input,textarea,select")[0].innerText;
-    } else if (domTD.$$$("data-value")[0]) { // also data-notes, data-notations, and data-text?
-        return domTD.$$$("data-value")[0]; 
-    } else if (domTD.innerText) { 
-        return domTD.innerText;
-    } else { return ""; }
-}
-domGetTDTextOrValueParseInt = function(domTD) {
-    iReturn = parseInt(domGetTDTextOrValue(domTD));                              
-    return ((isNaN(iReturn)) ? 0 : iReturn);
-}
-domSetTDTextOrValue = function(domTD, sString) {
-    if (domTD.$$$("input")[0]) { domTD.$$$("input")[0].value = sString; }
-    else if (domTD.$$$("textarea")[0]) { domTD.$$$("textarea")[0].innerText = sString }
-    else if (domTD.$$$("select")[0]) {}
-    else {domTD.innerText = sString} 
-}
-// END NEW googlesheets.scripts.js
 
                                     
     // random vanilla DOM manipulation scripts
@@ -862,6 +476,397 @@ GSDS_disjointedRangeToAVO("A2;A2:B4;D4,E5:F5;G1:H2,H1-H9,L8,:B2, G8")
 // GSDS_inputifyTDRANGE("A3:B3", undefined, "textarea");
 // GSDS_GSDSifyTDRANGE("A1:*", undefined, "textarea", undefined, undefined, "=89");
 // GSDS_RANGE1D("A1:*").forEach(function(domTD, iIn) { ((iIn%2==0) ? sType = "textarea" : sType = "input"); GSDS_GSDSifyTDRANGE(domTD, undefined, sType); });).then
+
+// domGSDSscripts => NEW googlesheets scripts
+// domscriptsSTEROIDS.js
+try {
+    GSDS_CELL = function(domTable, sA1Notation) { return GSDS_RANGE1D(domTable, sA1Notation)[0]; }
+    GSDS_RANGE1D = function(domTable, sA1Notation) { return GSDS_disjointedRangeToAVOdomTDs(domTable, sA1Notation).flat().filter(function(oEl) { return oEl }); }
+    GSDS_RANGE2D = function(domTable, sA1Notation) { return GSDS_disjointedRangeToAVOdomTDs(domTable, sA1Notation); }
+
+    GSDS_CELL_value = function (domTable, sA1Notation) { return domGetTDTextOrValue(GSDS_CELL(domTable, sA1Notation)); }
+    GSDS_CELL_valueParseInt = function (domTable, sA1Notation) { return domGetTDTextOrValueParseInt(GSDS_CELL(domTable, sA1Notation)); }
+
+    GSDS_RANGE1D_values = function (domTable, sA1Notation) { return GSDS_RANGE1D(domTable, sA1Notation).map(function(oEl) { return domGetTDTextOrValue(oEl) }); }
+    GSDS_RANGE2D_values = function (domTable, sA1Notation) { return GSDS_RANGE2D(domTable, sA1Notation).map(function(oEl) { return oEl.map(function(oEl2) { return domGetTDTextOrValue(oEl2) }) }) }
+
+    GSDS_GSDSifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes, fOptionsFunction, sFormula) {
+        GSDS_inputifyTDRANGE(domTable, sA1Notation, sElementType, sAttributes, fOptionsFunction);
+        GSDS_evalifyTDRANGE(domTable, sA1Notation, sFormula);
+    }
+    GSDS_disjointedRangeToAVOdomTDs = function(domTable, sA1Notation) { // this function IS FOR DOM-ONLY.
+      var oDomTableAndA1Notation=GSDS_distinguishDomTableAndA1Notation(domTable, sA1Notation); domTable = oDomTableAndA1Notation["domTable"]; sA1Notation = oDomTableAndA1Notation["sA1Notation"];
+      // console.log(sA1Notation);
+      if (domTable.oSmartRange == undefined) {
+        GSDS_setOSR(domTable);
+      }
+      // sA1Notation = GSDS_domReplaceAsterisksInA1Notation(domTable, sA1Notation);
+      var aCellsFromRange = GSDS_disjointedRangeToAVO(sA1Notation).flat();
+      // console.log(sA1Notation);
+      return domTable.oSmartRange.allcells_valuesoriented.map(function(oEl) {
+        return oEl.map(function(oEl2) {
+          return ((aCellsFromRange.indexOf(oEl2) > -1) ? domTable.oSmartRange[oEl2].tdcell : null );
+        })
+      })
+    }
+
+    GSDS_distinguishDomTableAndA1Notation = function(domTable, sA1Notation) {
+        // GSDS_distinguishDomTableAndA1Notation($$$('table'), "A1:*") vs GSDS_distinguishDomTableAndA1Notation("table!A1:A*")
+        if (domTable.nodeName == "TD") {
+            sA1Notation = GSDS_domTDToA1Notation(domTable);
+            domTable = domTable.closest("table");
+        }
+        if (sA1Notation == undefined) { // && typeof(domTable) != "object") {
+            sA1Notation = domTable;
+            domTable = undefined;
+        } else {
+            if (typeof(domTable) == "object") {
+                if (domTable[0]!=undefined) { domTable = domTable[0]; } // just in case I didn't [0] already
+            } else {
+                domTable = $$$(domTable)[0];
+            }
+        }
+        // console.log(sA1Notation);
+        aA1Notation = sA1Notation.split("!");
+        if (aA1Notation.length == 1) {
+            if (domTable == undefined) {
+                sSelector = "table"; // christ, just grab first table
+                domTable = $$$(sSelector)[0]
+            }
+            sRange = aA1Notation[0];
+        } else { // .length == 2 I hope?
+            sSelector = aA1Notation[0];
+            sRange = aA1Notation[1];
+            domTable = $$$(sSelector)[0];
+        }
+        sA1Notation = GSDS_domReplaceAsterisksInA1Notation(domTable, sRange);
+        // domTable.oSmartRange.sA1Notation should be used to replace asterisks
+        return { "domTable": domTable, "sA1Notation": sA1Notation }
+    }
+
+    GSDS_domReplaceAsterisksInA1Notation = function(domTable, sA1Notation) {
+        var domTableAVO = Array.from(domTable.$$$("tr")).map(oEl => Array.from(oEl.$$$("th,td")) );
+        var sLastRow = domTableAVO.length; // do domTable.oSmartRange.width/height instead? of this?
+        var sLastColumn = columnToLetter(domTableAVO[0].length);
+        sA1Notation = sA1Notation.replace(/\-/g, ":").replace(/,/g, ";"); // sanitize
+        sA1Notation = sA1Notation.split(";").map(function(oEl0) {
+            oEl0=oEl0.trim();
+            if (oEl0.match("^:")) { oEl0 = "A1" + oEl0;  }
+            if (oEl0.match(":$")) { oEl0 = oEl0 + "*";  }
+            return oEl0.split(":").map(function(oEl) {
+              oEl=oEl.trim();
+              if (oEl=="*") { oEl = sLastColumn+sLastRow.toString(); }
+              oEl = oEl.replace(/^\*/, sLastColumn).replace(/\*$/, sLastRow);
+              return oEl;
+        }).join(":") }).join(";");
+        return sA1Notation;
+    } 
+    GSDS_getOSR = function(domTable, sA1Notation) {
+        var oDomTableAndA1Notation=GSDS_distinguishDomTableAndA1Notation(domTable, sA1Notation); domTable = oDomTableAndA1Notation["domTable"]; sA1Notation = oDomTableAndA1Notation["sA1Notation"];  
+        var domTableAVO = Array.from(domTable.$$$("tr")).map(oEl => Array.from(oEl.$$$("th,td")) );
+        // sA1Notation = GSDS_domReplaceAsterisksInA1Notation(domTable, sA1Notation);
+        // aVirtualRange = getGoogleSheetRangeValuesOriented(sRange);
+        // aVirtualRange = GSDS_disjointedRangeToAVO(sA1Notation);
+
+        oSmartRange = {};
+        oSmartRange.range = sA1Notation;
+        oSmartRange.allcells_valuesoriented = GSDS_disjointedRangeToAVO(sA1Notation); // getGoogleSheetRangeValuesOriented(oSmartRange.range);
+        oSmartRange.height = oSmartRange.allcells_valuesoriented.length;
+        oSmartRange.width = oSmartRange.allcells_valuesoriented[0].length;
+        oSmartRange.allcells_valuesoriented.flat().filter(function(oEl) { return oEl; }).forEach(function(oEl) {
+        // getGoogleSheetRange(oSmartRange.range).forEach(function(oEl) {
+            iCurrentColumn = letterToColumn(oEl.match(/[A-Z]+/g)[0]);
+            iCurrentRow = parseInt(oEl.match(/[0-9]+/g)[0]);
+            // console.log(iCurrentColumn)
+            oSmartRange[oEl] = {"tdcell": domTableAVO[iCurrentRow-1][iCurrentColumn-1] };
+        })
+        return oSmartRange;
+    }
+    GSDS_setOSR = function(domTable) { // accept domTable only?  never selector strings?
+        domTable.oSmartRange = GSDS_getOSR(domTable, "A1:*"); // ALWAYS set a <table>'s OSR to ENTIRE table ("A1:*").
+        return domTable.oSmartRange;
+    }
+    GSDS_getTDRANGE = function(domTable, sA1Notation) {
+        var oDomTableAndA1Notation=GSDS_distinguishDomTableAndA1Notation(domTable, sA1Notation); domTable = oDomTableAndA1Notation["domTable"]; sA1Notation = oDomTableAndA1Notation["sA1Notation"];
+        // sA1Notation = "table!*1:*";
+        // sA1Notation = "table!A*:*";
+        // sA1Notation = "table!B5";
+        // sA1Notation = "table!*1";
+        // sA1Notation = "table!*";
+        // sA1Notation = "table!D*";
+        // sA1Notation = "table!A*:*5";
+        // sA1Notation = "table!*2:*7";
+        oSmartRange = GSDS_getOSR(domTable, sA1Notation);
+        return oSmartRange.allcells_valuesoriented.map(function(oEl) { return oEl.map(function(oEl1) { return oSmartRange[oEl1]["tdcell"] }) })
+    }
+
+    // domDebuggingElement = {};
+    // domDebuggingElement2 = {};
+    oGlobalXXX = {};
+    GSDS_inputifyTDRANGE = function(domTable, sA1Notation, sElementType, sAttributes, fOptionsFunction) { // REFACTOR THIS - change to removeChild and appendChildHTML instead of hardcoding the html strings!        
+      if ((sElementType == undefined) || ((sElementType != "textarea") && (sElementType != "select") && (sElementType != "button")) ) { sElementType="input"; }        
+      // console.log(sElementType);        
+      GSDS_getTDRANGE(domTable, sA1Notation).flat().forEach(function(domTD, iDomTD) {        
+            //if (domTD.querySelectorAll("input, select, textarea") == undefined) {        
+                if (iDomTD == 0) { domTD.closest("table").style.borderCollapse = "collapse"; domTD.closest("table").style.tableLayout = "fixed"; } // domTable isn't a real domTable sometimes it's a string.  gets rid of spaces between cells         
+                domTD.style = "padding: 0 0 0 0 !important; !important; margin: 0 0 0 0 !important;";        
+                var sValue = superhtmlEntities(domGetTDTextOrValue(domTD))        
+                domTD.innerHTML = ""; // have to do this since removing all children nodes doesn't remove innerText!        
+                // oElement.innerHTML = "<input style='width:100%; height:100%; padding: 0 0 0 0 !important; margin: 0 0 0 0 !important;' value='" + superhtmlEntities(oElement.innerHTML) + "'></input>";        
+                //sAttributes += " onClick=this.select();' style='padding: 0 0 0 0 !important; margin: 0 0 0 0 !important;' "        
+                var domElement = document.createElement(sElementType);        
+                Array.from(domTD.children).forEach(function(oEl) { domTD.removeChild(oEl) }); // remove ALL children from a node        
+                domTD.appendChild(domElement);        
+                // domTD.width = "50px !important"; domTD.height = "20px !important";        
+                domTD.style.width = "50px"; domTD.style.height = "20px";
+                // var sDefaultStyle = "padding: 0 0 0 0 !important; margin: 0 0 0 0 !important; height:100% !important; width: 100% !important;";
+                var sDefaultStyle = "padding: 0 0 0 0 !important; margin: 0 0 0 0 !important; height:100%; width: 100%;";
+                if (sAttributes == undefined) { sAttributes = sDefaultStyle; }
+                if (sAttributes.match(/^\;/)) { sAttributes = sDefaultStyle+=sAttributes; }
+                domElement.style = sAttributes;        
+
+                domDebuggingElement = domTD; domDebuggingElement2 = domElement;        
+                if (domTD.$$$("input")[0]) {        
+                  domElement.value = sValue;        
+                  // domElement.onclick=function(this){this.select()}        
+                  domElement.addEventListener("click", function(){this.select()}); // selects all contents inside cell        
+                } else if (domTD.$$$("textarea")[0]) {        
+                  domElement.innerText = sValue;        
+                  domElement.style.resize = "none";        
+                  domElement.addEventListener("click", function(){this.select()}); // selects all contents inside cell        
+                } else if (domTD.$$$("select")[0]) {        
+                  // domSelect = domDebuggingElement("select")[0];        
+                  if (fOptionsFunction) { } else { fOptionsFunction = function() { return ["","1","2","3"]; } }        
+                  domElement.innerHTML = fOptionsFunction().map(function(oEl) { return "<option>" + oEl + "</option>"; }).join();        
+                }        
+                $(domElement).on('keypress', function (e) {        
+                    if (e.which == 13) {        
+                        e.preventDefault();        
+                        domWhatever = e.target;        
+                        // console.log(oGlobalXXX);        
+                        oSmartRange = domWhatever.closest("table").oSmartRange;        
+                        sA1Notation = GSDS_domTDToA1Notation(domWhatever.closest("td"));        
+                        sLastCell = oSmartRange.range.split(":")[1];        
+                        sLastColumn = cellToColumn(sLastCell);        
+                        iLastRow = parseInt(cellToRow(sLastCell));        
+                        // console.log("iLastRow =" + iLastRow + "; sLastColumn=" + sLastColumn + "; sLastCell=" + sLastCell)        
+                        if(!!e.shiftKey) {        
+                            if (sA1Notation == "A1") {        
+                                sNextA1Notation = sLastCell;        
+                            } else if ((parseInt(cellToRow(sA1Notation))) == 1) {        
+                                sNextA1Notation = columnToLetter(letterToColumn(cellToColumn(sA1Notation))-1) + iLastRow;        
+                            } else {        
+                                sNextA1Notation = cellToColumn(sA1Notation) + (parseInt(cellToRow(sA1Notation))-1);        
+                            }        
+                        } else {        
+                            if (sA1Notation == sLastCell) {        
+                                sNextA1Notation = "A1"        
+                            } else if (parseInt(cellToRow(sA1Notation)) == iLastRow) {        
+                                sNextA1Notation = columnToLetter(parseInt(letterToColumn(cellToColumn(sA1Notation)))+1) + "1";        
+                            } else {        
+                                sNextA1Notation = cellToColumn(sA1Notation) + (parseInt(cellToRow(sA1Notation))+1);        
+                            }        
+                        }        
+                        // console.log("sA1Notation = " + sA1Notation + "; sNextA1Notation " + sNextA1Notation);         
+                        //oSmartRange[sBelowA1Notation].gscell.select();        
+                        //console.log(oSmartRange);        
+                        oSmartRange[sNextA1Notation].tdcell.$$$("input,select,textarea")[0].select();        
+                        oSmartRange[sNextA1Notation].tdcell.$$$("input,select,textarea")[0].focus();        
+                        oSmartRange[sNextA1Notation].tdcell.$$$("input,select,textarea")[0].scrollIntoViewIfNeeded();        
+                        //sCurrentColumn = this.parentNode.classList.value.match(/column[A-Z]+/g)[0]        
+                        //sNextColumn = "column" + columnToLetter(letterToColumn(sCurrentColumn.replace(/column/g, "")) + 1)        
+                        //aArrayOfTDs = Array.prototype.slice.call(document.querySelectorAll(".gsws td." + sCurrentColumn)).concat( Array.prototype.slice.call( document.querySelectorAll(".gsws td." + sNextColumn) ) );        
+                        //iIndex = Array.prototype.indexOf.call(aArrayOfTDs, this.parentNode);        
+                        //aArrayOfTDs[iIndex+1].querySelectorAll("input, select, textarea")[0].focus();        
+                    }        
+                });        
+            //}        
+        })        
+    }
+
+    GSDS_eval = function(oThis, sCellContents) {
+        sCellContents = sCellContents.replace(/^\=/g, "").trim();
+        var domTable = oThis.closest("table");
+        if (domTable.oSmartRange==undefined) {
+            GSDS_setOSR(domTable);
+        }
+        sCellContents = sCellContents.replace(/\{COLUMN/, "{COL")
+        if (sCellContents.match(/\{COL(\-|\+|)[0-9]*\}/g)) {
+            sA1Notation = GSDS_domTDToA1Notation(oThis.closest("td"));
+            sColumn = cellToColumn(sA1Notation);
+
+            //  REFACTOR IN COL+1 COL-1 SORT OF LOGIC HERE?
+            if (sCellContents.match(/COL(\-|\+)[0-9]+}/g)) {
+                sOperation = sCellContents.match(/COL(\-|\+)[0-9]+\}/g)[0].replace(/COL/, "").replace(/\}/, "");
+                sColumn = columnToLetter(eval(letterToColumn(sColumn).toString()+sOperation))
+            }        
+            sCellContents = sCellContents.replace(/\{COL(\-|\+|)[0-9]*\}/g, sColumn);
+        }
+
+        if (sCellContents.match(/\{ROW(\-|\+|)[0-9]*\}/g)) {
+            sA1Notation = GSDS_domTDToA1Notation(oThis.closest("td"));
+            sRow = cellToRow(sA1Notation);
+            if (sCellContents.match(/ROW(\-|\+)[0-9]+}/g)) {
+                sOperation = sCellContents.match(/ROW(\-|\+)[0-9]+\}/g)[0].replace(/ROW/, "").replace(/\}/, "");
+                sRow = eval(sRow.toString()+sOperation)
+            }    
+            sCellContents = sCellContents.replace(/\{ROW(\-|\+|)[0-9]*\}/g, sRow)
+        }
+
+        try {
+            // sCellContents = sCellContents.replace(/([A-Z]+[0-9]+)/g, "GSDS_CELL_value('$1')");
+            // sCellContents = "D1";
+            if (sCellContents.match(/^[A-Z]+[0-9]+$/)) { // vanilla one cell
+                domTD = domTable.oSmartRange[sCellContents].tdcell;
+                return domGetTDTextOrValue(domTD);
+            // } else if (sCellContents.match(/^[A-Z]+[0-9]+:[A-Z]+[0-9]+$/)) { // vanilla one A1Notation range
+            } else if (sCellContents.match(/\:|\,|\;/g)) { // dirty A1Notation range
+                aGSRange = GSDS_disjointedRangeToAVOdomTDs(domTable, sCellContents).flat().filter(function(oEl) { return oEl });
+
+                /* this horrible section of code is like O(n*n), refactor it out! */
+                // it's the only way I can convert a domTD to a a1Notation? Certainly a more clever and higher performance solution exists?
+                aGSRange = aGSRange.map(function(oEl0) {    
+                    return domTable.oSmartRange.allcells_valuesoriented.flat().reduce(function(oAg, oEl) {
+                        if (!oAg) { if (domTable.oSmartRange[oEl]?.tdcell == oEl0) { oAg = oEl; } }
+                        // console.log(oSmartRange[oEl]?.tdcell);
+                        return oAg;
+                    }, undefined)
+                })
+                /* end this horrible thing? */
+
+                aActualRange = domTable.oSmartRange.allcells_valuesoriented.flat().filter(function(oEl) {
+                    return aGSRange.indexOf(oEl)>-1; // filters out range cells that are not in table;
+                })
+                // vs return GSDS_getTDRANGE(domTable, sCellContents);?  wouldn't this be less lines of code?  worse performance tho?
+                return aActualRange.map(function(oEl) {
+                    return domGetTDTextOrValue(domTable.oSmartRange[oEl].tdcell);
+                }).join(";");
+
+                // console.log(sCellContents);
+                // return JSON.stringify(GSDS_disjointedRangeToAVO(sCellContents))
+
+            } else if (sCellContents.match(/([A-Z]+[0-9]+)/g)) { // "D1+20", "D1*+E1*12", "SUM(D1:D2)"
+                sCellContents = sCellContents.replace(/([A-Z]+[0-9]+)/g, "GSDS_CELL_valueParseInt(domTable, '$1')")
+                // console.log("var sCellContents = " + sCellContents);
+                return eval(sCellContents);
+            } else if (false) {
+            } else {
+                return eval(sCellContents);
+            }
+
+        } catch(e) {
+            // alert(e);
+            return e;
+        }
+    }
+    GSDS_domTDToA1Notation = function(domTD) {
+        domTable = domTD.closest("table");
+        if (!(domTable.oSmartRange)) {
+            GSDS_setOSR(domTable);
+        }
+        return domTable.oSmartRange.allcells_valuesoriented.flat().reduce(function(oAg, oEl) {
+            if (oAg == undefined) {
+                // console.log(oEl);
+                if (domTable.oSmartRange[oEl].tdcell == domTD) {
+                    oAg = oEl;
+                }
+            }
+            return oAg;
+        }, undefined)
+    }
+    GSDS_evalifyCell = function(domTable, sCellA1Notation, sFormula) {
+        // GSDS_evalifyCell("table!E6", "=A1:B2") // refactor this to accept dom and sCellA1Notation?
+        // sFormula = "=A1:A2";
+        // sCellA1Notation = "table!D6";
+        // if (sFormula) { } else { sFormula = decodeURIComponent(domInput.dataset.gseval); }
+        // domTD = GSDS_getTDRANGE(domTable, sCellA1Notation)[0][0];
+        // domInput = domTD.$$$("input,select,textarea")[0];
+        // domInput.dataset.gseval = superencode(sFormula);
+        GSDS_evalifyTDRANGE(domTable, sCellA1Notation, sFormula);
+    }
+
+    //var oThis;
+    //var domTD;
+    GSDS_evalifyTDRANGE = function(domTable, sA1Notation, sFormula) {
+        GSDS_getTDRANGE(domTable, sA1Notation).flat().forEach(function(domTD) {
+            var domInput = domTD.$$$("input,select,textarea")[0];
+            if (domInput) {
+                if (sFormula) {
+                    domInput.dataset.gseval = superencode(sFormula);
+                    domInput.closest("td").dataset.gseval = superencode(sFormula);
+                }
+                if (domInput.dataset.gseval) {
+                   domInput.value = GSDS_eval(domInput, decodeURIComponent(domInput.dataset.gseval));
+                   // domInput.style.backgroundColor="honeydew";
+                } else {
+                   // domInput.style.backgroundColor="azure";
+                }
+                // var domInput = $$$(sSelector)[0];
+                // Array.from($$$(sSelector)).forEach(function(domInput) {
+                domInput.onblur = function(e) {
+                    oThis = e.target;
+
+                    if (oThis.value.match(/^\=/)) {
+                        sGSEVAL = oThis.value;
+                        oThis.closest("td").dataset.gseval = superencode(sGSEVAL);
+                        oThis.dataset.gseval = superencode(sGSEVAL); // CONSIDER REMOVING INPUTS' dataset.gseval in favor of TD's  
+                        oThis.value = GSDS_eval(oThis, oThis.value);
+                        // oThis.style.backgroundColor="honeydew";
+                    } else if (oThis.closest("td").dataset.gseval) {
+                        if (oThis.value != GSDS_eval(oThis, oThis.value)) {
+                            oThis.closest("td").dataset.gseval = "";
+                            oThis.dataset.gseval = "";
+                        }
+                        // oThis.style.backgroundColor="honeydew";
+                    } else {
+                        oThis.closest("td").dataset.gseval = "";
+                        oThis.dataset.gseval = "";
+                        // oThis.style.backgroundColor="azure";
+                    }
+                    // maybe get rid of this below? it re-evaluates whole table in order to achieve the ability for all cells to remain live evaluations.
+                    domTable = oThis.closest("table");
+                    GSDS_evalifyTDRANGE(domTable, "A1:*");
+                    // console.log(e.target)
+                }
+                domInput.onfocus = null;
+
+                domInput.addEventListener('dblclick', function (e) {
+                    oThis = e.target;
+                    if (oThis.dataset.gseval) {
+                       oThis.value = decodeURIComponent(oThis.dataset.gseval);
+                    }
+                    // console.log(e.target.dataset.gseval)
+                })
+            } else {
+                // REFACTOR / ADD FUNCTIONALITY - IF NO domInput then just do something with domTD instead?????
+            }
+        });
+    }
+    domGetTDTextOrValue = function(domTD) {
+        if (domTD.$$$("input,textarea,select")[0]?.value) {
+            return domTD.$$$("input,textarea,select")[0].value;
+        } else if (domTD.$$$("input,textarea,select")[0]?.innerText) {
+            return domTD.$$$("input,textarea,select")[0].innerText;
+        } else if (domTD.$$$("data-value")[0]) { // also data-notes, data-notations, and data-text?
+            return domTD.$$$("data-value")[0]; 
+        } else if (domTD.innerText) { 
+            return domTD.innerText;
+        } else { return ""; }
+    }
+    domGetTDTextOrValueParseInt = function(domTD) {
+        iReturn = parseInt(domGetTDTextOrValue(domTD));                              
+        return ((isNaN(iReturn)) ? 0 : iReturn);
+    }
+    domSetTDTextOrValue = function(domTD, sString) {
+        if (domTD.$$$("input")[0]) { domTD.$$$("input")[0].value = sString; }
+        else if (domTD.$$$("textarea")[0]) { domTD.$$$("textarea")[0].innerText = sString }
+        else if (domTD.$$$("select")[0]) {}
+        else {domTD.innerText = sString} 
+    }
+
+} catch(e) { console.log(e); }
+// END NEW googlesheets.scripts.js
+
 
 // domFETCHscripts => SubmitSuperNinjaForm,fetch_XMLHttpRequest,oGetAllParameters_CLIENT(), oSetAParameter_CLIENT
 fetch_XMLHttpRequest=function(oTypeURLPayload) {
