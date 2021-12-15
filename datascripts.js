@@ -224,6 +224,7 @@ getYYYYMMDDHHMMSS = function(sDate) {
 /* END SOME DATE-RELATED FUNCTIONS */
 
 
+/* BEGIN JSON.whatever scripts */
 // consider refactoring JSONObjectify try/catch errors and keep trying to make assumptions about the data passed into it.  assumptions aren't good but this function is experimental anyways so it'd be cool if I can figure out whether the sSeparator is , vs ; so come up with some sDelimiter (' / ") vs sSeparator ("," / ";") vs sTerminator ("/n")
 // note2: sDelimiter should not be considered at all for JSONObjectify, only sSeparator and sTerminator.
 JSONObjectify = function(sString, sDelimiter, sColon) {
@@ -247,6 +248,8 @@ JSONObjectify = function(sString, sDelimiter, sColon) {
   }
 }
 JSONObjectify.sample=function() { return 'JSONObjectify("branch:main,folder:datascripts");'; }
+JSONPS = function(o) { return JSON.parse(JSON.stringify(o)); }
+/* END JSON.whatever scripts */
 
 // unique2D vs uniqueLodash
 function unique2D(aArray) { return unique(aArray.map(function(o){ return JSON.stringify(o); })).map(function(o) { return JSON.parse(o); }) }
@@ -368,7 +371,16 @@ getRandomInt = function (min, max) {
 }
 getRandomInt.sample=function(){return "_.countBy( getRange(0,1000).map(function(oEl) { return getRandomInt(0,1) }) )";}
 getRandomArbitrary=getRandomInt;
-
+/* // getRandomArrayToken is currently in domscripts but needs to be es5ified into datascripts.js
+getRandomArrayToken = function(a,i) { // consider refactoring this into datascripts.js?  make es5-friendly
+    if (i) {} else (i = 1);
+    if (i==1) {
+        return a[getRandomInt(0,a.length-1)];
+    } else {
+        return getRange(0, i-1).map(o=>{ return a[getRandomInt(0,a.length-1)]; });
+    }
+}
+*/
 
 /* string cleanup functions */
 function strip_tags(str) {
@@ -389,6 +401,8 @@ function convertCellToArray(r){return[letterToColumn(r.replace(/[0-9]*$/g,"")),p
 
 // ?datahtmlscripts.minified.js?
 // aun no
+
+
 
 /* BEGIN PANDAS-INSPIRED, LODASH-DEPENDENT FUNCTIONS */
 
