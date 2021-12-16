@@ -1279,10 +1279,14 @@ function superencrypt(aVO, sPassword) {
         return aVO;
       }
   } catch(e) {
+    return superdecrypt();
+  }
+}
+
+function superdecrypt() {
     sError = `domLoadScripts_Link("https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js")`;
     console.log("LOAD CRYPTOJS:\n\n" + sError);
     return sError;
-  }
 }
 
 /* domDATAHTMLscripts (vs dataHTMLscripts.js) => datahtmlscripts.js => isomorphic, vanilla, es5-ish datascripts that are related to HTML and datascripts, without needing libraries (the dom, jquery, or lodash */
