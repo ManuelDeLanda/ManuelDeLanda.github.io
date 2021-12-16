@@ -477,6 +477,219 @@ GSDS_disjointedRangeToAVO("A2;A2:B4;D4,E5:F5;G1:H2,H1-H9,L8,:B2, G8")
 // GSDS_GSDSifyTDRANGE("A1:*", undefined, "textarea", undefined, undefined, "=89");
 // GSDS_RANGE1D("A1:*").forEach(function(domTD, iIn) { ((iIn%2==0) ? sType = "textarea" : sType = "input"); GSDS_GSDSifyTDRANGE(domTD, undefined, sType); });).then
 
+// domINJECTIFYscripts => domLoadStyles_CSS, domLoadStyles_Link, etc
+    // 3 SCRIPTS - INJECT STYLES AND SCRIPTS (TO DEPRECATE) 
+    domAppendToHead = function(s){ $$$('head')[0].append(s); }
+    domAppendStyle = function(e){const t=document.createElement("style");t.textContent=e,document.head.append(t)}; addStyle = domAppendStyle;
+    domLoadScripts = function(e,n){!function t(){var a,o,c;0!=e.length?(a=e.shift(),o=t,(c=document.createElement("script")).src=a,c.onload=c.onreadystatechange=function(){c.onreadystatechange=c.onload=null,o()},(document.getElementsByTagName("head")[0]||document.body).appendChild(c)):n&&n()}()}
+    // 4 SCRIPTS - INJECT STYLES AND SCRIPTS (TO REFACTOR INTO EVERYTHING)
+    // these two <style>-related functions nudged me to refactor domLoadScripts into domLoadScripts_Link and domLoadScripts_Script, where the latter is actual script code
+    domLoadStyles_CSS = function(aCSS){ // creates <style> tags
+        // eg domLoadStyles_CSS("* {font-size: 4px}")
+        // eg domLoadStyles_CSS(["* {font-size: 4px}", "* {color: red; }"])
+        // function addcss(css){
+        if (Array.isArray(aCSS)) {} else { aCSS = [aCSS]; } 
+        aCSS.forEach(function(css) {
+            var head = document.getElementsByTagName('head')[0];
+            var s = document.createElement('style');
+            s.setAttribute('type', 'text/css');
+            if (s.styleSheet) {   // IE
+            s.styleSheet.cssText = css;
+            } else {                // the world
+            s.appendChild(document.createTextNode(css));
+            }
+            head.appendChild(s);
+        })
+    }
+    domLoadStyles_Link = function(aLinks){ // creates <link> tags
+        // eg domLoadStyles_Link("https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css")
+        // eg domLoadStyles_Link(["https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css", "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"])
+        // `<link rel="stylesheet" href="${e}" type="text/css" />`
+        // function addcss(css){
+        if (Array.isArray(aLinks)) {} else { aLinks = [aLinks]; }
+        aLinks.forEach(function(sLink) {
+            var head = document.getElementsByTagName('head')[0];
+            var s = document.createElement('link');
+            s.setAttribute('rel', 'stylesheet');
+            s.setAttribute('type', 'text/css');
+            s.setAttribute('href', sLink);
+            head.appendChild(s);
+        })
+    }
+    // these two were refactored from domLoadScripts
+    domLoadScripts_SCRIPT = function(aScripts){ // injects <script> tags
+        // eg domLoadScripts_SCRIPT("var sGlobal = 'blah';")
+        // eg domLoadScripts_SCRIPT(["var sGlobal1 = 'global 1';", "var sGlobal2 = 'global 2';"])
+        if (Array.isArray(aScripts)) {} else { aScripts = [aScripts]; } 
+        aScripts.forEach(function(sScript) {
+            var head = document.getElementsByTagName('head')[0];
+            var s = document.createElement('script');
+            s.appendChild(document.createTextNode(sScript));
+            head.appendChild(s);                 
+        })
+    }
+    domLoadScripts_Link = function (aLinks){ // creates <script src='whatever.js'> tags
+        // eg domLoadScripts_Link("https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js")
+        // eg domLoadScripts_Link(["https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js", "https://code.jquery.com/jquery-3.6.0.min.js"])
+        // `<link rel="stylesheet" href="${e}" type="text/css" />`
+        // function addcss(css){
+        if (Array.isArray(aLinks)) {} else { aLinks = [aLinks]; }
+        aLinks.forEach(function(sLink) {
+            var head = document.getElementsByTagName('head')[0];
+            var s = document.createElement('script');
+            s.setAttribute('src', sLink.trim());
+            head.appendChild(s);
+        })
+    }
+    /* // this is already minified in domscripts "3 SCRIPTS" section above, so don't run it
+    domLoadScripts = function(e, n) {
+        ! function t() {
+            var a, o, c;
+            0 != e.length ? (a = e.shift(), o = t, (c = document.createElement("script")).src = a, c.onload = c.onreadystatechange = function() {
+                c.onreadystatechange = c.onload = null, o()
+            }, (document.getElementsByTagName("head")[0] || document.body).appendChild(c)) : n && n()
+        }()
+    }
+    */
+
+// domADDELscripts =>
+    function addEL(oElements, sType, iIndex, fFunction) { // vs addEventListenerClickXYZ's o, i, f
+        if (fFunction) {} else { f = function() { alert("undefined ? and ?"); } }
+        if (typeof(oElements) == "string") { oElements = $$$a(oElements); }
+        if (Array.isArray(oElements)) { } else { oElements = [oElements]; }
+        oElements.forEach(oElement=>{
+            oElement.addEventListener(sType, function (evt) {
+                if (evt.detail === iIndex) { fFunction(); }
+            })
+        })
+    }; addEventListener = function(oElements, sType, iIndex, fFunction) { return addEL(oElements, sType, iIndex, fFunction); }
+    function addEventListenerClickXYZ(o,i,f) { // vs addEL's o, t, i, f
+        // defaults
+        if (o) {} else { o = "body"; }
+        if (i) {} else { i=2; }
+        addEL(o, "click", i, f);
+    }
+
+// domANIMATEscripts => animate.css
+    // BEGIN animate.css scripts
+    function addAnimateCSSToHover(sSelector, sClass) {  // jQuery-dependent
+       sClass = 'animated animate__animated animate__' + sClass; 
+       $(sSelector).hover(function(){
+           $(this).addClass(sClass);
+       });
+       $(sSelector).bind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd",function(){
+          $(this).removeClass(sClass);
+       });
+    }
+    
+    function getAnimateCSSAnimations() {
+        return "bounce\nflash\npulse\nrubberBand\nshakeX\nshakeY\nheadShake\nswing\ntada\nwobble\njello\nheartBeat\nbackInDown\nbackInLeft\nbackInRight\nbackInUp\nbackOutDown\nbackOutLeft\nbackOutRight\nbackOutUp\nbounceIn\nbounceInDown\nbounceInLeft\nbounceInRight\nbounceInUp\nbounceOut\nbounceOutDown\nbounceOutLeft\nbounceOutRight\nbounceOutUp\nfadeIn\nfadeInDown\nfadeInDownBig\nfadeInLeft\nfadeInLeftBig\nfadeInRight\nfadeInRightBig\nfadeInUp\nfadeInUpBig\nfadeInTopLeft\nfadeInTopRight\nfadeInBottomLeft\nfadeInBottomRight\nfadeOut\nfadeOutDown\nfadeOutDownBig\nfadeOutLeft\nfadeOutLeftBig\nfadeOutRight\nfadeOutRightBig\nfadeOutUp\nfadeOutUpBig\nfadeOutTopLeft\nfadeOutTopRight\nfadeOutBottomRight\nfadeOutBottomLeft\nflip\nflipInX\nflipInY\nflipOutX\nflipOutY\nlightSpeedInRight\nlightSpeedInLeft\nlightSpeedOutRight\nlightSpeedOutLeft\nrotateIn\nrotateInDownLeft\nrotateInDownRight\nrotateInUpLeft\nrotateInUpRight\nrotateOut\nrotateOutDownLeft\nrotateOutDownRight\nrotateOutUpLeft\nrotateOutUpRight\nhinge\njackInTheBox\nrollIn\nrollOut\nzoomIn\nzoomInDown\nzoomInLeft\nzoomInRight\nzoomInUp\nzoomOut\nzoomOutDown\nzoomOutLeft\nzoomOutRight\nzoomOutUp\nslideInDown\nslideInLeft\nslideInRight\nslideInUp\nslideOutDown\nslideOutLeft\nslideOutRight\nslideOutUp".split("\n");
+
+    }
+    
+    function toggleAnimationVisbDisp(o,sVHvsDN,animation,i) {
+        // sVHvsDN is sVisibilityHiddenVsDisplayNone
+        if (sVHvsDN == "none") {
+            sVHvsDN = "displaynone";
+        } else {
+            sVHvsDN = "displayhidden";
+        }
+        if (o) {} else { o="*"; }
+        if (i) {} else { i=0; }
+        if (animation) {
+
+        } else {
+            sInAnimation = getRandomArrayToken(getAnimateCSSAnimationsMatch("In"));
+            sOutAnimation = getRandomArrayToken(getAnimateCSSAnimationsMatch("Out"));
+        }
+        if ($$$$(o).style.visibility == "hidden" || $$$$(o).style.display == "none") {
+
+            $$$animate(o, sInAnimation, i, "display");
+
+        } else {
+            $$$animate(o, sOutAnimation, i, sVHvsDN)
+        }
+
+    }
+    
+    function getAnimateCSSAnimationsMatch(s) { return getAnimateCSSAnimations().filter(o=>o.match(new RegExp(s, "g"))); }
+    getRandomArrayToken = function(a,i) { // consider refactoring this into datascripts.js?  make es5-friendly
+        if (i) {} else (i = 1);
+        if (i==1) {
+            return a[getRandomInt(0,a.length-1)];
+        } else {
+            return getRange(0, i-1).map(o=>{ return a[getRandomInt(0,a.length-1)]; });
+        }
+    }      
+    var animateCSS = (element, animation, prefix = 'animate__') =>
+      // We create a Promise and return it
+      new Promise((resolve, reject) => {
+        if (animation) {} else { animation = "bounce"; }
+        if (animation=="random") {
+          // animation = getAnimateCSSAnimations()[getRandomInt(0,96)];
+          animation = getRandomArrayToken(getAnimateCSSAnimations());
+          console.log(animation);
+        }
+        const animationName = `${prefix}${animation}`;
+
+        if (typeof(element) == "string") { var node = document.querySelector(element); } else { var node = element; }
+
+        node.classList.add(`${prefix}animated`, animationName);
+
+        // When the animation ends, we clean the classes and resolve the Promise
+        function handleAnimationEnd(event) {
+          event.stopPropagation();
+          node.classList.remove(`${prefix}animated`, animationName);
+          // resolve('Animation ended');
+          resolve(event.target);
+        }
+
+        node.addEventListener('animationend', handleAnimationEnd, {once: true});
+      });      
+
+      function $$$animate(el,animation,idelay, fFunction1, fFunction2) {
+          // fFunction1=fFunction_beforeAnimation, fFunction2=fFunction2_afterAnimation
+          // fFunction = function(o) { o.style.display=""; }
+          if (animation) {} else { animation = "random"; }
+          if (el) {} else { el = "*"; }
+          if (idelay != undefined) {} else { idelay = 10; }
+          fNada = function(o) {};
+          oAnimateFunctions = {
+              "display": { "fFunction1": function(o) { o.style.display=""; o.style.visibility="visible" }, "fFunction2": function(o) { o.style.display=""; o.style.visibility="visible" } },
+              "displaynone": { "fFunction1": fNada, "fFunction2": function(o) { o.style.display="none"; } },
+              "displayhidden": { "fFunction1": fNada, "fFunction2": function(o) { o.style.visibility="hidden"; } },
+
+              "displaynonedisplay": { "fFunction1": fNada, "fFunction2": fNada, },
+              "displayhiddendisplay": { "fFunction1": fNada, "fFunction2": fNada, },
+              "displaydisplaynone": { "fFunction1": fNada, "fFunction2": fNada, },
+              "displaydisplayhidden": { "fFunction1": fNada, "fFunction2": fNada, },
+
+              // "displaynonedisplay": function(o) { o.style.display="none"; setTimeout(() => { o.style.display=""; ; o.style.visibility=""; }, idelay) },
+              // "displayhiddendisplay": function(o) { o.style.visibility="hidden"; setTimeout(() => { o.style.visibility=""; }, idelay) } ,
+              // "displaydisplaynone": function(o) { o.style.display=""; o.style.visibility=""; setTimeout(() => { o.style.display="none"; }, idelay) },
+              // "displaydisplayhidden": function(o) { o.style.display=""; o.style.visibility=""; setTimeout(() => { o.style.visibility="hidden"; }, idelay) },
+              "": function(o) {},
+          }
+
+          if (typeof(fFunction1)=="string") {
+              if (oAnimateFunctions[fFunction1]) {} else { fFunction1 = ""; }
+              fFunction2 = oAnimateFunctions[fFunction1]["fFunction2"];
+              fFunction1 = oAnimateFunctions[fFunction1]["fFunction1"];
+          } else {};
+
+          if (fFunction1) {} else { fFunction1 = fNada; }
+          if (fFunction2) {} else { fFunction2 = fNada; }
+          $$$a(el).forEach((o,i)=>{
+              setTimeout(() => {
+                  fFunction1(o)
+                  animateCSS(o,animation).then(o=>fFunction2(o)); // o.addEventListener('animationend', () => {
+              }, i*idelay);
+          });
+      }; function $$$a_animate(el,animation,idelay,fFunction1,fFunction2) { return $$$animate(el,animation,idelay,fFunction1,fFunction2); };
+      
+    // END animate.css scripts
+
+
 // domGSDSscripts => NEW googlesheets scripts
 // GSDS_CELL, GSDS_RANGE1D, GSDS_RANGE2D, GSDS_CELL_value, GSDS_CELL_valueParseInt, GSDS_RANGE1D_values, GSDS_RANGE2D_values
 // GSDS_getOSR, GSDS_distinguishDomTableAndA1Notation, GSDS_domReplaceAsterisksInA1Notation, GSDS_inputifyTDRANGE, GSDS_eval, GSDS_domTDToA1Notation, GSDS_evalifyTDRANGE
