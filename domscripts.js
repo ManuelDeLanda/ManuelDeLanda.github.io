@@ -1085,7 +1085,7 @@ GSDS_disjointedRangeToAVO("A2;A2:B4;D4,E5:F5;G1:H2,H1-H9,L8,:B2, G8")
     */
 
 // domFETCHscripts => SubmitSuperNinjaForm,fetch_XMLHttpRequest,oGetAllParameters_CLIENT(), oSetAParameter_CLIENT
-fetch_XMLHttpRequest=function(oTypeURLPayload) {
+fetch_XMLHttpRequest=function(oHTTPMethodURLPayload) {
     superencode = function (str){  return encodeURIComponent(str).replace(/'/g, "%27"); }
 
     var sXMLHttpRequestResponseText = "";
@@ -1103,11 +1103,11 @@ fetch_XMLHttpRequest=function(oTypeURLPayload) {
             resolve(sXMLHttpRequestResponseText);
           } else {}
         };
-        xmlhttp.open(oTypeURLPayload.type, oTypeURLPayload.url, true);
+        xmlhttp.open(oHTTPMethodURLPayload.type, oHTTPMethodURLPayload.url, true);
         var sParams;
-        if (oTypeURLPayload.payload != undefined) {
-            sParams = Object.keys(oTypeURLPayload.payload).map(function(oElement) {
-                return superencode(oElement) + "=" + superencode(oTypeURLPayload.payload[oElement]);
+        if (oHTTPMethodURLPayload.payload != undefined) {
+            sParams = Object.keys(oHTTPMethodURLPayload.payload).map(function(oElement) {
+                return superencode(oElement) + "=" + superencode(oHTTPMethodURLPayload.payload[oElement]);
             }).join("&");
         }
 
@@ -1118,33 +1118,33 @@ fetch_XMLHttpRequest=function(oTypeURLPayload) {
         xmlhttp.send(sParams);
     })
 // }.then(function(sResponse) {  console.log(sResponse.trim());  })
-} 
+};
 
-function SubmitSuperNinjaForm(oTypeURLPayload, sTarget) {
+function SubmitSuperNinjaForm(oHTTPMethodURLPayload, sTarget) {
     // SubmitSuperNinjaForm("");
     // SubmitSuperNinjaForm({url: "", payload: "whatever"});
     // SubmitSuperNinjaForm({url: "", type: "POST", payload: {"wat": "whatever"}},  );
     // SubmitSuperNinjaForm({url: "", method: "POST", payload: {"wat": "whatever"}},  );
     superencode = function (str){  return encodeURIComponent(str).replace(/'/g, "%27"); }
-    // BEGIN fuzzy parameters: assume a string oTypeURLPayload is a URL, and assume a string oTypeURLPayload.payload is an object with a .payload key
-    if (typeof(oTypeURLPayload) == "string") { oTypeURLPayload = { url: oTypeURLPayload, method: "GET" }; };
-    if (oTypeURLPayload.type) { oTypeURLPayload.method = oTypeURLPayload.type; }; oTypeURLPayload.method = oTypeURLPayload.method.toUpperCase();
-    if (oTypeURLPayload.method != "GET" && oTypeURLPayload.method != "POST") { oTypeURLPayload.method = "GET" }; // research other browser-based methods?  UPSERT???
+    // BEGIN fuzzy parameters: assume a string oHTTPMethodURLPayload is a URL, and assume a string oHTTPMethodURLPayload.payload is an object with a .payload key
+    if (typeof(oHTTPMethodURLPayload) == "string") { oHTTPMethodURLPayload = { url: oHTTPMethodURLPayload, method: "GET" }; };
+    if (oHTTPMethodURLPayload.type) { oHTTPMethodURLPayload.method = oHTTPMethodURLPayload.type; }; oHTTPMethodURLPayload.method = oHTTPMethodURLPayload.method.toUpperCase();
+    if (oHTTPMethodURLPayload.method != "GET" && oHTTPMethodURLPayload.method != "POST") { oHTTPMethodURLPayload.method = "GET" }; // research other browser-based methods?  UPSERT???
     // HTML forms support GET and POST. (HTML5 at one point added PUT/DELETE, but those were dropped.)
     // XMLHttpRequest supports every method, including CHICKEN, though some method names are matched against case-insensitively (methods are case-sensitive per HTTP) and some method names are not supported at all for security reasons (e.g. CONNECT).
     // Fetch API also supports any method except for CONNECT, TRACE, and TRACK, which are forbidden for security reasons.
     // Browsers are slowly converging on the rules specified by XMLHttpRequest, but as the other comment pointed out there are still some differences.
     
-    if (typeof(oTypeURLPayload.payload)=="string") {
-        oTypeURLPayload.payload = { payload: oTypeURLPayload.payload };
+    if (typeof(oHTTPMethodURLPayload.payload)=="string") {
+        oHTTPMethodURLPayload.payload = { payload: oHTTPMethodURLPayload.payload };
     } else {} // it's a good .payload.
     // END fuzzy parameters
-    console.log(JSON.stringify(oTypeURLPayload.payload));
+    console.log(JSON.stringify(oHTTPMethodURLPayload.payload));
 
-    if ((oTypeURLPayload == null) || (oTypeURLPayload == undefined) || (oTypeURLPayload == "")) {
-       var oTypeURLPayload = { type:"POST" , payload: {script: 84, deploy: 1, context: "llave", payload: "just testing" } }; 
+    if ((oHTTPMethodURLPayload == null) || (oHTTPMethodURLPayload == undefined) || (oHTTPMethodURLPayload == "")) {
+       var oHTTPMethodURLPayload = { type:"POST" , payload: {script: 84, deploy: 1, context: "llave", payload: "just testing" } }; 
        var sURL = "https://www.acct138579ns.com/app/site/hosting/scriptlet.nl?script=84&deploy=1&context=llave";
-       oTypeURLPayload.url = sURL;
+       oHTTPMethodURLPayload.url = sURL;
     }    
     
     var dom_form = document.createElement('form');
@@ -1152,24 +1152,24 @@ function SubmitSuperNinjaForm(oTypeURLPayload, sTarget) {
     // if (sTarget) { dom_form.setAttribute("target",sTarget); }
     dom_form.name = 'superninjaform';
     dom_form.id = 'superninjaform';
-    dom_form.method = oTypeURLPayload.method;
-    dom_form.action = ((oTypeURLPayload.url != undefined) ? oTypeURLPayload.url : window.location.href.split("?")[0] ); 
+    dom_form.method = oHTTPMethodURLPayload.method;
+    dom_form.action = ((oHTTPMethodURLPayload.url != undefined) ? oHTTPMethodURLPayload.url : window.location.href.split("?")[0] ); 
     document.body.appendChild(dom_form);
     // BEGIN bring URL parameters into payload (and bring payload into URL parameters or nah?)
     // NOTE - for GET: even if URL has parameters, I MUST oGetAllParameters_CLIENTize out the parameters and put them into the form.inputs because why?  IDK.  POST doesn't make me do this.  But to stay safe I'm doing it for POST too.  REFACTORING opportunity: if-else by POST
-    ooGetAllParameters_CLIENT = oGetAllParameters_CLIENT(oTypeURLPayload.url);
+    ooGetAllParameters_CLIENT = oGetAllParameters_CLIENT(oHTTPMethodURLPayload.url);
     Object.keys((ooGetAllParameters_CLIENT)).forEach(o=>{
-    // console.log(oTypeURLPayload.payload);
-        oTypeURLPayload.payload[o]=ooGetAllParameters_CLIENT[o];
+    // console.log(oHTTPMethodURLPayload.payload);
+        oHTTPMethodURLPayload.payload[o]=ooGetAllParameters_CLIENT[o];
     });
     // END bring URL parameters into payload
-    dom_form.innerHTML = Object.keys(oTypeURLPayload.payload).map((o,i)=>{
-        return '<input type="hidden" name="' + o + '" id="' + o + '" value="' + superencode(oTypeURLPayload.payload[o]) + '" />' + String.fromCharCode(10) + String.fromCharCode(13);
+    dom_form.innerHTML = Object.keys(oHTTPMethodURLPayload.payload).map((o,i)=>{
+        return '<input type="hidden" name="' + o + '" id="' + o + '" value="' + superencode(oHTTPMethodURLPayload.payload[o]) + '" />' + String.fromCharCode(10) + String.fromCharCode(13);
     }).join("");
     //alert(dom_form.innerHTML);
     /*
-    dom_form.innerHTML = Object.keys(oTypeURLPayload.payload).reduce(function(agg, oElement) {
-        agg += '<input type="hidden" name="' + oElement + '" id="' + oElement + '" value="' + superencode(oTypeURLPayload.payload[oElement]) + '" />' + String.fromCharCode(10) + String.fromCharCode(13);
+    dom_form.innerHTML = Object.keys(oHTTPMethodURLPayload.payload).reduce(function(agg, oElement) {
+        agg += '<input type="hidden" name="' + oElement + '" id="' + oElement + '" value="' + superencode(oHTTPMethodURLPayload.payload[oElement]) + '" />' + String.fromCharCode(10) + String.fromCharCode(13);
         return agg;
     }, "")
     */
@@ -1177,11 +1177,39 @@ function SubmitSuperNinjaForm(oTypeURLPayload, sTarget) {
 }
 SubmitSuperNinjaForm.sample = function() { 
   console.log(`
-              var oTypeURLPayload = { type:"POST", url: "https://cdg.com/wp-json/api/v1/author/2", payload: {filter: "2asdf"}};
-              
-              SubmitSuperNinjaForm(oTypeURLPayload);
-  fetch_XMLHttpRequest(oTypeURLPayload).then(function(sResponse) { console.log(sResponse.trim()); });
-  sResponse = await fetch_XMLHttpRequest(oTypeURLPayload);
+            // with oHTTPMethodURLPayload:
+            // oHTTPMethodURLPayload allows method, url, payload to be undefined
+            // if payload == string, then payload becomes {payload: payload}
+            // if GET method, then url parameters automatically payloadified into payload KeyboardEvent
+            // if POST method, then consider pushing payload into URL parameters? (NO!)
+            var oHTTPMethodURLPayload = { method:"POST", url: "url", payload: {sampledata: "2asdf"}};
+
+            // oldschool html & javascript: SubmitSuperNinjaForm
+            SubmitSuperNinjaForm(oHTTPMethodURLPayload);
+
+            // oldschool javascript: fetch_XMLHttpRequest
+            fetch_XMLHttpRequest(oHTTPMethodURLPayload).then(function(sResponse) { console.log(sResponse.trim()); });
+            sResponse = await fetch_XMLHttpRequest(oHTTPMethodURLPayload);
+
+            // without oHTTPMethodURLPayload:
+
+            // traditional modern - simple
+            fetch("url").then(o=>{return o.text().then(oo=>{ // vs o.json() vs o.blob()?
+            console.log(oo);
+            }) })
+
+            // traditional modern - complex
+            var myHeaders = new Headers();
+            var myRequest = new Request('flowers.jpg', {
+              method: 'GET',
+              headers: myHeaders,
+              mode: 'cors',
+              cache: 'default',
+            });
+            fetch(myRequest).then(response => response.blob()).then(myBlob => {
+                myImage.src = URL.createObjectURL(myBlob);
+            });
+
   `)
 }; fetch_XMLHttpRequest.sample = SubmitSuperNinjaForm.sample;
   
