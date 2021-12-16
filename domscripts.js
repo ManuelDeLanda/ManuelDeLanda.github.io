@@ -695,7 +695,7 @@ GSDS_disjointedRangeToAVO("A2;A2:B4;D4,E5:F5;G1:H2,H1-H9,L8,:B2, G8")
 // GSDS_getOSR, GSDS_distinguishDomTableAndA1Notation, GSDS_domReplaceAsterisksInA1Notation, GSDS_inputifyTDRANGE, GSDS_eval, GSDS_domTDToA1Notation, GSDS_evalifyTDRANGE
 // domGetTDTextOrValue, domGetTDTextOrValueParseInt, domSetTDTextOrValue
 // domscriptsSTEROIDS.js
-try {
+// try {
     GSDS_CELL = function(domTable, sA1Notation) { return GSDS_RANGE1D(domTable, sA1Notation)[0]; }
     GSDS_RANGE1D = function(domTable, sA1Notation) { return GSDS_disjointedRangeToAVOdomTDs(domTable, sA1Notation).flat().filter(function(oEl) { return oEl }); }
     GSDS_RANGE2D = function(domTable, sA1Notation) { return GSDS_disjointedRangeToAVOdomTDs(domTable, sA1Notation); }
@@ -1080,7 +1080,7 @@ try {
         else {domTD.innerText = sString} 
     }
 
-} catch(e) { console.log(e); }
+// } catch(e) { console.log(e); }
 // END NEW googlesheets.scripts.js
 
 
