@@ -1579,10 +1579,14 @@ GSDS_disjointedRangeToAVO = function(sA1Notation) { // this function is NOT FOR 
 GSDS_disjointedRangeToAVO.sample = function() { return 'GSDS_disjointedRangeToAVO("-A2;A2:B4; D4,E5:F5;G1:H2,H1-H9,L8,:B2, G8")' }
 GSDS_disjointedRangeToArray = function(sA1Notation) { return GSDS_disjointedRangeToAVO(sA1Notation).flat().filter(function(oEl) { return oEl; }) }
 
-toHTMLSelect=function(aArray, sClassList) { // refractor this to accept array of values vs array of objects (select id?)
-  // aArray = JSON.parse(JSON.stringify(aArray)); aArray.unshift
-  if (sClassList == undefined) { sClassList = "aArraySelect"; }
-  return "<select class='" + sClassList + "'><option></option>" + aArray.map(function(oElement) { return "<option>" + oElement + "</option>"; }).join("")+"</select>";
+toHTMLSelect=function(aArray, sSelectIDOrClasses) { // refractor this to accept array of values vs array of objects (select id?)
+    var sSelectID = returnIDAndOrClasses(sSelectIDOrClasses).id;
+    var sSelectClasses = (returnIDAndOrClasses(sSelectIDOrClasses).classes + " aArraySelect").trim();
+    if (sSelectID) { sSelectID = " id='" + sSelectID + "'"; }        
+    
+    if (Array.isArray(aArray)) {} else { aArray = [aArray]; } 
+    // aArray = JSON.parse(JSON.stringify(aArray)); aArray.unshift
+    return "<select " + sSelectID + " class='" + sSelectClasses + "'><option></option>" + aArray.map(function(oElement) { return "<option>" + oElement + "</option>"; }).join("")+"</select>";
 }
 
 function hyperlink(sURL, sName, bNoTarget) {
