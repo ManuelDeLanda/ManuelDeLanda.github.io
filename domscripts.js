@@ -1284,7 +1284,7 @@ CryptoJS.AES.decrypt(oo, "hint").toString(CryptoJS.enc.Utf8)}`
 }
 
 
-/* domDATAHTMLscripts => datahtmlscripts.js => isomorphic, vanilla, es5-ish datascripts that are related to HTML and datascripts, without needing libraries (the dom, jquery, or lodash */
+/* domDATAHTMLscripts (vs dataHTMLscripts.js) => datahtmlscripts.js => isomorphic, vanilla, es5-ish datascripts that are related to HTML and datascripts, without needing libraries (the dom, jquery, or lodash */
 // refactor this whole solution into dataDATAHTMLscripts?  or dataHTMLscripts?  why dom?  because es5?
 // note hyperlink() is both html and gs formula related? more functions similar to this concept"?
 // HTMLLibrarify, HTMLInjecify, HTMLDOMContentLoadedLibrarify, HTMLDOMContentLoadedify
