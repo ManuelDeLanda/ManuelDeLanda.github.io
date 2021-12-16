@@ -945,7 +945,7 @@ function SubmitSuperNinjaForm(oTypeURLPayload, sTarget) {
     dom_form.innerHTML = Object.keys(oTypeURLPayload.payload).map((o,i)=>{
         return '<input type="hidden" name="' + o + '" id="' + o + '" value="' + superencode(oTypeURLPayload.payload[o]) + '" />' + String.fromCharCode(10) + String.fromCharCode(13);
     }).join("");
-    alert(dom_form.innerHTML);
+    //alert(dom_form.innerHTML);
     /*
     dom_form.innerHTML = Object.keys(oTypeURLPayload.payload).reduce(function(agg, oElement) {
         agg += '<input type="hidden" name="' + oElement + '" id="' + oElement + '" value="' + superencode(oTypeURLPayload.payload[oElement]) + '" />' + String.fromCharCode(10) + String.fromCharCode(13);
