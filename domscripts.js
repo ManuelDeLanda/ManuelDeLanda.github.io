@@ -1242,6 +1242,44 @@ function oSetAParameter_CLIENT(oParameters) {
     return sURL;
 }
 
+// domENCRYPTscripts => superencrypt and decrypt (CryptoJS)
+function superencrypt(aVO, sPassword) {
+  // domLoadScripts_Link("https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js")
+  // copy(superencrypt([["a", "b", "c"],["d - 1", "e - 2", "f - 3"]], "hint"))
+  if (typeof(aVO)=="string") {
+    aVO = [[aVO]];
+  }
+  aVO = aVO.map((o,i)=>{
+      return o.map(oo=> {
+        if (true) {
+        // if (i>0) {
+          if (sPassword) {} else {sPassword="AES.encrypt"}
+          if (sPassword=="superencode" || sPassword=="encode") {
+            return superencode(oo);
+          // } else if (sPassword=="hint") {
+          //  return "";
+          } else {
+            return CryptoJS.AES.encrypt(superencode(oo), sPassword).toString();        
+          }    
+        //return e;
+        } else {
+            return oo;
+        }
+  }) });
+  if (sPassword =="hint") {
+    return `${JSON.stringify(aVO)}.map(o=>o.map(oo=>{ return decodeURIComponent( 
+CryptoJS.AES.decrypt(oo, "hint").toString(CryptoJS.enc.Utf8)
+) }) )`;
+  } else {
+    return aVO;
+  }
+}
+function superdecrypt(aVO, sPassword) {
+    return `aVO.map(o=>o.map(oo=>{ return decodeURIComponent( 
+CryptoJS.AES.decrypt(oo, "hint").toString(CryptoJS.enc.Utf8)}`
+}
+
+
 /* domDATAHTMLscripts => datahtmlscripts.js => isomorphic, vanilla, es5-ish datascripts that are related to HTML and datascripts, without needing libraries (the dom, jquery, or lodash */
 // refactor this whole solution into dataDATAHTMLscripts?  or dataHTMLscripts?  why dom?  because es5?
 // note hyperlink() is both html and gs formula related? more functions similar to this concept"?
@@ -1411,6 +1449,15 @@ function HTMLify(aCQPRecordsOriented, bSansHTMLTag) {
 
 // THE FOLLOWING CODE USED TO BE "domscripts.serversafe", but now its just part of datahtmlscripts.js
 // pseudocode for new domscript function - refactor convertOSRToHTMLTable, convertRecordsOrientedArrayToHTMLTable, convertValuesOrientedToHTMLTable into one solution? 
+toHTMLSelect=function(aArray, sSelectIDOrClasses) { // refractor this to accept array of values vs array of objects (select id?)
+    var sSelectID = returnIDAndOrClasses(sSelectIDOrClasses).id;
+    var sSelectClasses = (returnIDAndOrClasses(sSelectIDOrClasses).classes + " aArraySelect").trim();
+    if (sSelectID) { sSelectID = " id='" + sSelectID + "'"; }        
+    
+    if (Array.isArray(aArray)) {} else { aArray = [aArray]; } 
+    // aArray = JSON.parse(JSON.stringify(aArray)); aArray.unshift
+    return "<select " + sSelectID + " class='" + sSelectClasses + "'><option></option>" + aArray.map(function(oElement) { return "<option>" + oElement + "</option>"; }).join("")+"</select>";
+}
 toHTMLTable = function(aArrayOrObject, aColumns, sTableID) {
   // refactor the two functions into datascripts
   isRO = function(a) { return (Array.isArray(a) && !Array.isArray(a[0]) ); }; isRecordsOriented = function(a) { return isRO(a); }
@@ -1578,16 +1625,6 @@ GSDS_disjointedRangeToAVO = function(sA1Notation) { // this function is NOT FOR 
 }
 GSDS_disjointedRangeToAVO.sample = function() { return 'GSDS_disjointedRangeToAVO("-A2;A2:B4; D4,E5:F5;G1:H2,H1-H9,L8,:B2, G8")' }
 GSDS_disjointedRangeToArray = function(sA1Notation) { return GSDS_disjointedRangeToAVO(sA1Notation).flat().filter(function(oEl) { return oEl; }) }
-
-toHTMLSelect=function(aArray, sSelectIDOrClasses) { // refractor this to accept array of values vs array of objects (select id?)
-    var sSelectID = returnIDAndOrClasses(sSelectIDOrClasses).id;
-    var sSelectClasses = (returnIDAndOrClasses(sSelectIDOrClasses).classes + " aArraySelect").trim();
-    if (sSelectID) { sSelectID = " id='" + sSelectID + "'"; }        
-    
-    if (Array.isArray(aArray)) {} else { aArray = [aArray]; } 
-    // aArray = JSON.parse(JSON.stringify(aArray)); aArray.unshift
-    return "<select " + sSelectID + " class='" + sSelectClasses + "'><option></option>" + aArray.map(function(oElement) { return "<option>" + oElement + "</option>"; }).join("")+"</select>";
-}
 
 function hyperlink(sURL, sName, bNoTarget) {
    if (sName) {} else {sName = "link"}
