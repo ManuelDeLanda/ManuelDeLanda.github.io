@@ -562,7 +562,7 @@ GSDS_disjointedRangeToAVO("A2;A2:B4;D4,E5:F5;G1:H2,H1-H9,L8,:B2, G8")
                 if (evt.detail === iIndex) { fFunction(); }
             })
         })
-    }; addEventListener = function(oElements, sType, iIndex, fFunction) { return addEL(oElements, sType, iIndex, fFunction); }
+    }; // addEventListener = function(oElements, sType, iIndex, fFunction) { return addEL(oElements, sType, iIndex, fFunction); }
     function addEventListenerClickXYZ(o,i,f) { // vs addEL's o, t, i, f
         // defaults
         if (o) {} else { o = "body"; }
