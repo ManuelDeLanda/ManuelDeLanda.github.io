@@ -1246,6 +1246,10 @@ function oSetAParameter_CLIENT(oParameters) {
 function superencrypt(aVO, sPassword) {
   // domLoadScripts_Link("https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js")
   // copy(superencrypt([["a", "b", "c"],["d - 1", "e - 2", "f - 3"]], "hint"))
+  if (aVO) {} else { 
+    console.log(`copy(superencrypt([["a", "b", "c"],["d - 1", "e - 2", "f - 3"]], "hint"))`);
+    return "";
+  }
   if (typeof(aVO)=="string") {
     aVO = [[aVO]];
   }
