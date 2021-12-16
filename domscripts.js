@@ -1130,6 +1130,11 @@ function SubmitSuperNinjaForm(oTypeURLPayload, sTarget) {
     if (typeof(oTypeURLPayload) == "string") { oTypeURLPayload = { url: oTypeURLPayload, method: "GET" }; };
     if (oTypeURLPayload.type) { oTypeURLPayload.method = oTypeURLPayload.type; }; oTypeURLPayload.method = oTypeURLPayload.method.toUpperCase();
     if (oTypeURLPayload.method != "GET" && oTypeURLPayload.method != "POST") { oTypeURLPayload.method = "GET" }; // research other browser-based methods?  UPSERT???
+    // HTML forms support GET and POST. (HTML5 at one point added PUT/DELETE, but those were dropped.)
+    // XMLHttpRequest supports every method, including CHICKEN, though some method names are matched against case-insensitively (methods are case-sensitive per HTTP) and some method names are not supported at all for security reasons (e.g. CONNECT).
+    // Fetch API also supports any method except for CONNECT, TRACE, and TRACK, which are forbidden for security reasons.
+    // Browsers are slowly converging on the rules specified by XMLHttpRequest, but as the other comment pointed out there are still some differences.
+    
     if (typeof(oTypeURLPayload.payload)=="string") {
         oTypeURLPayload.payload = { payload: oTypeURLPayload.payload };
     } else {} // it's a good .payload.
