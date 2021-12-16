@@ -907,25 +907,52 @@ fetch_XMLHttpRequest=function(oTypeURLPayload) {
 // }.then(function(sResponse) {  console.log(sResponse.trim());  })
 } 
 
-SubmitSuperNinjaForm=function (oTypeURLPayload, sTarget) {
-  superencode = function (str){  return encodeURIComponent(str).replace(/'/g, "%27"); }
-  if ((oTypeURLPayload == null) || (oTypeURLPayload == undefined) || (oTypeURLPayload == "")) {
-    var oTypeURLPayload = { type:"POST", payload: {script: 84, deploy: 1, context: "llave", payload: "just testing" } }; 
-    var sURL = "https://example.com/app/site/hosting/scriptlet.nl?script=84&deploy=1&context=llave";
-    oTypeURLPayload.url = sURL;
-  } 
-  var dom_form = document.createElement('form');
-  dom_form.setAttribute("target",sTarget);
-  dom_form.name = 'superninjaform';
-  dom_form.id = 'superninjaform';
-  dom_form.method = oTypeURLPayload.type;
-  dom_form.action = ((oTypeURLPayload.url != undefined) ? oTypeURLPayload.url : window.location.href.split("?")[0] ); 
-  document.body.appendChild(dom_form);
-  dom_form.innerHTML = Object.keys(oTypeURLPayload.payload).reduce(function(agg, oElement) {
-    agg += '<input type="hidden" name="' + oElement + '" id="' + oElement + '" value="' + superencode(oTypeURLPayload.payload[oElement]) + '" />' + String.fromCharCode(10) + String.fromCharCode(13);
-    return agg;
-  }, "")
-  dom_form.submit();
+function SubmitSuperNinjaForm(oTypeURLPayload, sTarget) {
+    // SubmitSuperNinjaForm("");
+    // SubmitSuperNinjaForm({url: "", payload: "whatever"});
+    // SubmitSuperNinjaForm({url: "", type: "POST", payload: {"wat": "whatever"}},  );
+    superencode = function (str){  return encodeURIComponent(str).replace(/'/g, "%27"); }
+    // BEGIN fuzzy parameters: assume a string oTypeURLPayload is a URL, and assume a string oTypeURLPayload.payload is an object with a .payload key
+    if (typeof(oTypeURLPayload) == "string") { oTypeURLPayload = { url: oTypeURLPayload, type: "GET" }; };
+    if (typeof(oTypeURLPayload.payload)=="string") {
+        oTypeURLPayload.payload = { payload: oTypeURLPayload.payload };
+    } else {} // it's a good .payload.
+    // END fuzzy parameters
+    console.log(JSON.stringify(oTypeURLPayload.payload));
+
+    if ((oTypeURLPayload == null) || (oTypeURLPayload == undefined) || (oTypeURLPayload == "")) {
+       var oTypeURLPayload = { type:"POST" , payload: {script: 84, deploy: 1, context: "llave", payload: "just testing" } }; 
+       var sURL = "https://www.acct138579ns.com/app/site/hosting/scriptlet.nl?script=84&deploy=1&context=llave";
+       oTypeURLPayload.url = sURL;
+    }    
+    
+    var dom_form = document.createElement('form');
+    if (sTarget != false && sTarget != "false") { dom_form.setAttribute("target","_blank"); }
+    // if (sTarget) { dom_form.setAttribute("target",sTarget); }
+    dom_form.name = 'superninjaform';
+    dom_form.id = 'superninjaform';
+    dom_form.method = oTypeURLPayload.type;
+    dom_form.action = ((oTypeURLPayload.url != undefined) ? oTypeURLPayload.url : window.location.href.split("?")[0] ); 
+    document.body.appendChild(dom_form);
+    // BEGIN bring URL parameters into payload (and bring payload into URL parameters or nah?)
+    // NOTE - for GET: even if URL has parameters, I MUST oGetAllParameters_CLIENTize out the parameters and put them into the form.inputs because why?  IDK.  POST doesn't make me do this.  But to stay safe I'm doing it for POST too.  REFACTORING opportunity: if-else by POST
+    ooGetAllParameters_CLIENT = oGetAllParameters_CLIENT(oTypeURLPayload.url);
+    Object.keys((ooGetAllParameters_CLIENT)).forEach(o=>{
+    // console.log(oTypeURLPayload.payload);
+        oTypeURLPayload.payload[o]=ooGetAllParameters_CLIENT[o];
+    });
+    // END bring URL parameters into payload
+    dom_form.innerHTML = Object.keys(oTypeURLPayload.payload).map((o,i)=>{
+        return '<input type="hidden" name="' + o + '" id="' + o + '" value="' + superencode(oTypeURLPayload.payload[o]) + '" />' + String.fromCharCode(10) + String.fromCharCode(13);
+    }).join("");
+    alert(dom_form.innerHTML);
+    /*
+    dom_form.innerHTML = Object.keys(oTypeURLPayload.payload).reduce(function(agg, oElement) {
+        agg += '<input type="hidden" name="' + oElement + '" id="' + oElement + '" value="' + superencode(oTypeURLPayload.payload[oElement]) + '" />' + String.fromCharCode(10) + String.fromCharCode(13);
+        return agg;
+    }, "")
+    */
+    dom_form.submit();
 }
 SubmitSuperNinjaForm.sample = function() { 
   console.log(`
