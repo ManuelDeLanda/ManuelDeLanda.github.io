@@ -1246,43 +1246,44 @@ function oSetAParameter_CLIENT(oParameters) {
 function superencrypt(aVO, sPassword) {
   // domLoadScripts_Link("https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js")
   // copy(superencrypt([["a", "b", "c"],["d - 1", "e - 2", "f - 3"]], "hint"))
-  if (aVO) {} else { 
-    console.log(`copy(superencrypt([["a", "b", "c"],["d - 1", "e - 2", "f - 3"]], "hint"))`);
-    return "";
-  }
-  if (typeof(aVO)=="string") {
-    aVO = [[aVO]];
-  }
-  aVO = aVO.map((o,i)=>{
-      return o.map(oo=> {
-        if (true) {
-        // if (i>0) {
-          if (sPassword) {} else {sPassword="AES.encrypt"}
-          if (sPassword=="superencode" || sPassword=="encode") {
-            return superencode(oo);
-          // } else if (sPassword=="hint") {
-          //  return "";
-          } else {
-            return CryptoJS.AES.encrypt(superencode(oo), sPassword).toString();        
-          }    
-        //return e;
-        } else {
-            return oo;
-        }
-  }) });
-  if (sPassword =="hint") {
-    return `${JSON.stringify(aVO)}.map(o=>o.map(oo=>{ return decodeURIComponent( 
-CryptoJS.AES.decrypt(oo, "hint").toString(CryptoJS.enc.Utf8)
-) }) )`;
-  } else {
-    return aVO;
+  try {
+      if (aVO) {} else { 
+        console.log(`copy(superencrypt([["a", "b", "c"],["d - 1", "e - 2", "f - 3"]], "hint"))`);
+        return "";
+      }
+      if (typeof(aVO)=="string") {
+        aVO = [[aVO]];
+      }
+      aVO = aVO.map((o,i)=>{
+          return o.map(oo=> {
+            if (true) {
+            // if (i>0) {
+              if (sPassword) {} else {sPassword="AES.encrypt"}
+              if (sPassword=="superencode" || sPassword=="encode") {
+                return superencode(oo);
+              // } else if (sPassword=="hint") {
+              //  return "";
+              } else {
+                return CryptoJS.AES.encrypt(superencode(oo), sPassword).toString();        
+              }    
+            //return e;
+            } else {
+                return oo;
+            }
+      }) });
+      if (sPassword =="hint") {
+        return `${JSON.stringify(aVO)}.map(o=>o.map(oo=>{ return decodeURIComponent( 
+    CryptoJS.AES.decrypt(oo, "hint").toString(CryptoJS.enc.Utf8)
+    ) }) )`;
+      } else {
+        return aVO;
+      }
+  } catch(e) {
+    sError = `domLoadScripts_Link("https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js")`;
+    console.log("LOAD CRYPTOJS:\n\n" + sError);
+    return sError;
   }
 }
-function superdecrypt(aVO, sPassword) {
-    return `aVO.map(o=>o.map(oo=>{ return decodeURIComponent( 
-CryptoJS.AES.decrypt(oo, "hint").toString(CryptoJS.enc.Utf8)}`
-}
-
 
 /* domDATAHTMLscripts (vs dataHTMLscripts.js) => datahtmlscripts.js => isomorphic, vanilla, es5-ish datascripts that are related to HTML and datascripts, without needing libraries (the dom, jquery, or lodash */
 // refactor this whole solution into dataDATAHTMLscripts?  or dataHTMLscripts?  why dom?  because es5?
