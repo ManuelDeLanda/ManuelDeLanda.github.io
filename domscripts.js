@@ -911,9 +911,12 @@ function SubmitSuperNinjaForm(oTypeURLPayload, sTarget) {
     // SubmitSuperNinjaForm("");
     // SubmitSuperNinjaForm({url: "", payload: "whatever"});
     // SubmitSuperNinjaForm({url: "", type: "POST", payload: {"wat": "whatever"}},  );
+    // SubmitSuperNinjaForm({url: "", method: "POST", payload: {"wat": "whatever"}},  );
     superencode = function (str){  return encodeURIComponent(str).replace(/'/g, "%27"); }
     // BEGIN fuzzy parameters: assume a string oTypeURLPayload is a URL, and assume a string oTypeURLPayload.payload is an object with a .payload key
-    if (typeof(oTypeURLPayload) == "string") { oTypeURLPayload = { url: oTypeURLPayload, type: "GET" }; };
+    if (typeof(oTypeURLPayload) == "string") { oTypeURLPayload = { url: oTypeURLPayload, method: "GET" }; };
+    if (oTypeURLPayload.type) { oTypeURLPayload.method = oTypeURLPayload.type; }; oTypeURLPayload.method = oTypeURLPayload.method.toUpperCase();
+    if (oTypeURLPayload.method != "GET" || oTypeURLPayload.method != "POST") { oTypeURLPayload.method = "GET" }; // research other browser-based methods?  UPSERT???
     if (typeof(oTypeURLPayload.payload)=="string") {
         oTypeURLPayload.payload = { payload: oTypeURLPayload.payload };
     } else {} // it's a good .payload.
@@ -931,7 +934,7 @@ function SubmitSuperNinjaForm(oTypeURLPayload, sTarget) {
     // if (sTarget) { dom_form.setAttribute("target",sTarget); }
     dom_form.name = 'superninjaform';
     dom_form.id = 'superninjaform';
-    dom_form.method = oTypeURLPayload.type;
+    dom_form.method = oTypeURLPayload.method;
     dom_form.action = ((oTypeURLPayload.url != undefined) ? oTypeURLPayload.url : window.location.href.split("?")[0] ); 
     document.body.appendChild(dom_form);
     // BEGIN bring URL parameters into payload (and bring payload into URL parameters or nah?)
