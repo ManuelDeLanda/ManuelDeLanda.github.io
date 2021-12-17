@@ -1252,7 +1252,7 @@ function superencrypt(aVO, sPassword) {
         return "";
       }
       if (typeof(aVO)=="string") {
-        aVO = [[aVO]];
+        aVO = [[aVO]]; // Arrayify? or Array2Dify?
       }
       aVO = aVO.map((o,i)=>{
           return o.map(oo=> {
@@ -1263,6 +1263,16 @@ function superencrypt(aVO, sPassword) {
                 return superencode(oo);
               // } else if (sPassword=="hint") {
               //  return "";
+              } else if (sPassword=="btoa" || sPassword=="base64") {
+                try {
+                    return btoa(oo);
+                } catch(e) {
+                    try {
+                        return Utilities.base64Encode(oo);
+                    } catch(e) {
+                        return "unknown system/engine without base64Encode...";
+                    }
+                }
               } else {
                 return CryptoJS.AES.encrypt(superencode(oo), sPassword).toString();        
               }    
@@ -1283,10 +1293,39 @@ function superencrypt(aVO, sPassword) {
   }
 }
 
-function superdecrypt() {
-    sError = `domLoadScripts_Link("https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js")`;
-    console.log("LOAD CRYPTOJS:\n\n" + sError);
-    return sError;
+function superdecrypt(aVO, sPassword) {
+    if (typeof(aVO)=="string") {
+        aVO = [[aVO]]; // Arrayify? or Array2Dify?
+    }
+
+    if (sPassword) {
+        if (sPassword=="encode"||sPassword=="superencode") {
+            return aVO.map(o=>o.map(oo=>{ return decodeURIComponent( oo )}));
+        } else if (sPassword=="btoa"||sPassword=="base64") {
+            return aVO.map(o=>o.map(oo=>{ return atob( oo )}));
+        } else {
+            return aVO.map(o=>o.map(oo=>{ return decodeURIComponent( CryptoJS.AES.decrypt(oo, sPassword).toString(CryptoJS.enc.Utf8))}))
+        }
+    } else {
+        sError = `
+    domLoadScripts_Link("https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js")
+
+                copy(superencrypt([["a", "b", "c"],["d - 1", "e - 2", "f - 3"]], "hint"));
+
+                aVO.map(o=>o.map(oo=>{ return decodeURIComponent( CryptoJS.AES.decrypt(oo, "hint").toString(CryptoJS.enc.Utf8))}))
+                aVO.map(o=>o.map(oo=>{ return decodeURIComponent( oo )}));
+                aVO.map(o=>o.map(oo=>{ return atob( oo )}));
+
+                superdecrypt(superencrypt([["a", "b", "c"],["d - 1", "e - 2", "f - 3"]], "password"), "password")
+                superdecrypt(superencrypt([["a", "b", "c"],["d - 1", "e - 2", "f - 3"]], "btoa"), "btoa")
+                superdecrypt(superencrypt([["a", "b", "c"],["d - 1", "e - 2", "f - 3"]], "encode"), "encode")
+
+
+    `;
+        console.log("LOAD CRYPTOJS:\n\n" + sError);
+        return sError;
+    }
+
 }
 
 /* domDATAHTMLscripts (vs dataHTMLscripts.js) => datahtmlscripts.js => isomorphic, vanilla, es5-ish datascripts that are related to HTML and datascripts, without needing libraries (the dom, jquery, or lodash */
