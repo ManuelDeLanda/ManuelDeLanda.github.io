@@ -7,7 +7,8 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
   // vanilla-fy the jQuery() functions (eg $) out of this domscripts.js solution
   // replace Array.prototype.slice.call and Array.from with $$$a?
   // DONE - refactor: create $$$a(el) (which is the equivalent of Array.prototype.call($$$(el)) )?
-  // refactor: convertRecordsOrientedArrayToHTMLTable(), convertValuesOrientedToHTMLTable(), convertRecordsOrientedArrayToExcelXML(), convertaRecordsOrientedToInputBoxesForm(), GSDS_disjointedRangeToAVO(), GSDS_disjointedRangeToArray(), toHTMLSelect() into datahtmlscripts.js?
+  // DONE - refactor: convertRecordsOrientedArrayToHTMLTable(), convertValuesOrientedToHTMLTable(), convertRecordsOrientedArrayToExcelXML(), convertaRecordsOrientedToInputBoxesForm(), oHTMLSelect() into DATASCRIPTS
+  // DONE - GSDS_disjointedRangeToAVO(), GSDS_disjointedRangeToArray(), Into datahtmlscripts.js?
   // cellToColumn("C10") vs columnToLetter(convertCellToArray("C10")[0])?
   // function consolelog(sReturn) {   setTimeout (console.log.bind(console, sReturn)); }
   // function dumpCSSText(element){ var s = ''; var o = getComputedStyle(element); for(var i = 0; i < o.length; i++){ s+=o[i] + ':' + o.getPropertyValue(o[i])+';'; } return s; }
