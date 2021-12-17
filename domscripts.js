@@ -1267,11 +1267,12 @@ function superencrypt(aVO, sPassword) {
                 try {
                     return btoa(oo);
                 } catch(e) {
+                    return "unknown system/engine without base64Encode...";
+                    /*
                     try {
                         return Utilities.base64Encode(oo);
                     } catch(e) {
-                        return "unknown system/engine without base64Encode...";
-                    }
+                    } */
                 }
               } else {
                 return CryptoJS.AES.encrypt(superencode(oo), sPassword).toString();        
