@@ -78,7 +78,7 @@ ObjectValuesRegex = function(oObject, rRegexKey) {
     })
 }
 function ObjectValueRegex(oObject,rRegexKey) { return ObjectValuesRegex(oObject,rRegexKey)[0]; }
-
+Arrayify = function(aArray) { if (Array.isArray(aArray)) {} else { aArray = [aArray]; } }
 toVO = function(aInputArray, aColumns) {
     if (isVO(aInputArray)) { return aInputArray; }
     // REFACTOR: replace aArrayOfAllPossibleColumnTitles now that there's a normalizeRecordsOriented function?
