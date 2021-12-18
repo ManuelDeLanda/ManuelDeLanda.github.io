@@ -443,41 +443,6 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
 
 } catch(e) { console.log("ERROR in domscripts.js " - e) }
 
-// domscripts.serversafe - moved to datahtmlscripts.js since they don't need the dom
-
-/* UNIT TESTS
-oSmartRange = GSDS_getOSR("table!D1:*");
-oSmartRange = GSDS_getOSR("table", "D1:*");
-oSmartRange = GSDS_getOSR($$$("table")[1], "D1:*");
-GSDS_getTDRANGE("table!D1:*")
-GSDS_setOSR($$$("table")[0])
-GSDS_inputifyTDRANGE("table!A1:*")
-GSDS_evalifyTDRANGE("table!A1:*")
-GSDS_disjointedRangeToAVO("table!D1:*,A3"); //
-GSDS_disjointedRangeToAVOdomTDs("table!D1:*,A3"); // 
-GSDS_disjointedRangeToAVOdomTDs("D1:*;A1"); // 
-GSDS_disjointedRangeToAVOdomTDs("A1:A*"); // 
-GSDS_disjointedRangeToAVOdomTDs("table!D1:*"); // 
-GSDS_disjointedRangeToAVOdomTDs("A3:G10");
-GSDS_disjointedRangeToAVO("A2:B4;D4,E5:F5;H1-H9");
-GSDS_getTDRANGE("table!D6")[0][0].dataset.gseval = superencode("=A1:A2");
-GSDS_evalifyTDRANGE("table!D6");
-GSDS_eval(decodeURIComponent(sGSEVAL));
-GSDS_disjointedRangeToAVO("A2;A2:B4;D4,E5:F5;G1:H2,H1-H9,L8,:B2, G8")
-*/
-// GSDS_inputifyTDRANGE("table!A1:*", undefined, "textarea")
-//GSDS_inputifyTDRANGE("table!A1:*", undefined, "textarea");
-//GSDS_evalifyTDRANGE("table!A1:*")
-// GSDS_inputifyTDRANGE("table!A1:*", undefined, "button")
-// GSDS_getTDRANGE("A1:B4");
-// GSDS_inputifyTDRANGE("A1:B4");
-// domGetTDTextOrValue(domDebuggingElement)
-// domGetTDTextOrValue(GSDS_CELL("A1"))
-// GSDS_inputifyTDRANGE("A1:B2", undefined, "input");
-// GSDS_inputifyTDRANGE("A3:B3", undefined, "textarea");
-// GSDS_GSDSifyTDRANGE("A1:*", undefined, "textarea", undefined, undefined, "=89");
-// GSDS_RANGE1D("A1:*").forEach(function(domTD, iIn) { ((iIn%2==0) ? sType = "textarea" : sType = "input"); GSDS_GSDSifyTDRANGE(domTD, undefined, sType); });).then
-
 // domGSDSscripts => NEW googlesheets scripts
 // GSDS_CELL, GSDS_RANGE1D, GSDS_RANGE2D, GSDS_CELL_value, GSDS_CELL_valueParseInt, GSDS_RANGE1D_values, GSDS_RANGE2D_values
 // GSDS_getOSR, GSDS_distinguishDomTableAndA1Notation, GSDS_domReplaceAsterisksInA1Notation, GSDS_inputifyTDRANGE, GSDS_eval, GSDS_domTDToA1Notation, GSDS_evalifyTDRANGE
@@ -1329,3 +1294,39 @@ function superdecrypt(aVO, sPassword) {
     }
 
 }
+
+// domUNITTESTS
+// domscripts.serversafe - moved to datahtmlscripts.js since they don't need the dom
+
+/* UNIT TESTS
+oSmartRange = GSDS_getOSR("table!D1:*");
+oSmartRange = GSDS_getOSR("table", "D1:*");
+oSmartRange = GSDS_getOSR($$$("table")[1], "D1:*");
+GSDS_getTDRANGE("table!D1:*")
+GSDS_setOSR($$$("table")[0])
+GSDS_inputifyTDRANGE("table!A1:*")
+GSDS_evalifyTDRANGE("table!A1:*")
+GSDS_disjointedRangeToAVO("table!D1:*,A3"); //
+GSDS_disjointedRangeToAVOdomTDs("table!D1:*,A3"); // 
+GSDS_disjointedRangeToAVOdomTDs("D1:*;A1"); // 
+GSDS_disjointedRangeToAVOdomTDs("A1:A*"); // 
+GSDS_disjointedRangeToAVOdomTDs("table!D1:*"); // 
+GSDS_disjointedRangeToAVOdomTDs("A3:G10");
+GSDS_disjointedRangeToAVO("A2:B4;D4,E5:F5;H1-H9");
+GSDS_getTDRANGE("table!D6")[0][0].dataset.gseval = superencode("=A1:A2");
+GSDS_evalifyTDRANGE("table!D6");
+GSDS_eval(decodeURIComponent(sGSEVAL));
+GSDS_disjointedRangeToAVO("A2;A2:B4;D4,E5:F5;G1:H2,H1-H9,L8,:B2, G8")
+*/
+// GSDS_inputifyTDRANGE("table!A1:*", undefined, "textarea")
+//GSDS_inputifyTDRANGE("table!A1:*", undefined, "textarea");
+//GSDS_evalifyTDRANGE("table!A1:*")
+// GSDS_inputifyTDRANGE("table!A1:*", undefined, "button")
+// GSDS_getTDRANGE("A1:B4");
+// GSDS_inputifyTDRANGE("A1:B4");
+// domGetTDTextOrValue(domDebuggingElement)
+// domGetTDTextOrValue(GSDS_CELL("A1"))
+// GSDS_inputifyTDRANGE("A1:B2", undefined, "input");
+// GSDS_inputifyTDRANGE("A3:B3", undefined, "textarea");
+// GSDS_GSDSifyTDRANGE("A1:*", undefined, "textarea", undefined, undefined, "=89");
+// GSDS_RANGE1D("A1:*").forEach(function(domTD, iIn) { ((iIn%2==0) ? sType = "textarea" : sType = "input"); GSDS_GSDSifyTDRANGE(domTD, undefined, sType); });).then
