@@ -362,25 +362,6 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
       
     // END animate.css scripts
 
-// 
-    function addEL(oElements, sType, iIndex, fFunction) { // vs addEventListenerClickXYZ's o, i, f
-        if (fFunction) {} else { f = function() { alert("undefined ? and ?"); } }
-        if (typeof(oElements) == "string") { oElements = $$$a(oElements); }
-        if (Array.isArray(oElements)) { } else { oElements = [oElements]; }
-        oElements.forEach(oElement=>{
-            oElement.addEventListener(sType, function (evt) {
-                if (evt.detail === iIndex) { fFunction(); }
-            })
-        })
-    }
-    function addEventListenerClickXYZ(o,i,f) { // vs addEL's o, t, i, f
-        // defaults
-        if (o) {} else { o = "body"; }
-        if (i) {} else { i=2; }
-        addEL(o, "click", i, f);
-    }
-
-                                    
     // random vanilla DOM manipulation scripts
     // // replace body tag's innerHTML with div
     // document.getElementsByTagName('body')[0].innerHTML = "<div id='my'>blahHTML<div>"
