@@ -1318,12 +1318,170 @@ GSDS_disjointedRangeToAVO("A2;A2:B4;D4,E5:F5;G1:H2,H1-H9,L8,:B2, G8")
 // GSDS_GSDSifyTDRANGE("A1:*", undefined, "textarea", undefined, undefined, "=89");
 // GSDS_RANGE1D("A1:*").forEach(function(domTD, iIn) { ((iIn%2==0) ? sType = "textarea" : sType = "input"); GSDS_GSDSifyTDRANGE(domTD, undefined, sType); });).then
 
+// aGet2DIslands - es5 non-minified version
+function aGet2DIslands(e) {
+
+    function _toConsumableArray(arr) {
+        return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
+    }
+
+    function _nonIterableSpread() {
+        throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+    }
+
+    function _iterableToArray(iter) {
+        if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
+    }
+
+    function _arrayWithoutHoles(arr) {
+        if (Array.isArray(arr)) return _arrayLikeToArray(arr);
+    }
+
+    function _slicedToArray(arr, i) {
+        return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
+    }
+
+    function _nonIterableRest() {
+        throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+    }
+
+    function _unsupportedIterableToArray(o, minLen) {
+        if (!o) return;
+        if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+        var n = Object.prototype.toString.call(o).slice(8, -1);
+        if (n === "Object" && o.constructor) n = o.constructor.name;
+        if (n === "Map" || n === "Set") return Array.from(o);
+        if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+    }
+
+    function _arrayLikeToArray(arr, len) {
+        if (len == null || len > arr.length) len = arr.length;
+        for (var i = 0, arr2 = new Array(len); i < len; i++) {
+            arr2[i] = arr[i];
+        }
+        return arr2;
+    }
+
+    function _iterableToArrayLimit(arr, i) {
+        var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
+        if (_i == null) return;
+        var _arr = [];
+        var _n = true;
+        var _d = false;
+        var _s, _e;
+        try {
+            for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
+                _arr.push(_s.value);
+                if (i && _arr.length === i) break;
+            }
+        } catch (err) {
+            _d = true;
+            _e = err;
+        } finally {
+            try {
+                if (!_n && _i["return"] != null) _i["return"]();
+            } finally {
+                if (_d) throw _e;
+            }
+        }
+        return _arr;
+    }
+
+    function _arrayWithHoles(arr) {
+        if (Array.isArray(arr)) return arr;
+    }
+
+
+
+    var m = function(e, m) {
+        var n = {};
+        return function() {
+            for (var _len = arguments.length, a = new Array(_len), _key = 0; _key < _len; _key++) {
+                a[_key] = arguments[_key];
+            }
+
+            var t = m(a);
+            return n[t] || (n[t] = e.apply(void 0, a)), n[t];
+        };
+    }(function(e, m) {
+        return {
+            r: e,
+            c: m
+        };
+    }, function(_ref) {
+        var _ref2 = _slicedToArray(_ref, 2),
+            e = _ref2[0],
+            m = _ref2[1];
+
+        return "".concat(e, "_").concat(m);
+    });
+
+    m.neighbors = function(_ref3) {
+        var e = _ref3.r,
+            n = _ref3.c;
+        return [m(e, n + 1), m(e + 1, n), m(e, n - 1), m(e - 1, n)];
+    };
+
+    var n = function n(e) {
+        return {
+            minR: e.r,
+            maxR: e.r + 1,
+            minC: e.c,
+            maxC: e.c + 1,
+            cells: new Set([e])
+        };
+    };
+
+    n.merge = function(e, m) {
+        return {
+            minR: Math.min(e.minR, m.minR),
+            maxR: Math.max(e.maxR, m.maxR),
+            minC: Math.min(e.minC, m.minC),
+            maxC: Math.max(e.maxC, m.maxC),
+            cells: new Set([].concat(_toConsumableArray(e.cells), _toConsumableArray(m.cells)))
+        };
+    }, n.extractFromGrid = function(e) {
+        return function(_ref4) {
+            var m = _ref4.minR,
+                n = _ref4.maxR,
+                a = _ref4.minC,
+                t = _ref4.maxC;
+            return e.slice(m, n).map(function(e) {
+                return e.slice(a, t);
+            });
+        };
+    };
+    var a = e,
+        t = a.flatMap(function(e, n) {
+            return e.map(function(e, a) {
+                return m(n, a);
+            });
+        }),
+        c = new Map();
+    return t.forEach(function(e) {
+        if ("" !== a[e.r][e.c]) {
+            var _a = m.neighbors(e).filter(function(e) {
+                return c.has(e);
+            }).map(function(e) {
+                return c.get(e);
+            }).reduce(n.merge, n(e));
+
+            _a.cells.forEach(function(e) {
+                c.set(e, _a);
+            });
+        }
+    }), _toConsumableArray(new Set(c.values())).map(n.extractFromGrid(a));
+}
+aGet2DIslands.sample = function() {
+    return decodeURIComponent("%0A%0Avar%20aVO%20%3D%20%5B%0A%20%20%5B%22col1%22%2C%20%22col2%22%2C%20%22col3%22%2C%20%22col4%22%2C%20%22col5%22%2C%20%22col6%22%2C%20%22col7%22%2C%20%22col8%22%2C%20%22col9%22%5D%2C%0A%20%20%5B%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%5D%2C%0A%20%20%5B1%2C%202%2C%203%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%5D%2C%0A%20%20%5B4%2C%205%2C%206%2C%20%22%22%2C%20%22%22%2C%20%22a%22%2C%20%22b%22%2C%20%22%22%2C%20%22%22%5D%2C%0A%20%20%5B7%2C%208%2C%209%2C%20%22%22%2C%20%22%22%2C%20%22c%22%2C%20%22d%22%2C%20%22%22%2C%201%5D%2C%0A%20%20%5B%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%202%5D%2C%0A%20%20%5B%22%22%2C%20%22%22%2C%20%22z%22%2C%20%22y%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%203%5D%2C%0A%20%20%5B%22%22%2C%20%22x%22%2C%20%22w%22%2C%20%22v%22%2C%20%22%22%2C%207%2C%207%2C%207%2C%20%22%22%5D%2C%0A%20%20%5B%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%5D%2C%0A%20%20%5B%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%5D%2C%0A%20%20%5B%22%22%2C%20%22A1%22%2C%20%22B1%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%5D%2C%0A%20%20%5B%22%22%2C%20%22A2%22%2C%20%22B2%22%2C%20%22C2%22%2C%20%22%22%2C%20%22%22%2C%20%22HELLO%22%2C%20%22%22%2C%20%22%22%5D%0A%5D%3B%0AaGet2DIslands(aVO)%3B%0A%0A");
+}
+
 // domDATAHTML.es6.scripts
 /* domDATAHTMLscripts (superset of dataHTMLscripts.js) => datahtmlscripts.js => isomorphic, vanilla, es5-ish datascripts that are related to HTML and datascripts, without needing libraries (the dom, jquery, or lodash */
 // refactor this whole solution into dataDATAHTMLscripts?  or dataHTMLscripts?  why dom?  because es5?
 // note hyperlink() is both html and gs formula related? more functions similar to this concept"?
 // HTMLLibrarify, HTMLInjecify, HTMLDOMContentLoadedLibrarify, HTMLDOMContentLoadedLibrarifySample, HTMLDOMContentLoadedify, getHelpfulDOMScripts
-// aGet2DIslands, HTMLify, GSDS_disjointedRangeToAVO, GSDS_disjointedRangeToArray
+// HTMLify, GSDS_disjointedRangeToAVO, GSDS_disjointedRangeToArray
 // toHTMLTable, returnIDAndOrClasses, toHTMLSelect, hyperlink, convertRecordsOrientedArrayToExcelXML, convertValuesOrientedArrayToHTMLTable, convertRecordsOrientedArrayToHTMLTable
 
 // server and client-side friendly vanilla es5-ish data scripts that are related to HTML and datascripts, without needing librarys (the dom, jquery, or lodash)
@@ -1381,7 +1539,6 @@ function HTMLDOMContentLoadedify(sScript) {
 function getHelpfulDOMScripts() { // note the 5 dollar signs instead of 3...seems like dollar signs vanish when used in a match function   
         return decodeURIComponent("%0A%3Cscript%3E%0A%20%20%20%20var%20%24%24%24%24%24%20%3D%20document.querySelectorAll.bind(document)%3B%0A%20%20%20%20HTMLElement.prototype.%24%24%24%24%24%20%3D%20function%20(element)%20%7B%20return%20this.querySelectorAll(element)%3B%20%7D%3B%0A%20%20%20%20domAppendStyle%20%3D%20function(e)%7Bconst%20t%3Ddocument.createElement(%22style%22)%3Bt.textContent%3De%2Cdocument.head.append(t)%7D%3B%20addStyle%20%3D%20domAppendStyle%3B%0A%20%20%20%20domAppendToHead%20%3D%20function(s)%7B%20%24%24%24%24%24(%27head%27)%5B0%5D.append(s)%3B%20%7D%0A%20%20%20%20domLoadScripts%20%3D%20function(e%2Cn)%7B!function%20t()%7Bvar%20a%2Co%2Cc%3B0!%3De.length%3F(a%3De.shift()%2Co%3Dt%2C(c%3Ddocument.createElement(%22script%22)).src%3Da%2Cc.onload%3Dc.onreadystatechange%3Dfunction()%7Bc.onreadystatechange%3Dc.onload%3Dnull%2Co()%7D%2C(document.getElementsByTagName(%22head%22)%5B0%5D%7C%7Cdocument.body).appendChild(c))%3An%26%26n()%7D()%7D%0A%3C%2Fscript%3E");
 }
-function aGet2DIslands(r){function n(r){return function(r){if(Array.isArray(r))return C(r)}(r)||function(r){if("undefined"!=typeof Symbol&&null!=r[Symbol.iterator]||null!=r["@@iterator"])return Array.from(r)}(r)||e(r)||function(){throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}()}function t(r,n){return function(r){if(Array.isArray(r))return r}(r)||function(r,n){var t=null==r?null:"undefined"!=typeof Symbol&&r[Symbol.iterator]||r["@@iterator"];if(null==t)return;var e,C,a=[],o=!0,i=!1;try{for(t=t.call(r);!(o=(e=t.next()).done)&&(a.push(e.value),!n||a.length!==n);o=!0);}catch(r){i=!0,C=r}finally{try{o||null==t.return||t.return()}finally{if(i)throw C}}return a}(r,n)||e(r,n)||function(){throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}()}function e(r,n){if(r){if("string"==typeof r)return C(r,n);var t=Object.prototype.toString.call(r).slice(8,-1);return"Object"===t&&r.constructor&&(t=r.constructor.name),"Map"===t||"Set"===t?Array.from(r):"Arguments"===t||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t)?C(r,n):void 0}}function C(r,n){(null==n||n>r.length)&&(n=r.length);for(var t=0,e=new Array(n);t<n;t++)e[t]=r[t];return e}var a=function(r,n){var e={};return function(){for(var r=arguments.length,n=new Array(r),C=0;C<r;C++)n[C]=arguments[C];var a=function(r){var n=t(r,2),e=n[0],C=n[1];return"".concat(e,"_").concat(C)}(n);return e[a]||(e[a]=function(r,n){return{r:r,c:n}}.apply(void 0,n)),e[a]}}();a.neighbors=function(r){var n=r.r,t=r.c;return[a(n,t+1),a(n+1,t),a(n,t-1),a(n-1,t)]};var o=function(r){return{minR:r.r,maxR:r.r+1,minC:r.c,maxC:r.c+1,cells:new Set([r])}};o.merge=function(r,t){return{minR:Math.min(r.minR,t.minR),maxR:Math.max(r.maxR,t.maxR),minC:Math.min(r.minC,t.minC),maxC:Math.max(r.maxC,t.maxC),cells:new Set([].concat(n(r.cells),n(t.cells)))}},o.extractFromGrid=function(r){return function(n){var t=n.minR,e=n.maxR,C=n.minC,a=n.maxC;return r.slice(t,e).map(function(r){return r.slice(C,a)})}};var i=r,c=i.flatMap(function(r,n){return r.map(function(r,t){return a(n,t)})}),u=new Map;return c.forEach(function(r){if(""!==i[r.r][r.c]){var n=a.neighbors(r).filter(function(r){return u.has(r)}).map(function(r){return u.get(r)}).reduce(o.merge,o(r));n.cells.forEach(function(r){u.set(r,n)})}}),n(new Set(u.values())).map(o.extractFromGrid(i))}aGet2DIslands.sample=function(){return decodeURIComponent("%0A%0Avar%20aVO%20%3D%20%5B%0A%20%20%5B%22col1%22%2C%20%22col2%22%2C%20%22col3%22%2C%20%22col4%22%2C%20%22col5%22%2C%20%22col6%22%2C%20%22col7%22%2C%20%22col8%22%2C%20%22col9%22%5D%2C%0A%20%20%5B%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%5D%2C%0A%20%20%5B1%2C%202%2C%203%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%5D%2C%0A%20%20%5B4%2C%205%2C%206%2C%20%22%22%2C%20%22%22%2C%20%22a%22%2C%20%22b%22%2C%20%22%22%2C%20%22%22%5D%2C%0A%20%20%5B7%2C%208%2C%209%2C%20%22%22%2C%20%22%22%2C%20%22c%22%2C%20%22d%22%2C%20%22%22%2C%201%5D%2C%0A%20%20%5B%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%202%5D%2C%0A%20%20%5B%22%22%2C%20%22%22%2C%20%22z%22%2C%20%22y%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%203%5D%2C%0A%20%20%5B%22%22%2C%20%22x%22%2C%20%22w%22%2C%20%22v%22%2C%20%22%22%2C%207%2C%207%2C%207%2C%20%22%22%5D%2C%0A%20%20%5B%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%5D%2C%0A%20%20%5B%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%5D%2C%0A%20%20%5B%22%22%2C%20%22A1%22%2C%20%22B1%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%5D%2C%0A%20%20%5B%22%22%2C%20%22A2%22%2C%20%22B2%22%2C%20%22C2%22%2C%20%22%22%2C%20%22%22%2C%20%22HELLO%22%2C%20%22%22%2C%20%22%22%5D%0A%5D%3B%0AaGet2DIslands(aVO)%3B%0A%0A")};
 
 function HTMLify(aCQPRecordsOriented, bSansHTMLTag) {
   // context, label, server, server-condition, head, head-script/script/js, DOMContentLoaded/onload, html, body, css/style, and headlist/library
