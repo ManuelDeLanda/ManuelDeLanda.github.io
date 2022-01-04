@@ -1688,7 +1688,7 @@ GSDS_disjointedRangeToAVO = function(sA1Notation) { // this function is NOT FOR 
 GSDS_disjointedRangeToAVO.sample = function() { return 'GSDS_disjointedRangeToAVO("-A2;A2:B4; D4,E5:F5;G1:H2,H1-H9,L8,:B2, G8")' }
 // REFACTOR - I don't think flat() is es5-friendly but let it through for now
 // GSDS_disjointedRangeToArray = function(sA1Notation) { return GSDS_disjointedRangeToAVO(sA1Notation).flat().filter(function(oEl) { return oEl; }) }
-GSDS_disjointedRangeToArray = function(sA1Notation) { return flat(GSDS_disjointedRangeToAVO(sA1Notation)).filter(function(oEl) { return oEl; }) }
+GSDS_disjointedRangeToArray = function(sA1Notation) { return flatten(GSDS_disjointedRangeToAVO(sA1Notation)).filter(function(oEl) { return oEl; }) }
 
 function hyperlink(sURL, sName, bNoTarget) {
    if (sName) {} else {sName = "link"}
