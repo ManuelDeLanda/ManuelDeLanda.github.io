@@ -1556,13 +1556,13 @@ convertRecordsOrientedArrayToHTMLTable = function(aRecordsOriented, aColumns, sT
         }, "") + "</tr>";
         return agg;
     }, 
-        "<tr>" + aColumns.reduce(function(agg001, oElement001, iIndex001) {
+        "<thead><tr>" + aColumns.reduce(function(agg001, oElement001, iIndex001) {
             var sCell = columnToLetter(iIndex001+1) + "1";
             var sClasses = "gsws gscell gsws_" + sTableID + " " + sCell + " row1 column" + columnToLetter(iIndex001+1) + " cellcolumn" + iIndex001;
             // var sClasses = "gsws row1 column" + columnToLetter(iIndex001+1) + " cellcolumn" + iIndex001;
             return agg001 + "<th title='" + sCell + "' class='" + sClasses + "'>" + oElement001 + "</th>"; // style='border-right: 1px solid black; border-left: 1px solid black;'
-        }, "") + "</tr>"
-    ) + "</table>";
+        }, "") + "</tr></thead><tbody>"
+    ) + "</tbody></table>";
         return sHTMLTable;
 }; convertRecordsOrientedToHTMLTable = function(aRO, aColumns, sTableIDOrClasses) { return convertRecordsOrientedArrayToHTMLTable(aRO, aColumns, sTableIDOrClasses) }
 
@@ -1580,13 +1580,34 @@ convertValuesOrientedArrayToHTMLTable = function(aValuesOriented, aColumns, sTab
     // gsws gsws_SDJOWholeForm A4 gscell columnA row4
     sHTMLTable = "<table " + sTableID + " class='" + sTableClasses + "'" + " style='margin: 0 auto; text-align: center;'>" + aValuesOriented.reduce(function(agg, oElement, iIndex) {
     // sHTMLTable = "<table id='" + sTableID + "' class='convertValuesOrientedToHTMLTable gsws gsws_" + sTableID + "' style='margin: 0 auto; text-align: center;'>" + aValuesOriented.reduce(function(agg, oElement, iIndex) {
-        agg = agg + "<tr>" + oElement.reduce(function(agg000, oElement000, iIndex000) {
+                if (iIndex==0) {
+          sTHEADBODYBEG = "<thead>";
+          sTHEADBODYEND = "</thead>";
+          sTDTH = "th";
+        } else {
+          sTHEADBODYBEG = "";
+          sTHEADBODYEND = "";
+          sTDTH = "td";
+        }
+              if (iIndex==1) {
+          sTHEADBODYBEG = "<tbody>";
+          if (aValuesOriented.length != 2) {
+            sTHEADBODYEND = "";
+          }
+        }
+              if (iIndex==aValuesOriented.length-1 && iIndex!=0) {
+          if (aValuesOriented.length != 2) {
+            sTHEADBODYBEG = "";
+          }
+          sTHEADBODYEND = "</tbody>";          
+        }
+              agg = agg + sTHEADBODYBEG + "<tr>" + oElement.reduce(function(agg000, oElement000, iIndex000) {
             //console.log(oElement);
             var sCell = columnToLetter(iIndex000+1) + (iIndex+1);
             var sClasses = "gsws gscell gsws_" + sTableID + " " + sCell + " row" + (iIndex+1) + " column" + columnToLetter(iIndex000+1) + " cellcolumn" + iIndex000;
-            agg000 = agg000 + "<td title='" + sCell + "' class='" + sClasses + "'>" + oElement000 + "</td>"; // style='text-align:left'
+            agg000 = agg000 + "<" + sTDTH + " title='" + sCell + "' class='" + sClasses + "'>" + oElement000 + "</" + sTDTH + ">"; // style='text-align:left'
             return agg000;
-        }, "") + "</tr>";
+        }, "") + "</tr>" + sTHEADBODYEND;
         return agg;
     }, "") + "</table>";
     return sHTMLTable.replace(/ id=''/g, "");
