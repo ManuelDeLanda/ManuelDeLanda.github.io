@@ -1318,6 +1318,7 @@ GSDS_disjointedRangeToAVO("A2;A2:B4;D4,E5:F5;G1:H2,H1-H9,L8,:B2, G8")
 // GSDS_GSDSifyTDRANGE("A1:*", undefined, "textarea", undefined, undefined, "=89");
 // GSDS_RANGE1D("A1:*").forEach(function(domTD, iIn) { ((iIn%2==0) ? sType = "textarea" : sType = "input"); GSDS_GSDSifyTDRANGE(domTD, undefined, sType); });).then
 
+// domDATAHTML.es6.scripts
 /* domDATAHTMLscripts (superset of dataHTMLscripts.js) => datahtmlscripts.js => isomorphic, vanilla, es5-ish datascripts that are related to HTML and datascripts, without needing libraries (the dom, jquery, or lodash */
 // refactor this whole solution into dataDATAHTMLscripts?  or dataHTMLscripts?  why dom?  because es5?
 // note hyperlink() is both html and gs formula related? more functions similar to this concept"?
@@ -1486,6 +1487,7 @@ function HTMLify(aCQPRecordsOriented, bSansHTMLTag) {
 // HTMLify alone is itself just a pure vanilla datascript.js function
 // function CQPify(aCQPRecordsOriented) { return HTMLify(aCQPRecordsOriented) };
 
+// domDATAHTML.es5.scripts
 // THE FOLLOWING CODE USED TO BE "domscripts.serversafe", but now its just part of datahtmlscripts.js
 // pseudocode for new domscript function - refactor convertOSRToHTMLTable, convertRecordsOrientedArrayToHTMLTable, convertValuesOrientedToHTMLTable into one solution? 
 toHTMLSelect=function(aArray, sSelectIDOrClasses) { // refractor this to accept array of values vs array of objects (select id?)
@@ -1684,6 +1686,7 @@ GSDS_disjointedRangeToAVO = function(sA1Notation) { // this function is NOT FOR 
   }
 }
 GSDS_disjointedRangeToAVO.sample = function() { return 'GSDS_disjointedRangeToAVO("-A2;A2:B4; D4,E5:F5;G1:H2,H1-H9,L8,:B2, G8")' }
+// REFACTOR - I don't think flat() is es5-friendly but let it through for now
 GSDS_disjointedRangeToArray = function(sA1Notation) { return GSDS_disjointedRangeToAVO(sA1Notation).flat().filter(function(oEl) { return oEl; }) }
 
 function hyperlink(sURL, sName, bNoTarget) {
