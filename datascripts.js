@@ -1005,8 +1005,9 @@ superHtmlDecode = function(sString) {
   return sString;
 }
 
-/* dataHTMLscripts.js => (vs domDATAHTMLscripts.js - duplicated functions until I can figure out whether datascripts or domscripts are the true master?) */
-
+// domDATAHTML.es5.scripts
+// THE FOLLOWING CODE USED TO BE "domscripts.serversafe", but now its just part of datahtmlscripts.js
+// pseudocode for new domscript function - refactor convertOSRToHTMLTable, convertRecordsOrientedArrayToHTMLTable, convertValuesOrientedToHTMLTable into one solution? 
 toHTMLSelect=function(aArray, sSelectIDOrClasses) { // refractor this to accept array of values vs array of objects (select id?)
     var sSelectID = returnIDAndOrClasses(sSelectIDOrClasses).id;
     var sSelectClasses = (returnIDAndOrClasses(sSelectIDOrClasses).classes + " aArraySelect").trim();
@@ -1058,7 +1059,7 @@ returnIDAndOrClasses = function(sIDAndOrClasses) {
 convertRecordsOrientedArrayToHTMLTable = function(aRecordsOriented, aColumns, sTableIDOrClasses) {
     // sTableID = "#blah.testing_12.hello"; sTableID = "asdfasf";
     var sTableID = returnIDAndOrClasses(sTableIDOrClasses).id;
-    var sTableClasses = (returnIDAndOrClasses(sTableIDOrClasses).classes + " aRO aRecordsOriented convertRecordsOrientedArrayToHTMLTable convertRecordsOrientedToHTMLTable RecordsOrientedArrayToHTML _gsws gsws").trim();
+    var sTableClasses = (returnIDAndOrClasses(sTableIDOrClasses).classes + " aRO aRecordsOriented convertRecordsOrientedArrayToHTMLTable convertRecordsOrientedToHTMLTable _gsws gsws").trim();
     if (sTableID) { sTableID = " id='" + sTableID + "'"; }
     // convertRecordsOrientedArrayToHTMLTable(aRecordsOriented)
     function returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented) { return aRecordsOriented.reduce(function(agg, oElement313) { agg = agg.concat(Object.keys(oElement313)); agg = unique(agg); return agg; }, []) }
@@ -1075,19 +1076,19 @@ convertRecordsOrientedArrayToHTMLTable = function(aRecordsOriented, aColumns, sT
         }, "") + "</tr>";
         return agg;
     }, 
-        "<tr>" + aColumns.reduce(function(agg001, oElement001, iIndex001) {
+        "<thead><tr>" + aColumns.reduce(function(agg001, oElement001, iIndex001) {
             var sCell = columnToLetter(iIndex001+1) + "1";
             var sClasses = "gsws gscell gsws_" + sTableID + " " + sCell + " row1 column" + columnToLetter(iIndex001+1) + " cellcolumn" + iIndex001;
             // var sClasses = "gsws row1 column" + columnToLetter(iIndex001+1) + " cellcolumn" + iIndex001;
             return agg001 + "<th title='" + sCell + "' class='" + sClasses + "'>" + oElement001 + "</th>"; // style='border-right: 1px solid black; border-left: 1px solid black;'
-        }, "") + "</tr>"
-    ) + "</table>";
+        }, "") + "</tr></thead><tbody>"
+    ) + "</tbody></table>";
         return sHTMLTable;
 }; convertRecordsOrientedToHTMLTable = function(aRO, aColumns, sTableIDOrClasses) { return convertRecordsOrientedArrayToHTMLTable(aRO, aColumns, sTableIDOrClasses) }
 
 convertValuesOrientedArrayToHTMLTable = function(aValuesOriented, aColumns, sTableIDOrClasses) {
     var sTableID = returnIDAndOrClasses(sTableIDOrClasses).id;
-    var sTableClasses = (returnIDAndOrClasses(sTableIDOrClasses).classes + " aVO aValuesOriented convertValuesOrientedArrayToHTMLTable convertValuesOrientedToHTMLTable ValuesOrientedArrayToHTML _gsws gsws").trim();
+    var sTableClasses = (returnIDAndOrClasses(sTableIDOrClasses).classes + " aVO aValuesOriented convertValuesOrientedArrayToHTMLTable convertValuesOrientedToHTMLTable _gsws gsws").trim();
     if (sTableID) { sTableID = " id='" + sTableID + "'"; }
     /// convertValuesOrientedToHTMLTable([[1,2,3,4],[0,0,0,0],[9,9,9,9]], undefined, "gswsvo")
     function returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented) { return aRecordsOriented.reduce(function(agg, oElement313) { agg = agg.concat(Object.keys(oElement313)); agg = unique(agg); return agg; }, []) }
@@ -1099,13 +1100,34 @@ convertValuesOrientedArrayToHTMLTable = function(aValuesOriented, aColumns, sTab
     // gsws gsws_SDJOWholeForm A4 gscell columnA row4
     sHTMLTable = "<table " + sTableID + " class='" + sTableClasses + "'" + " style='margin: 0 auto; text-align: center;'>" + aValuesOriented.reduce(function(agg, oElement, iIndex) {
     // sHTMLTable = "<table id='" + sTableID + "' class='convertValuesOrientedToHTMLTable gsws gsws_" + sTableID + "' style='margin: 0 auto; text-align: center;'>" + aValuesOriented.reduce(function(agg, oElement, iIndex) {
-        agg = agg + "<tr>" + oElement.reduce(function(agg000, oElement000, iIndex000) {
+                if (iIndex==0) {
+          sTHEADBODYBEG = "<thead>";
+          sTHEADBODYEND = "</thead>";
+          sTDTH = "th";
+        } else {
+          sTHEADBODYBEG = "";
+          sTHEADBODYEND = "";
+          sTDTH = "td";
+        }
+              if (iIndex==1) {
+          sTHEADBODYBEG = "<tbody>";
+          if (aValuesOriented.length != 2) {
+            sTHEADBODYEND = "";
+          }
+        }
+              if (iIndex==aValuesOriented.length-1 && iIndex!=0) {
+          if (aValuesOriented.length != 2) {
+            sTHEADBODYBEG = "";
+          }
+          sTHEADBODYEND = "</tbody>";          
+        }
+              agg = agg + sTHEADBODYBEG + "<tr>" + oElement.reduce(function(agg000, oElement000, iIndex000) {
             //console.log(oElement);
             var sCell = columnToLetter(iIndex000+1) + (iIndex+1);
             var sClasses = "gsws gscell gsws_" + sTableID + " " + sCell + " row" + (iIndex+1) + " column" + columnToLetter(iIndex000+1) + " cellcolumn" + iIndex000;
-            agg000 = agg000 + "<td title='" + sCell + "' class='" + sClasses + "'>" + oElement000 + "</td>"; // style='text-align:left'
+            agg000 = agg000 + "<" + sTDTH + " title='" + sCell + "' class='" + sClasses + "'>" + oElement000 + "</" + sTDTH + ">"; // style='text-align:left'
             return agg000;
-        }, "") + "</tr>";
+        }, "") + "</tr>" + sTHEADBODYEND;
         return agg;
     }, "") + "</table>";
     return sHTMLTable.replace(/ id=''/g, "");
@@ -1145,4 +1167,51 @@ convertaRecordsOrientedToInputBoxesForm = function(oICIResponse, aFields) {
         }
         return agg009;
     }, "<table>") + "</table>"
+}
+GSDS_disjointedRangeToAVO = function(sA1Notation) { // this function is NOT FOR DOM, just string/data-only
+  if (sA1Notation.match(/\*/g)) { return "ERROR - ASTERISK functions are for domTable ONLY!" } else {
+    // this function single-handledly dismantles getGoogleSheetRange and getGoogleSheetRangeValuesOriented
+    sA1Notation = sA1Notation.replace(/\-/g, ":").replace(/,/g, ";"); // sanitize
+    a1DCells = unique(sA1Notation.split(";").map(function(oEl) {
+      oEl=oEl.trim();
+      if (oEl.match("^:")) { oEl = "A1" + oEl; }
+      if (oEl.match(":$")) { return "ERROR - ASTERISK IS ASSUMED HERE.";  }
+      if (oEl.indexOf("\:") > -1) { return getGoogleSheetRange(oEl); } else { return oEl; }
+    }).flat().sort(sortAlphaNum));
+    // determine lowest cell and highest cell
+    iHighestColumn = a1DCells.reduce(function(oAg, oEl) {
+      return ((oAg<letterToColumn(cellToColumn(oEl))) ? letterToColumn(cellToColumn(oEl)) : oAg) 
+    }, 0)
+    
+    iLowestColumn = a1DCells.reduce(function(oAg, oEl) {
+      return ((oAg>letterToColumn(cellToColumn(oEl))) ? letterToColumn(cellToColumn(oEl)) : oAg) 
+    }, iHighestColumn)
+    
+    iHighestRow = a1DCells.reduce(function(oAg, oEl) {
+      return ((oAg<parseInt(cellToRow(oEl))) ? parseInt(cellToRow(oEl)) : oAg) 
+    }, 0);
+    
+    iLowestRow = a1DCells.reduce(function(oAg, oEl) {
+      return ((oAg>parseInt(cellToRow(oEl))) ? parseInt(cellToRow(oEl)) : oAg) 
+    }, iHighestRow);
+    sExpansiverRange = columnToLetter(iLowestColumn) + iLowestRow + ":" + columnToLetter(iHighestColumn) + iHighestRow;
+    //console.log("Expansive Range - " + sExpansiverRange);
+    var a2DCells = getGoogleSheetRangeValuesOriented(sExpansiverRange);
+    // var a2DCells = getGoogleSheetRangeValuesOriented(a1DCells[0] + ":" + a1DCells.slice(-1)[0]); NO FUNCIONA
+    return a2DCells.map(function(oEl) { return oEl.map(function(oEl2) {
+      if (a1DCells.indexOf(oEl2) > -1) { return oEl2; }
+    }) }); 
+  }
+}
+GSDS_disjointedRangeToAVO.sample = function() { return 'GSDS_disjointedRangeToAVO("-A2;A2:B4; D4,E5:F5;G1:H2,H1-H9,L8,:B2, G8")' }
+// REFACTOR - I don't think flat() is es5-friendly but let it through for now
+GSDS_disjointedRangeToArray = function(sA1Notation) { return GSDS_disjointedRangeToAVO(sA1Notation).flat().filter(function(oEl) { return oEl; }) }
+
+function hyperlink(sURL, sName, bNoTarget) {
+   if (sName) {} else {sName = "link"}
+   if (sName.match(/hyperlink/)) { // html ahref hyperlink
+     return "=hyperlink(\"" + sURL + "\", \"" + sName + "\")";
+   } else { // googlesheets hyperlink
+     return "<a " + ((bNoTarget) ? "": "target='_blank' ") + "href='" + sURL + "'>link</a>";
+   }
 }
