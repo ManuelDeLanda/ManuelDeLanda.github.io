@@ -1319,6 +1319,7 @@ GSDS_disjointedRangeToAVO("A2;A2:B4;D4,E5:F5;G1:H2,H1-H9,L8,:B2, G8")
 // GSDS_RANGE1D("A1:*").forEach(function(domTD, iIn) { ((iIn%2==0) ? sType = "textarea" : sType = "input"); GSDS_GSDSifyTDRANGE(domTD, undefined, sType); });).then
 
 // aGet2DIslands - es5 non-minified version
+
 function aGet2DIslands(e) {
 
     function _toConsumableArray(arr) {
