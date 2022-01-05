@@ -1127,6 +1127,7 @@ function SubmitSuperNinjaForm(oHTTPMethodURLPayload, sTarget) {
     // SubmitSuperNinjaForm({url: "", type: "POST", payload: {"wat": "whatever"}},  );
     // SubmitSuperNinjaForm({url: "", method: "POST", payload: {"wat": "whatever"}},  );
     superencode = function (str){  return encodeURIComponent(str).replace(/'/g, "%27"); }
+  	function oSetAParameter_CLIENT(e){"string"==typeof e&&(e={DOMContentLoaded:e});var t=window.location.origin+window.location.pathname;return oGetAllParameters_COPY=JSON.parse(JSON.stringify(oGetAllParameters_CLIENT())),Object.keys(e).forEach((t=>{console.log(t),oGetAllParameters_COPY[t]=e[t]})),t=t+"?"+Object.keys(oGetAllParameters_COPY).map((e=>e+"="+superencode(oGetAllParameters_COPY[e]))).join("&")}oGetAllParameters_CLIENT=function(e){if(e)var t="?"+e.split("?")[1];else t=location.search;return t.substring(1)?JSON.parse('{"'+t.substring(1).split("&").map((function(e){return-1==e.indexOf("=")?e+"=":e})).join("&").replace(/&/g,'","').replace(/=/g,'":"')+'"}',(function(e,t){return""===e?t:decodeURIComponent(t)})):{}};
     // BEGIN fuzzy parameters: assume a string oHTTPMethodURLPayload is a URL, and assume a string oHTTPMethodURLPayload.payload is an object with a .payload key
     if (typeof(oHTTPMethodURLPayload) == "string") { oHTTPMethodURLPayload = { url: oHTTPMethodURLPayload, method: "GET" }; };
     if (oHTTPMethodURLPayload.type) { oHTTPMethodURLPayload.method = oHTTPMethodURLPayload.type; }; oHTTPMethodURLPayload.method = oHTTPMethodURLPayload.method.toUpperCase();
