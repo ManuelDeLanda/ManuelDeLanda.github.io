@@ -1299,17 +1299,23 @@ function superdecrypt(aVO, sPassword) {
     }
 
     if (sPassword) {
-        try {
+        // try {
             if (sPassword=="encode"||sPassword=="superencode") {
+              try {
                 return aVO.map(o=>o.map(oo=>{ return decodeURIComponent( oo )}));
+              } catch(eee) { return eee; }
             } else if (sPassword=="btoa"||sPassword=="base64") {
+              try {
                 return aVO.map(o=>o.map(oo=>{ return atob( oo )}));
+              } catch(eee) { return eee; }
             } else {
+              try {
                 return aVO.map(o=>o.map(oo=>{ return decodeURIComponent( CryptoJS.AES.decrypt(oo, sPassword).toString(CryptoJS.enc.Utf8))}))
+              } catch(eee) { return eee + " try superdecrypt w no password?"; }
             }
-        } catch(eee) {
-            return 'domLoadScripts_Link("https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js");';
-        }
+        // } catch(eee) {
+        //    return 'domLoadScripts_Link("https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js");';
+        // }
     } else {
         sError = `
                 domLoadScripts_Link("https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js")
