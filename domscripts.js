@@ -426,6 +426,14 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
 
 // domJQUERYscripts
 
+// add List
+
+// add $().jquery (to retrieve version)
+
+// add $Hints?
+
+// add $FETCH?  it's just $.ajax(), pretty simple right?
+
 // domGSDSscripts => NEW googlesheets scripts
 // GSDS_CELL, GSDS_RANGE1D, GSDS_RANGE2D, GSDS_CELL_value, GSDS_CELL_valueParseInt, GSDS_RANGE1D_values, GSDS_RANGE2D_values
 // GSDS_getOSR, GSDS_distinguishDomTableAndA1Notation, GSDS_domReplaceAsterisksInA1Notation, GSDS_inputifyTDRANGE, GSDS_eval, GSDS_domTDToA1Notation, GSDS_evalifyTDRANGE
@@ -1197,6 +1205,42 @@ function oSetAParameter_CLIENT(oParameters) {
     return sURL;
 }
 
+// domUNITTESTSscripts => do something with these?
+// domscripts.serversafe - moved to datahtmlscripts.js since they don't need the dom
+
+/* UNIT TESTS
+oSmartRange = GSDS_getOSR("table!D1:*");
+oSmartRange = GSDS_getOSR("table", "D1:*");
+oSmartRange = GSDS_getOSR($$$("table")[1], "D1:*");
+GSDS_getTDRANGE("table!D1:*")
+GSDS_setOSR($$$("table")[0])
+GSDS_inputifyTDRANGE("table!A1:*")
+GSDS_evalifyTDRANGE("table!A1:*")
+GSDS_disjointedRangeToAVO("table!D1:*,A3"); //
+GSDS_disjointedRangeToAVOdomTDs("table!D1:*,A3"); // 
+GSDS_disjointedRangeToAVOdomTDs("D1:*;A1"); // 
+GSDS_disjointedRangeToAVOdomTDs("A1:A*"); // 
+GSDS_disjointedRangeToAVOdomTDs("table!D1:*"); // 
+GSDS_disjointedRangeToAVOdomTDs("A3:G10");
+GSDS_disjointedRangeToAVO("A2:B4;D4,E5:F5;H1-H9");
+GSDS_getTDRANGE("table!D6")[0][0].dataset.gseval = superencode("=A1:A2");
+GSDS_evalifyTDRANGE("table!D6");
+GSDS_eval(decodeURIComponent(sGSEVAL));
+GSDS_disjointedRangeToAVO("A2;A2:B4;D4,E5:F5;G1:H2,H1-H9,L8,:B2, G8")
+*/
+// GSDS_inputifyTDRANGE("table!A1:*", undefined, "textarea")
+//GSDS_inputifyTDRANGE("table!A1:*", undefined, "textarea");
+//GSDS_evalifyTDRANGE("table!A1:*")
+// GSDS_inputifyTDRANGE("table!A1:*", undefined, "button")
+// GSDS_getTDRANGE("A1:B4");
+// GSDS_inputifyTDRANGE("A1:B4");
+// domGetTDTextOrValue(domDebuggingElement)
+// domGetTDTextOrValue(GSDS_CELL("A1"))
+// GSDS_inputifyTDRANGE("A1:B2", undefined, "input");
+// GSDS_inputifyTDRANGE("A3:B3", undefined, "textarea");
+// GSDS_GSDSifyTDRANGE("A1:*", undefined, "textarea", undefined, undefined, "=89");
+// GSDS_RANGE1D("A1:*").forEach(function(domTD, iIn) { ((iIn%2==0) ? sType = "textarea" : sType = "input"); GSDS_GSDSifyTDRANGE(domTD, undefined, sType); });).then
+
 // domENCRYPTscripts => superencrypt and decrypt (CryptoJS)
 function superencrypt(aVO, sPassword) {
   // domLoadScripts_Link("https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js")
@@ -1255,22 +1299,33 @@ function superdecrypt(aVO, sPassword) {
     }
 
     if (sPassword) {
-        if (sPassword=="encode"||sPassword=="superencode") {
-            return aVO.map(o=>o.map(oo=>{ return decodeURIComponent( oo )}));
-        } else if (sPassword=="btoa"||sPassword=="base64") {
-            return aVO.map(o=>o.map(oo=>{ return atob( oo )}));
-        } else {
-            return aVO.map(o=>o.map(oo=>{ return decodeURIComponent( CryptoJS.AES.decrypt(oo, sPassword).toString(CryptoJS.enc.Utf8))}))
+        try {
+            if (sPassword=="encode"||sPassword=="superencode") {
+                return aVO.map(o=>o.map(oo=>{ return decodeURIComponent( oo )}));
+            } else if (sPassword=="btoa"||sPassword=="base64") {
+                return aVO.map(o=>o.map(oo=>{ return atob( oo )}));
+            } else {
+                return aVO.map(o=>o.map(oo=>{ return decodeURIComponent( CryptoJS.AES.decrypt(oo, sPassword).toString(CryptoJS.enc.Utf8))}))
+            }
+        } catch(eee) {
+            return 'domLoadScripts_Link("https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js");';
         }
     } else {
         sError = `
-    domLoadScripts_Link("https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js")
+                domLoadScripts_Link("https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js")
 
                 copy(superencrypt([["a", "b", "c"],["d - 1", "e - 2", "f - 3"]], "hint"));
 
-                aVO.map(o=>o.map(oo=>{ return decodeURIComponent( CryptoJS.AES.decrypt(oo, "hint").toString(CryptoJS.enc.Utf8))}))
-                aVO.map(o=>o.map(oo=>{ return decodeURIComponent( oo )}));
-                aVO.map(o=>o.map(oo=>{ return atob( oo )}));
+                aVO = [["a", "b", "c"],["d - 1", "e - 2", "f - 3"]];
+
+                                        
+                aEncryptedVO = aVO.map(o=>o.map(oo=>{ return CryptoJS.AES.encrypt(superencode(oo), sPassword).toString(); }))
+                aEncodedVO = aVO; // superencode this
+                aBase64VO = aVO; // btoa this
+
+                aEncryptedVO.map(o=>o.map(oo=>{ return decodeURIComponent( CryptoJS.AES.decrypt(oo, "hint").toString(CryptoJS.enc.Utf8))}))
+                aEncodedVO.map(o=>o.map(oo=>{ return decodeURIComponent( oo )}));
+                aBase64VO.map(o=>o.map(oo=>{ return atob( oo )}));
 
                 superdecrypt(superencrypt([["a", "b", "c"],["d - 1", "e - 2", "f - 3"]], "password"), "password")
                 superdecrypt(superencrypt([["a", "b", "c"],["d - 1", "e - 2", "f - 3"]], "btoa"), "btoa")
@@ -1284,202 +1339,89 @@ function superdecrypt(aVO, sPassword) {
 
 }
 
-// domUNITTESTS
-// domscripts.serversafe - moved to datahtmlscripts.js since they don't need the dom
+// domISLANDSscripts => aGet2DIslands - original es6 version (w/o sample)
+// fing charity begins here at StackOverflow - refactor this into datascripts or keep in googlesheets.gs?
+// https://stackoverflow.com/questions/68645601/how-to-extract-a-set-of-isolated-2d-arrays-from-a-larger-2d-array
+function aGet2DIslands (aVO) {
+    const Cell = memo(
+      (r, c) => ({ r, c }),
+      ([r, c]) => `${r}_${c}`
+    );
 
-/* UNIT TESTS
-oSmartRange = GSDS_getOSR("table!D1:*");
-oSmartRange = GSDS_getOSR("table", "D1:*");
-oSmartRange = GSDS_getOSR($$$("table")[1], "D1:*");
-GSDS_getTDRANGE("table!D1:*")
-GSDS_setOSR($$$("table")[0])
-GSDS_inputifyTDRANGE("table!A1:*")
-GSDS_evalifyTDRANGE("table!A1:*")
-GSDS_disjointedRangeToAVO("table!D1:*,A3"); //
-GSDS_disjointedRangeToAVOdomTDs("table!D1:*,A3"); // 
-GSDS_disjointedRangeToAVOdomTDs("D1:*;A1"); // 
-GSDS_disjointedRangeToAVOdomTDs("A1:A*"); // 
-GSDS_disjointedRangeToAVOdomTDs("table!D1:*"); // 
-GSDS_disjointedRangeToAVOdomTDs("A3:G10");
-GSDS_disjointedRangeToAVO("A2:B4;D4,E5:F5;H1-H9");
-GSDS_getTDRANGE("table!D6")[0][0].dataset.gseval = superencode("=A1:A2");
-GSDS_evalifyTDRANGE("table!D6");
-GSDS_eval(decodeURIComponent(sGSEVAL));
-GSDS_disjointedRangeToAVO("A2;A2:B4;D4,E5:F5;G1:H2,H1-H9,L8,:B2, G8")
-*/
-// GSDS_inputifyTDRANGE("table!A1:*", undefined, "textarea")
-//GSDS_inputifyTDRANGE("table!A1:*", undefined, "textarea");
-//GSDS_evalifyTDRANGE("table!A1:*")
-// GSDS_inputifyTDRANGE("table!A1:*", undefined, "button")
-// GSDS_getTDRANGE("A1:B4");
-// GSDS_inputifyTDRANGE("A1:B4");
-// domGetTDTextOrValue(domDebuggingElement)
-// domGetTDTextOrValue(GSDS_CELL("A1"))
-// GSDS_inputifyTDRANGE("A1:B2", undefined, "input");
-// GSDS_inputifyTDRANGE("A3:B3", undefined, "textarea");
-// GSDS_GSDSifyTDRANGE("A1:*", undefined, "textarea", undefined, undefined, "=89");
-// GSDS_RANGE1D("A1:*").forEach(function(domTD, iIn) { ((iIn%2==0) ? sType = "textarea" : sType = "input"); GSDS_GSDSifyTDRANGE(domTD, undefined, sType); });).then
+    Cell.neighbors = ({ r, c }) => [
+      Cell(r, c + 1), // Right
+      Cell(r + 1, c), // Down
+      Cell(r, c - 1), // Left
+      Cell(r - 1, c), // Up
+    ];
 
-// aGet2DIslands - es5 non-minified version
-
-function aGet2DIslands(e) {
-
-    function _toConsumableArray(arr) {
-        return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
-    }
-
-    function _nonIterableSpread() {
-        throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-    }
-
-    function _iterableToArray(iter) {
-        if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
-    }
-
-    function _arrayWithoutHoles(arr) {
-        if (Array.isArray(arr)) return _arrayLikeToArray(arr);
-    }
-
-    function _slicedToArray(arr, i) {
-        return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
-    }
-
-    function _nonIterableRest() {
-        throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-    }
-
-    function _unsupportedIterableToArray(o, minLen) {
-        if (!o) return;
-        if (typeof o === "string") return _arrayLikeToArray(o, minLen);
-        var n = Object.prototype.toString.call(o).slice(8, -1);
-        if (n === "Object" && o.constructor) n = o.constructor.name;
-        if (n === "Map" || n === "Set") return Array.from(o);
-        if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
-    }
-
-    function _arrayLikeToArray(arr, len) {
-        if (len == null || len > arr.length) len = arr.length;
-        for (var i = 0, arr2 = new Array(len); i < len; i++) {
-            arr2[i] = arr[i];
-        }
-        return arr2;
-    }
-
-    function _iterableToArrayLimit(arr, i) {
-        var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
-        if (_i == null) return;
-        var _arr = [];
-        var _n = true;
-        var _d = false;
-        var _s, _e;
-        try {
-            for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
-                _arr.push(_s.value);
-                if (i && _arr.length === i) break;
-            }
-        } catch (err) {
-            _d = true;
-            _e = err;
-        } finally {
-            try {
-                if (!_n && _i["return"] != null) _i["return"]();
-            } finally {
-                if (_d) throw _e;
-            }
-        }
-        return _arr;
-    }
-
-    function _arrayWithHoles(arr) {
-        if (Array.isArray(arr)) return arr;
-    }
-
-
-
-    var m = function(e, m) {
-        var n = {};
-        return function() {
-            for (var _len = arguments.length, a = new Array(_len), _key = 0; _key < _len; _key++) {
-                a[_key] = arguments[_key];
-            }
-
-            var t = m(a);
-            return n[t] || (n[t] = e.apply(void 0, a)), n[t];
-        };
-    }(function(e, m) {
-        return {
-            r: e,
-            c: m
-        };
-    }, function(_ref) {
-        var _ref2 = _slicedToArray(_ref, 2),
-            e = _ref2[0],
-            m = _ref2[1];
-
-        return "".concat(e, "_").concat(m);
+    // Create a single-cell group
+    const Group = (cell) => ({
+      minR: cell.r,
+      maxR: cell.r + 1,
+      minC: cell.c,
+      maxC: cell.c + 1,
+      cells: new Set([cell])
     });
 
-    m.neighbors = function(_ref3) {
-        var e = _ref3.r,
-            n = _ref3.c;
-        return [m(e, n + 1), m(e + 1, n), m(e, n - 1), m(e - 1, n)];
-    };
+    // Merge two groups into a new one
+    Group.merge = (g1, g2) => ({
+      minR: Math.min(g1.minR, g2.minR),
+      maxR: Math.max(g1.maxR, g2.maxR),
+      minC: Math.min(g1.minC, g2.minC),
+      maxC: Math.max(g1.maxC, g2.maxC),
+      cells: new Set([ ...g1.cells, ...g2.cells ])
+    });
 
-    var n = function n(e) {
-        return {
-            minR: e.r,
-            maxR: e.r + 1,
-            minC: e.c,
-            maxC: e.c + 1,
-            cells: new Set([e])
-        };
-    };
+    // Take a grid and slice out the part covered by a group
+    Group.extractFromGrid = grid => ({ minR, maxR, minC, maxC }) => grid
+      .slice(minR, maxR)
+      .map(row => row.slice(minC, maxC));
 
-    n.merge = function(e, m) {
-        return {
-            minR: Math.min(e.minR, m.minR),
-            maxR: Math.max(e.maxR, m.maxR),
-            minC: Math.min(e.minC, m.minC),
-            maxC: Math.max(e.maxC, m.maxC),
-            cells: new Set([].concat(_toConsumableArray(e.cells), _toConsumableArray(m.cells)))
-        };
-    }, n.extractFromGrid = function(e) {
-        return function(_ref4) {
-            var m = _ref4.minR,
-                n = _ref4.maxR,
-                a = _ref4.minC,
-                t = _ref4.maxC;
-            return e.slice(m, n).map(function(e) {
-                return e.slice(a, t);
-            });
-        };
-    };
-    var a = e,
-        t = a.flatMap(function(e, n) {
-            return e.map(function(e, a) {
-                return m(n, a);
-            });
-        }),
-        c = new Map();
-    return t.forEach(function(e) {
-        if ("" !== a[e.r][e.c]) {
-            var _a = m.neighbors(e).filter(function(e) {
-                return c.has(e);
-            }).map(function(e) {
-                return c.get(e);
-            }).reduce(n.merge, n(e));
+    // Create all cells with their values
+    const grid = aVO;
+    const allCells = grid.flatMap(
+      (row, ri) => row.map(
+        (value, ci) => Cell(ri, ci)
+      )
+    );
 
-            _a.cells.forEach(function(e) {
-                c.set(e, _a);
-            });
-        }
-    }), _toConsumableArray(new Set(c.values())).map(n.extractFromGrid(a));
-}
-aGet2DIslands.sample = function() {
-    return decodeURIComponent("%0A%0Avar%20aVO%20%3D%20%5B%0A%20%20%5B%22col1%22%2C%20%22col2%22%2C%20%22col3%22%2C%20%22col4%22%2C%20%22col5%22%2C%20%22col6%22%2C%20%22col7%22%2C%20%22col8%22%2C%20%22col9%22%5D%2C%0A%20%20%5B%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%5D%2C%0A%20%20%5B1%2C%202%2C%203%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%5D%2C%0A%20%20%5B4%2C%205%2C%206%2C%20%22%22%2C%20%22%22%2C%20%22a%22%2C%20%22b%22%2C%20%22%22%2C%20%22%22%5D%2C%0A%20%20%5B7%2C%208%2C%209%2C%20%22%22%2C%20%22%22%2C%20%22c%22%2C%20%22d%22%2C%20%22%22%2C%201%5D%2C%0A%20%20%5B%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%202%5D%2C%0A%20%20%5B%22%22%2C%20%22%22%2C%20%22z%22%2C%20%22y%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%203%5D%2C%0A%20%20%5B%22%22%2C%20%22x%22%2C%20%22w%22%2C%20%22v%22%2C%20%22%22%2C%207%2C%207%2C%207%2C%20%22%22%5D%2C%0A%20%20%5B%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%5D%2C%0A%20%20%5B%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%5D%2C%0A%20%20%5B%22%22%2C%20%22A1%22%2C%20%22B1%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%2C%20%22%22%5D%2C%0A%20%20%5B%22%22%2C%20%22A2%22%2C%20%22B2%22%2C%20%22C2%22%2C%20%22%22%2C%20%22%22%2C%20%22HELLO%22%2C%20%22%22%2C%20%22%22%5D%0A%5D%3B%0AaGet2DIslands(aVO)%3B%0A%0A");
+    const groupPerCell = new Map();
+
+    allCells.forEach(current => {
+      const inIsland = grid[current.r][current.c] !== "";
+      if (inIsland) {  
+        const newGroup = Cell
+          .neighbors(current)
+          .filter(c => groupPerCell.has(c))
+          .map(c => groupPerCell.get(c))
+          .reduce(Group.merge, Group(current));
+
+        // Store a reference to the group for each member
+        newGroup.cells.forEach(c => {
+          groupPerCell.set(c, newGroup);
+        });
+      }  
+    });
+
+    const allGroups = [...new Set(groupPerCell.values())];
+    const allValues = allGroups.map(Group.extractFromGrid(grid));
+
+    function memo(f, hash) {
+      const cache = {};
+
+      return (...args) => {
+        const k = hash(args);
+        if (!cache[k]) cache[k] = f(...args);
+
+        return cache[k];
+      }
+    }
+
+    return allValues;
 }
 
-// domDATAHTML.es6.scripts
+// domDATAHTML.es6.scripts (aka domscripts.2.js)
 /* domDATAHTMLscripts (superset of dataHTMLscripts.js) => datahtmlscripts.js => isomorphic, vanilla, es5-ish datascripts that are related to HTML and datascripts, without needing libraries (the dom, jquery, or lodash */
 // refactor this whole solution into dataDATAHTMLscripts?  or dataHTMLscripts?  why dom?  because es5?
 // note hyperlink() is both html and gs formula related? more functions similar to this concept"?
