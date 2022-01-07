@@ -1250,11 +1250,11 @@ function superdecrypt(aVO, sPassword) {
             } else if (sPassword.toUpperCase()=="LZ"||sPassword.toUpperCase()=="LZSTRING") {
               try {
                 return aVO.map(o=>o.map(oo=>{ return LZString.decompress( oo )}));
-              } catch(eee) { return eee; }
+              } catch(eee) { return eee + "unknown system/engine without LZString...domLoadScripts_Link('https://cdn.jsdelivr.net/gh/pieroxy/lz-string/libs/lz-string.js')"; }
             } else {
               try {
                 return aVO.map(o=>o.map(oo=>{ return decodeURIComponent( CryptoJS.AES.decrypt(oo, sPassword).toString(CryptoJS.enc.Utf8))}))
-              } catch(eee) { return eee + " try superdecrypt w no password?"; }
+              } catch(eee) { return eee + "unknown system/engine without CryptoJS...domLoadScripts_Link('https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js')"; }
             }
         // } catch(eee) {
         //    return 'domLoadScripts_Link("https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js");';
