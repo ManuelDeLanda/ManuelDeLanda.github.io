@@ -1208,6 +1208,13 @@ function superencrypt(aVO, sPassword) {
                 } catch(e) {
                     return "unknown system/engine without LZString...domLoadScripts_Link('https://cdn.jsdelivr.net/gh/pieroxy/lz-string/libs/lz-string.js')";
                 }
+              } else if (sPassword.toUpperCase()=="JSONH" || sPassword.toUpperCase()=="HPACK") {
+                // https://stackoverflow.com/questions/11160941/is-it-worth-the-effort-to-try-to-reduce-json-size
+                try {
+                    return JSONH.pack(oo);
+                } catch(e) {
+                    return "unknown system/engine without JSONH...domLoadScripts_Link('https://cdn.jsdelivr.net/npm/jsonh@0.0.6/js/jsonh.min.js')";
+                }
               } else {
                 try {
                     return CryptoJS.AES.encrypt(superencode(oo), sPassword).toString(); 
@@ -1251,6 +1258,10 @@ function superdecrypt(aVO, sPassword) {
               try {
                 return aVO.map(o=>o.map(oo=>{ return LZString.decompress( oo )}));
               } catch(eee) { return eee + "unknown system/engine without LZString...domLoadScripts_Link('https://cdn.jsdelivr.net/gh/pieroxy/lz-string/libs/lz-string.js')"; }
+            } else if (sPassword.toUpperCase()=="JSONH"||sPassword.toUpperCase()=="HPACK") {
+              try {
+                return aVO.map(o=>o.map(oo=>{ return JSONH.unpack( oo )}));
+              } catch(eee) { return eee + "unknown system/engine without JSONH...domLoadScripts_Link('https://cdn.jsdelivr.net/npm/jsonh@0.0.6/js/jsonh.min.js')"; }
             } else {
               try {
                 return aVO.map(o=>o.map(oo=>{ return decodeURIComponent( CryptoJS.AES.decrypt(oo, sPassword).toString(CryptoJS.enc.Utf8))}))
