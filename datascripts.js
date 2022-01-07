@@ -1008,14 +1008,14 @@ superHtmlDecode = function(sString) {
 // domDATAHTML.es5.scripts
 // THE FOLLOWING CODE USED TO BE "domscripts.serversafe", but now its just part of domDATAHTML.es.js scripts
 // pseudocode for new domscript function - refactor convertOSRToHTMLTable, convertRecordsOrientedArrayToHTMLTable, convertValuesOrientedToHTMLTable into one solution? 
-toHTMLSelect=function(aArray, sSelectIDOrClasses) { // refractor this to accept array of values vs array of objects (select id?)
+toHTMLSelect=function(aArray, sSelectIDOrClasses, iSelected) { // refractor this to accept array of values vs array of objects (select id?)
     var sSelectID = returnIDAndOrClasses(sSelectIDOrClasses).id;
     var sSelectClasses = (returnIDAndOrClasses(sSelectIDOrClasses).classes + " aArraySelect").trim();
     if (sSelectID) { sSelectID = " id='" + sSelectID + "'"; }        
     
     if (Array.isArray(aArray)) {} else { aArray = [aArray]; } 
     // aArray = JSON.parse(JSON.stringify(aArray)); aArray.unshift
-    return "<select " + sSelectID + " class='" + sSelectClasses + "'><option></option>" + aArray.map(function(oElement) { return "<option>" + oElement + "</option>"; }).join("")+"</select>";
+    return "<select " + sSelectID + " class='" + sSelectClasses + "'><option></option>" + aArray.map(function(o,i) { return "<option value='" + superhtmlEntities(o) + "'" + ((iSelected==i) ? " selected": "")+ ">" + superhtmlEntities(o) + "</option>"; }).join("")+"</select>";
 }
 toHTMLTable = function(aArrayOrObject, aColumns, sTableID) {
   // refactor the two functions into datascripts
