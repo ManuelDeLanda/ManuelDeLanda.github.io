@@ -1244,7 +1244,7 @@ function oSetAParameter_CLIENT(oParameters) {
     return sURL;
 }
 
-// domENCRYPTscripts => superencrypt and decrypt (CryptoJS)
+// domENCRYPTscripts => superencrypt and decrypt (CryptoJS,LZString)
 function superencrypt(aVO, sPassword) {
   // domLoadScripts_Link("https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js")
   // copy(superencrypt([["a", "b", "c"],["d - 1", "e - 2", "f - 3"]], "hint"))
@@ -1261,11 +1261,11 @@ function superencrypt(aVO, sPassword) {
             if (true) {
             // if (i>0) {
               if (sPassword) {} else {sPassword="AES.encrypt"}
-              if (sPassword=="superencode" || sPassword=="encode") {
+              if (sPassword.toUpperCase()=="SUPERENCODE" || sPassword.toUpperCase()=="ENCODE") {
                 return superencode(oo);
               // } else if (sPassword=="hint") {
               //  return "";
-              } else if (sPassword=="btoa" || sPassword=="base64") {
+              } else if (sPassword.toUpperCase()=="BTOA" || sPassword.toUpperCase()=="BASE64") {
                 try {
                     return btoa(oo);
                 } catch(e) {
@@ -1276,6 +1276,12 @@ function superencrypt(aVO, sPassword) {
                     } catch(e) {
                     } */
                 }
+              } else if (sPassword.toUpperCase()=="LZ" || sPassword.toUpperCase()=="LZSTRING") {
+                try {
+                    return LZString.compress(oo);
+                } catch(e) {
+                    return "unknown system/engine without LZString...https://cdn.jsdelivr.net/gh/pieroxy/lz-string/libs/lz-string.js";
+                }
               } else {
                 return CryptoJS.AES.encrypt(superencode(oo), sPassword).toString();        
               }    
@@ -1284,7 +1290,7 @@ function superencrypt(aVO, sPassword) {
                 return oo;
             }
       }) });
-      if (sPassword =="hint") {
+      if (sPassword.toUpperCase() =="HINT") {
         return `${JSON.stringify(aVO)}.map(o=>o.map(oo=>{ return decodeURIComponent( 
     CryptoJS.AES.decrypt(oo, "hint").toString(CryptoJS.enc.Utf8)
     ) }) )`;
@@ -1303,13 +1309,17 @@ function superdecrypt(aVO, sPassword) {
 
     if (sPassword) {
         // try {
-            if (sPassword=="encode"||sPassword=="superencode") {
+            if (sPassword.toUpperCase()=="ENCODE"||sPassword.toUpperCase()=="SUPERENCODE") {
               try {
                 return aVO.map(o=>o.map(oo=>{ return decodeURIComponent( oo )}));
               } catch(eee) { return eee; }
-            } else if (sPassword=="btoa"||sPassword=="base64") {
+            } else if (sPassword.toUpperCase()=="BTOA"||sPassword.toUpperCase()=="BASE64") {
               try {
                 return aVO.map(o=>o.map(oo=>{ return atob( oo )}));
+              } catch(eee) { return eee; }
+            } else if (sPassword.toUpperCase()=="LZ"||sPassword.toUpperCase()=="LZSTRING") {
+              try {
+                return aVO.map(o=>o.map(oo=>{ return LZString.decompress( oo )}));
               } catch(eee) { return eee; }
             } else {
               try {
