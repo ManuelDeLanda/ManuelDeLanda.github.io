@@ -1195,7 +1195,7 @@ function superencrypt(aVO, sPassword) {
                 try {
                     return btoa(oo);
                 } catch(e) {
-                    return "unknown system/engine without base64Encode...";
+                    return "unknown system/engine without base64Encode...Utilities.base64Encode()?";
                     /*
                     try {
                         return Utilities.base64Encode(oo);
@@ -1206,10 +1206,14 @@ function superencrypt(aVO, sPassword) {
                 try {
                     return LZString.compress(oo);
                 } catch(e) {
-                    return "unknown system/engine without LZString...https://cdn.jsdelivr.net/gh/pieroxy/lz-string/libs/lz-string.js";
+                    return "unknown system/engine without LZString...domLoadScripts_Link('https://cdn.jsdelivr.net/gh/pieroxy/lz-string/libs/lz-string.js')";
                 }
               } else {
-                return CryptoJS.AES.encrypt(superencode(oo), sPassword).toString();        
+                try {
+                    return CryptoJS.AES.encrypt(superencode(oo), sPassword).toString(); 
+                } catch(e) {
+                    return "unknown system/engine without CryptoJS...domLoadScripts_Link('https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js')";
+                }
               }    
             //return e;
             } else {
