@@ -975,42 +975,6 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
     }
     */
 
-// domUNITTESTSscripts => do something with these?
-// domscripts.serversafe - moved to datahtmlscripts.js since they don't need the dom
-
-/* UNIT TESTS
-oSmartRange = GSDS_getOSR("table!D1:*");
-oSmartRange = GSDS_getOSR("table", "D1:*");
-oSmartRange = GSDS_getOSR($$$("table")[1], "D1:*");
-GSDS_getTDRANGE("table!D1:*")
-GSDS_setOSR($$$("table")[0])
-GSDS_inputifyTDRANGE("table!A1:*")
-GSDS_evalifyTDRANGE("table!A1:*")
-GSDS_disjointedRangeToAVO("table!D1:*,A3"); //
-GSDS_disjointedRangeToAVOdomTDs("table!D1:*,A3"); // 
-GSDS_disjointedRangeToAVOdomTDs("D1:*;A1"); // 
-GSDS_disjointedRangeToAVOdomTDs("A1:A*"); // 
-GSDS_disjointedRangeToAVOdomTDs("table!D1:*"); // 
-GSDS_disjointedRangeToAVOdomTDs("A3:G10");
-GSDS_disjointedRangeToAVO("A2:B4;D4,E5:F5;H1-H9");
-GSDS_getTDRANGE("table!D6")[0][0].dataset.gseval = superencode("=A1:A2");
-GSDS_evalifyTDRANGE("table!D6");
-GSDS_eval(decodeURIComponent(sGSEVAL));
-GSDS_disjointedRangeToAVO("A2;A2:B4;D4,E5:F5;G1:H2,H1-H9,L8,:B2, G8")
-*/
-// GSDS_inputifyTDRANGE("table!A1:*", undefined, "textarea")
-//GSDS_inputifyTDRANGE("table!A1:*", undefined, "textarea");
-//GSDS_evalifyTDRANGE("table!A1:*")
-// GSDS_inputifyTDRANGE("table!A1:*", undefined, "button")
-// GSDS_getTDRANGE("A1:B4");
-// GSDS_inputifyTDRANGE("A1:B4");
-// domGetTDTextOrValue(domDebuggingElement)
-// domGetTDTextOrValue(GSDS_CELL("A1"))
-// GSDS_inputifyTDRANGE("A1:B2", undefined, "input");
-// GSDS_inputifyTDRANGE("A3:B3", undefined, "textarea");
-// GSDS_GSDSifyTDRANGE("A1:*", undefined, "textarea", undefined, undefined, "=89");
-// GSDS_RANGE1D("A1:*").forEach(function(domTD, iIn) { ((iIn%2==0) ? sType = "textarea" : sType = "input"); GSDS_GSDSifyTDRANGE(domTD, undefined, sType); });).then
-
 // domFETCHscripts => SubmitSuperNinjaForm,fetch_XMLHttpRequest,oGetAllParameters_CLIENT(), oSetAParameter_CLIENT
 fetch_XMLHttpRequest=function(oHTTPMethodURLPayload) {
     superencode = function (str){  return encodeURIComponent(str).replace(/'/g, "%27"); }
@@ -1053,7 +1017,7 @@ function SubmitSuperNinjaForm(oHTTPMethodURLPayload, sTarget) {
     // SubmitSuperNinjaForm({url: "", type: "POST", payload: {"wat": "whatever"}},  );
     // SubmitSuperNinjaForm({url: "", method: "POST", payload: {"wat": "whatever"}},  );
     superencode = function (str){  return encodeURIComponent(str).replace(/'/g, "%27"); }
-  	function oSetAParameter_CLIENT(e){"string"==typeof e&&(e={DOMContentLoaded:e});var t=window.location.origin+window.location.pathname;return oGetAllParameters_COPY=JSON.parse(JSON.stringify(oGetAllParameters_CLIENT())),Object.keys(e).forEach((t=>{console.log(t),oGetAllParameters_COPY[t]=e[t]})),t=t+"?"+Object.keys(oGetAllParameters_COPY).map((e=>e+"="+superencode(oGetAllParameters_COPY[e]))).join("&")}oGetAllParameters_CLIENT=function(e){if(e)var t="?"+e.split("?")[1];else t=location.search;return t.substring(1)?JSON.parse('{"'+t.substring(1).split("&").map((function(e){return-1==e.indexOf("=")?e+"=":e})).join("&").replace(/&/g,'","').replace(/=/g,'":"')+'"}',(function(e,t){return""===e?t:decodeURIComponent(t)})):{}};
+          function oSetAParameter_CLIENT(e){"string"==typeof e&&(e={DOMContentLoaded:e});var t=window.location.origin+window.location.pathname;return oGetAllParameters_COPY=JSON.parse(JSON.stringify(oGetAllParameters_CLIENT())),Object.keys(e).forEach((t=>{console.log(t),oGetAllParameters_COPY[t]=e[t]})),t=t+"?"+Object.keys(oGetAllParameters_COPY).map((e=>e+"="+superencode(oGetAllParameters_COPY[e]))).join("&")}oGetAllParameters_CLIENT=function(e){if(e)var t="?"+e.split("?")[1];else t=location.search;return t.substring(1)?JSON.parse('{"'+t.substring(1).split("&").map((function(e){return-1==e.indexOf("=")?e+"=":e})).join("&").replace(/&/g,'","').replace(/=/g,'":"')+'"}',(function(e,t){return""===e?t:decodeURIComponent(t)})):{}};
     // BEGIN fuzzy parameters: assume a string oHTTPMethodURLPayload is a URL, and assume a string oHTTPMethodURLPayload.payload is an object with a .payload key
     if (typeof(oHTTPMethodURLPayload) == "string") { oHTTPMethodURLPayload = { url: oHTTPMethodURLPayload, method: "GET" }; };
     if (oHTTPMethodURLPayload.type) { oHTTPMethodURLPayload.method = oHTTPMethodURLPayload.type; }; oHTTPMethodURLPayload.method = oHTTPMethodURLPayload.method.toUpperCase();
