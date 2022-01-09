@@ -77,6 +77,7 @@ ObjectValuesRegex = function(oObject, rRegexKey) {
 }
 function ObjectValueRegex(oObject,rRegexKey) { return ObjectValuesRegex(oObject,rRegexKey)[0]; }
 Arrayify = function(aArray) { if (Array.isArray(aArray)) {} else { aArray = [aArray]; } }
+
 toVO = function(aInputArray, aColumns) {
     if (typeof aInputArray=="object" && !Array.isArray(aInputArray)) { // checks for objects.  note how toVO([{"one": "two", "three": "four"}] = [["one","three"],["two","four"]] and toVO({"one": "two", "three": "four"}) = [["one","two"],["three","four"]]
         aInputArray = Object.keys(aInputArray).reduce(function(a,e,i,o) { a.push([e,aInputArray[e]]); return a; }, [] )
@@ -124,8 +125,15 @@ toRO = function(aInputArray) {
         }, {})) : []
     }, [])
 }; toRecordsOriented = function(aInputArray) { return toRO(aInputArray); }
+
 toXXXOriented = function (aInputArray, sXXX) { var aRecordsOrientation = JSONPS(aInputArray); return aRecordsOrientation.reduce(function (agg, oElement) { if (agg[oElement[sXXX]]==undefined) { agg[oElement[sXXX]] = oElement; } else { if (!Array.isArray(agg[oElement[sXXX]])) { agg[oElement[sXXX]] = [agg[oElement[sXXX]]].concat(oElement) } else { agg[oElement[sXXX]] = agg[oElement[sXXX]].concat(oElement) } } return agg; }, {}); }
-toXXXOrientedDEDUPED = function(aInputArray, sXXX)  { var aRecordsOrientation = JSONPS(aInputArray); var o_XXX_Orientation = aRecordsOrientation.reduce(function (agg, oElement) { if (agg[oElement[sXXX]]==undefined) { agg[oElement[sXXX]] = oElement; } else { if (!Array.isArray(agg[oElement[sXXX]])) { agg[oElement[sXXX]] = [agg[oElement[sXXX]]].concat(oElement) } else { agg[oElement[sXXX]] = agg[oElement[sXXX]].concat(oElement) } } return agg; }, {}); return Object.keys(o_XXX_Orientation).reduce(function(agg777, oElement777) { if (Array.isArray(o_XXX_Orientation[oElement777])) { agg777[oElement777] = o_XXX_Orientation[oElement777].reduce(function(agg778, oElement778) { return Object.keys(oElement778).reduce(function(agg779, oElement779) { if (agg778[oElement779] == undefined) { agg778[oElement779] = oElement778[oElement779]; } else { agg778[oElement779] = agg778[oElement779] + ";" + oElement778[oElement779]; } return agg778; }, "") }, {}) } else { agg777[oElement777] = o_XXX_Orientation[oElement777]; } return agg777; }, {}) }
+
+toXXXOrientatedDEDUPED=toXXXOrientedDEDUPED;
+
+// toXXXOrientated = function (aInputArray, sXXX) { var aRecordsOrientation = JSONPS(aInputArray); return aRecordsOrientation.reduce(function (agg, oElement) { if (agg[oElement[sXXX]]==undefined) { agg[oElement[sXXX]] = oElement; } else { if (!Array.isArray(agg[oElement[sXXX]])) { agg[oElement[sXXX]] = [agg[oElement[sXXX]]].concat(oElement) } else { agg[oElement[sXXX]] = agg[oElement[sXXX]].concat(oElement) } } return agg; }, {}); }
+
+toXXXOrientedDEDUPED = function(aInputArray, sXXX)  { var aRecordsOrientation = JSONPS(aInputArray); var o_XXX_Orientation = aRecordsOrientation.reduce(function (agg, oElement) { if (agg[oElement[sXXX]]==undefined) { agg[oElement[sXXX]] = oElement; } else { if (!Array.isArray(agg[oElement[sXXX]])) { agg[oElement[sXXX]] = [agg[oElement[sXXX]]].concat(oElement) } else { agg[oElement[sXXX]] = agg[oElement[sXXX]].concat(oElement) } } return agg; }, {}); return Object.keys(o_XXX_Orientation).reduce(function(agg777, oElement777) { if (Array.isArray(o_XXX_Orientation[oElement777])) { agg777[oElement777] = o_XXX_Orientation[oElement777].reduce(function(agg778, oElement778) { return Object.keys(oElement778).reduce(function(agg779, oElement779) { if (agg778[oElement779] == undefined) { agg778[oElement779] = oElement778[oElement779]; } else { agg778[oElement779] = agg778[oElement779] + ";" + oElement778[oElement779]; } return agg778; }, "") }, {}) } else { agg777[oElement777] = o_XXX_Orientation[oElement777]; } return agg777; }, {}) };
+
 toTabDelimited = function (aInputArray, sDelimiter, sQualifier) {
   // get rid of stray tabs in array so it doesn't create duplciate tabs in tab delimited data
   Object.keys(normalizeRecordsOriented(aInputArray)[0]).forEach(function(oElement) {
@@ -141,15 +149,18 @@ toTabDelimited = function (aInputArray, sDelimiter, sQualifier) {
       return toDelimited(aInputArray, String.fromCharCode(9), "");
   }
 }
+
+// begin csv/tabs functions
 toDelimited = function(aInputArray, sDelimiter, sQualifier) { function returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented) { return aRecordsOriented.reduce(function(agg, oElement313) { agg = agg.concat(Object.keys(oElement313)); agg = unique(agg); return agg; }, []) } var aColumns = returnAllKeysAmongAllObjectsInRecordsOrientedArray(aInputArray); return aInputArray.reduce(function(agg, oElement) { return agg + "\n" + aColumns.filter(function(oElement777) { return oElement777.trim() != "" }).reduce(function(agg001, oElement001, iIndex001) { return agg001 + ((iIndex001 == 0) ? "" : sDelimiter) + sQualifier + ((oElement[oElement001] == undefined ? "" : oElement[oElement001])).toString().replace(/\r\n/g, "<br>").replace(/\n/g, "<br>") + sQualifier; }, "") }, aColumns.map(function(oElement002) { return sQualifier + oElement002 + sQualifier; }).join(sDelimiter)) }
-convertTabDelimitedToValuesOriented = function(sText) { return sText.split(String.fromCharCode(10)).map(function(oElement) { return oElement.split(String.fromCharCode(9)); }); }
-convertTabDelimitedToRecordsOriented = function(sText) { return toRO(convertTabDelimitedToValuesOriented(sText)); };toXXXOrientatedDEDUPED=toXXXOrientedDEDUPED;
 
 // 01/09/2022 - place beside datascripts.convertTabDelimitedToValuesOriented
-function fCSVToVO(sCSV) { return sCSV.split("\n").map(o=>o.split(",")); }; convertCSVToValuesOriented = function(s) { return fCSVToVO(s); }
-function fCSVToRO(sCSV) { return toRO(fCSVToVO(sCSV)); }; convertCSVToRecordsOriented = function(s) { return fCSVToRO(s); }
+function fromCSVToVO(sCSV) { return sCSV.split(String.fromCharCode(10)).map(o=>o.split(",")); }; convertCSVToValuesOriented = function(s) { return fromCSVToVO(s); }
+function fromCSVToRO(sCSV) { return toRO(fromCSVToVO(sCSV)); }; convertCSVToRecordsOriented = function(s) { return fromCSVToRO(s); }
 
-toXXXOrientated = function (aInputArray, sXXX) { var aRecordsOrientation = JSONPS(aInputArray); return aRecordsOrientation.reduce(function (agg, oElement) { if (agg[oElement[sXXX]]==undefined) { agg[oElement[sXXX]] = oElement; } else { if (!Array.isArray(agg[oElement[sXXX]])) { agg[oElement[sXXX]] = [agg[oElement[sXXX]]].concat(oElement) } else { agg[oElement[sXXX]] = agg[oElement[sXXX]].concat(oElement) } } return agg; }, {}); }
+fromTABToVO = function(sText) { return sText.split(String.fromCharCode(10)).map(function(oElement) { return oElement.split(String.fromCharCode(9)); }); }; convertTabDelimitedToValuesOriented = function(s) { return fromTABToVO(s); }
+fromTABToRO = function(sText) { return toRO(fromTABToVO(sText)); }; convertTabDelimitedToRecordsOriented = function(s) { return fromTABToRO(s); }
+fTABToVO=fromTABToVO;fTABToRO=fromTABToRO;fCSVToVO=fromCSVToVO;fCSVToRO=fromCSVToRO;
+// end csv/tabs functions
 
 isVO = function(a) { return Array.isArray(a[0]); }; isValuesOriented = function(a) { return isVO(a); }
 /* END values oriented / records oriented / tab delimited converter functions */
