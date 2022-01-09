@@ -268,9 +268,479 @@ fStringFromCharCode = function() {
 
 // dom_LZString,Moment,date-fns_scripts?
 
-// domD3scripts, domP5scripts
+// domD3scripts - where charts, graphs, maps, grams and plots reign supreme
+// d3_PieChartify, d3_histogramify, d3_barPlotify, d3_StreamGraphify
 
-// d3_TreeMapify, d3_PieChartify, d3_Sankeyify, d3_ridgelinePlotify
+/* wishlist:
+
+d3_ridgelinePlotify - 1 old attempt (d3.min.js:2 Uncaught Error: invalid format: ,.-1f)
+d3_TreeMapify - 1 old attempt (d3.hierarchy is not a function)
+d3_Sankeyify - 1 old attempt (was working?)
+d3_CirclePackify - 3 attempts (1 sort-of working)
+
+d3_BubbleChartify
+
+
+*/
+
+function d3_PieChartify(aRO, sDivSelector) {
+    domLoadStyles_CSS(`
+
+        .pie {
+          margin: 20px;
+        }
+
+        svg.D3_PieChartify {
+            float: left;
+        }
+
+        .legend {
+          float: left;
+          font-family: "Verdana";
+          font-size: .7em;
+        }
+
+        .pie text {
+          font-family: "Verdana";
+          fill: #000;
+        }
+
+        .pie .name-text{
+          font-size: .8em;
+        }
+
+        .pie .value-text{
+          font-size: 3em;
+        }
+
+    `)
+
+    if ($$$$(sDivSelector)) {} else { sDivSelector = "body" }
+
+    var data = aRO;
+    var text = "";
+
+    var width = 200;
+    var height = 200;
+    var thickness = 40;
+    var duration = 750;
+    var padding = 10;
+    var opacity = .8;
+    var opacityHover = 1;
+    var otherOpacityOnHover = .8;
+    var tooltipMargin = 13;
+
+    var radius = Math.min(width-padding, height-padding) / 2;
+    var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+    var svg = d3.select(sDivSelector)
+    .append('svg')
+    .attr('class', 'pie')
+    .attr('class', 'D3_PieChartify')
+    .attr('width', width)
+    .attr('height', height);
+
+    var g = svg.append('g')
+    .attr('transform', 'translate(' + (width/2) + ',' + (height/2) + ')');
+
+    var arc = d3.arc()
+    .innerRadius(0)
+    .outerRadius(radius);
+
+    var pie = d3.pie()
+    .value(function(d) { return d.value; })
+    .sort(null);
+
+    var path = g.selectAll('path')
+      .data(pie(data))
+      .enter()
+      .append("g")  
+      .append('path')
+      .attr('d', arc)
+      .attr('fill', (d,i) => color(i))
+      .style('opacity', opacity)
+      .style('stroke', 'white')
+      .on("mouseover", function(d) {
+          d3.selectAll('path')
+            .style("opacity", otherOpacityOnHover);
+          d3.select(this) 
+            .style("opacity", opacityHover);
+
+          let g = d3.select("svg")
+            .style("cursor", "pointer")
+            .append("g")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
+
+          g.append("text")
+            .attr("class", "name-text")
+            .text(`${d.data.name} (${d.data.value})`)
+            .attr('text-anchor', 'middle');
+
+          let text = g.select("text");
+          let bbox = text.node().getBBox();
+          let padding = 2;
+          g.insert("rect", "text")
+            .attr("x", bbox.x - padding)
+            .attr("y", bbox.y - padding)
+            .attr("width", bbox.width + (padding*2))
+            .attr("height", bbox.height + (padding*2))
+            .style("fill", "white")
+            .style("opacity", 0.75);
+        })
+      .on("mousemove", function(d) {
+            let mousePosition = d3.mouse(this);
+            let x = mousePosition[0] + width/2;
+            let y = mousePosition[1] + height/2 - tooltipMargin;
+
+            let text = d3.select('.tooltip text');
+            let bbox = text.node().getBBox();
+            if(x - bbox.width/2 < 0) {
+              x = bbox.width/2;
+            }
+            else if(width - x - bbox.width/2 < 0) {
+              x = width - bbox.width/2;
+            }
+
+            if(y - bbox.height/2 < 0) {
+              y = bbox.height + tooltipMargin * 2;
+            }
+            else if(height - y - bbox.height/2 < 0) {
+              y = height - bbox.height/2;
+            }
+
+            d3.select('.tooltip')
+              .style("opacity", 1)
+              .attr('transform',`translate(${x}, ${y})`);
+        })
+      .on("mouseout", function(d) {   
+          d3.select("svg")
+            .style("cursor", "none")  
+            .select(".tooltip").remove();
+        d3.selectAll('path')
+            .style("opacity", opacity);
+        })
+      .on("touchstart", function(d) {
+          d3.select("svg")
+            .style("cursor", "none");    
+      })
+      .each(function(d, i) { this._current = i; });
+
+    let legend = d3.select(sDivSelector).append('div')
+                .attr('class', 'legend')
+                .style('margin-top', '30px');
+
+    let keys = legend.selectAll('.key')
+                .data(data)
+                .enter().append('div')
+                .attr('class', 'key')
+                .style('display', 'flex')
+                .style('align-items', 'center')
+                .style('margin-right', '20px');
+
+            keys.append('div')
+                .attr('class', 'symbol')
+                .style('height', '10px')
+                .style('width', '10px')
+                .style('margin', '5px 5px')
+                .style('background-color', (d, i) => color(i));
+
+            keys.append('div')
+                .attr('class', 'name')
+                .text(d => `${d.name} (${d.value})`);
+
+            keys.exit().remove();
+}
+
+
+
+
+
+
+function d3_histogramify(data, iBottom, iTop) {
+    if (iBottom) {} else { iBottom = 0; }
+    if (iTop) {} else { iTop = 1000; }
+
+    // set the dimensions and margins of the graph
+    var margin = {top: 10, right: 30, bottom: 30, left: 40},
+        width = 460 - margin.left - margin.right,
+        height = 400 - margin.top - margin.bottom;
+
+    // append the svg object to the body of the page
+    if ($$$$("#my_dataviz")) {$$$$("#my_dataviz").innerHTML = ""; } else { document.body.innerHTML = "<div id='my_dataviz'></div>"; }
+    // $$$$("#my_dataviz").innerHTML = "";
+    var svg = d3.select("#my_dataviz")
+      .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform",
+              "translate(" + margin.left + "," + margin.top + ")");
+
+    // get the data
+    // d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/1_OneNum.csv", function(data) {
+
+      // X axis: scale and draw:
+      var x = d3.scaleLinear()
+      // var x = d3.scale.linear()
+          .domain([iBottom, iTop])     // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
+          .range([0, width]);
+      svg.append("g")
+          .attr("transform", "translate(0," + height + ")")
+          .call(d3.axisBottom(x));
+
+      // set the parameters for the histogram
+      var histogram = d3.histogram()
+          // .value(function(d) { return d.price; })   // I need to give the vector of value
+          .value(function(d) { return d.num; })   // I need to give the vector of value
+          .domain(x.domain())  // then the domain of the graphic
+          .thresholds(x.ticks(70)); // then the numbers of bins
+
+      // And apply this function to data to get the bins
+      var bins = histogram(data);
+
+      // Y axis: scale and draw:
+      var y = d3.scaleLinear()
+          .range([height, 0]);
+          y.domain([0, d3.max(bins, function(d) { return d.length; })]);   // d3.hist has to be called before the Y axis obviously
+      svg.append("g")
+          .call(d3.axisLeft(y));
+
+      // append the bar rectangles to the svg element
+      svg.selectAll("rect")
+          .data(bins)
+          .enter()
+          .append("rect")
+            .attr("x", 1)
+            .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
+            .attr("width", function(d) { return x(d.x1) - x(d.x0) -1 ; })
+            .attr("height", function(d) { return height - y(d.length); })
+            .style("fill", "#69b3a2")
+
+    // });
+
+}
+
+
+
+
+function d3_barPlotify(data) {
+    // where RO has rows called "group", "xyz", "xyz", etc
+    // set the dimensions and margins of the graph
+    const margin = {top: 10, right: 30, bottom: 20, left: 50},
+        width = 460 - margin.left - margin.right,
+        height = 400 - margin.top - margin.bottom;
+
+    // append the svg object to the body of the page
+    if ($$$$("#my_dataviz")) { $$$$("#my_dataviz").innerHTML = ""; } else { document.body.innerHTML = "<div id='my_dataviz'></div>"; }
+    // $$$$("#my_dataviz").innerHTML = "";
+    const svg = d3.select("#my_dataviz")
+      .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    // Parse the Data
+    //d3.csv("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/data_stackedXL.csv").then( function(data) {
+    // data = d3.json(data); console.log(data.columns);
+    // d3.json(aRO).then(function(data) {
+
+      // List of subgroups = header of the csv files = soil condition here
+      // const subgroups = data.columns.slice(1)
+      sGroup = toVO(data)[0][0];
+      const subgroups = toVO(data)[0].slice();
+      console.log(subgroups);
+
+      // List of groups = species here = value of the first column called group -> I show them on the X axis
+      // const groups = data.map(d => d.group)
+      const groups = data.map(d => d[sGroup])
+      console.log(groups);
+
+      // Add X axis
+      const x = d3.scaleBand()
+          .domain(groups)
+          .range([0, width])
+          .padding([0.2])
+      svg.append("g")
+        .attr("transform", `translate(0, ${height})`)
+        .call(d3.axisBottom(x).tickSizeOuter(0));
+
+      // Add Y axis
+      const y = d3.scaleLinear()
+        .domain([0, 120])
+        .range([ height, 0 ]);
+      svg.append("g")
+        .call(d3.axisLeft(y));
+
+      // color palette = one color per subgroup
+      const color = d3.scaleOrdinal()
+        .domain(subgroups)
+        .range(d3.schemeSet2);
+
+      //stack the data? --> stack per subgroup
+      const stackedData = d3.stack()
+        .keys(subgroups)
+        (data)
+
+
+
+
+      // ----------------
+      // Highlight a specific subgroup when hovered
+      // ----------------
+
+      // Show the bars
+      svg.append("g")
+        .selectAll("g")
+        // Enter in the stack data = loop key per key = group per group
+        .data(stackedData)
+        .join("g")
+          .attr("fill", d => color(d.key))
+          .attr("class", d => "myRect " + d.key ) // Add a class to each subgroup: their name
+          .selectAll("rect")
+          // enter a second time = loop subgroup per subgroup to add all rectangles
+          .data(d => d)
+          .join("rect")
+            // .attr("x", d => x(d.data.group))
+            .attr("x", d => x(d.data[sGroup]))
+            .attr("y", d => y(d[1]))
+            .attr("height", d => y(d[0]) - y(d[1]))
+            .attr("width",x.bandwidth())
+            .attr("stroke", "grey")
+            .on("mouseover", function (event,d) { // What happens when user hover a bar
+
+              // what subgroup are we hovering?
+              const subGroupName = d3.select(this.parentNode).datum().key 
+
+              // Reduce opacity of all rect to 0.2
+               d3.selectAll(".myRect").style("opacity", 0.2)  
+
+              // Highlight all rects of this subgroup with opacity 1. It is possible to select them since they have a specific class = their name.
+               d3.selectAll("."+subGroupName).style("opacity",1) 
+            })
+            .on("mouseleave", function (event,d) { // When user do not hover anymore
+
+              // Back to normal opacity: 1
+              d3.selectAll(".myRect")
+              .style("opacity",1) 
+          })
+
+    // })
+}
+
+
+
+function d3_StreamGraphify(data) {
+    // set the dimensions and margins of the graph
+    const margin = {top: 20, right: 30, bottom: 0, left: 10},
+        width = 460 - margin.left - margin.right,
+        height = 400 - margin.top - margin.bottom;
+
+    // append the svg object to the body of the page
+    if ($$$$("#my_dataviz")) { $$$$("#my_dataviz").innerHTML = ""; } else { document.body.innerHTML = "<div id='my_dataviz'></div>"; }
+    // $$$$("#my_dataviz").innerHTML = "";
+    const svg = d3.select("#my_dataviz")
+      .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform",
+              `translate(${margin.left}, ${margin.top})`);
+
+    // Parse the Data
+    // d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/5_OneCatSevNumOrdered_wide.csv").then(function(data) {
+    // d3.csv("").then(function(data) {
+
+      // List of groups = header of the csv files
+      // const keys = data.columns.slice(1)
+      // sGroup = toVO(data)[0][0];
+      const keys = toVO(data)[0].slice();
+    
+      // Add X axis
+      const x = d3.scaleLinear()
+        .domain(d3.extent(data, function(d) { return d.year; }))
+        .range([ 0, width ]);
+      svg.append("g")
+        .attr("transform", `translate(0, ${height*0.8})`)
+        .call(d3.axisBottom(x).tickSize(-height*.7).tickValues([1900, 1925, 1975, 2000]))
+        .select(".domain").remove()
+      // Customization
+      svg.selectAll(".tick line").attr("stroke", "#b8b8b8")
+
+      // Add X axis label:
+      svg.append("text")
+          .attr("text-anchor", "end")
+          .attr("x", width)
+          .attr("y", height-30 )
+          .text("Time (year)");
+
+      // Add Y axis
+      const y = d3.scaleLinear()
+        .domain([-100000, 100000])
+        .range([ height, 0 ]);
+
+      // color palette
+      const color = d3.scaleOrdinal()
+        .domain(keys)
+        .range(d3.schemeDark2);
+
+      //stack the data?
+      const stackedData = d3.stack()
+        .offset(d3.stackOffsetSilhouette)
+        .keys(keys)
+        (data)
+
+      // create a tooltip
+      const Tooltip = svg
+        .append("text")
+        .attr("x", 0)
+        .attr("y", 0)
+        .style("opacity", 0)
+        .style("font-size", 17)
+
+      // Three function that change the tooltip when user hover / move / leave a cell
+      const mouseover = function(event,d) {
+        Tooltip.style("opacity", 1)
+        d3.selectAll(".myArea").style("opacity", .2)
+        d3.select(this)
+          .style("stroke", "black")
+          .style("opacity", 1)
+      }
+      const mousemove = function(event,d,i) {
+        grp = d.key
+        Tooltip.text(grp)
+      }
+      const mouseleave = function(event,d) {
+        Tooltip.style("opacity", 0)
+        d3.selectAll(".myArea").style("opacity", 1).style("stroke", "none")
+       }
+
+      // Area generator
+      const area = d3.area()
+        .x(function(d) { return x(d.data.year); })
+        .y0(function(d) { return y(d[0]); })
+        .y1(function(d) { return y(d[1]); })
+
+      // Show the areas
+      svg
+        .selectAll("mylayers")
+        .data(stackedData)
+        .join("path")
+          .attr("class", "myArea")
+          .style("fill", function(d) { return color(d.key); })
+          .attr("d", area)
+          .on("mouseover", mouseover)
+          .on("mousemove", mousemove)
+          .on("mouseleave", mouseleave)
+
+    // })
+
+}
+
+
+
+// domP5scripts
 
 // domGSDSscripts => NEW googlesheets scripts
 // GSDS_CELL, GSDS_RANGE1D, GSDS_RANGE2D, GSDS_CELL_value, GSDS_CELL_valueParseInt, GSDS_RANGE1D_values, GSDS_RANGE2D_values
