@@ -145,6 +145,9 @@ toDelimited = function(aInputArray, sDelimiter, sQualifier) { function returnAll
 convertTabDelimitedToValuesOriented = function(sText) { return sText.split(String.fromCharCode(10)).map(function(oElement) { return oElement.split(String.fromCharCode(9)); }); }
 convertTabDelimitedToRecordsOriented = function(sText) { return toRO(convertTabDelimitedToValuesOriented(sText)); };toXXXOrientatedDEDUPED=toXXXOrientedDEDUPED;
 
+// 01/09/2022 - place beside datascripts.convertTabDelimitedToValuesOriented
+function fCSVToVO(sCSV) { return sCSV.split("\n").map(o=>o.split(",")); }; convertCSVToValuesOriented = function(s) { return fCSVToVO(s); }
+
 toXXXOrientated = function (aInputArray, sXXX) { var aRecordsOrientation = JSONPS(aInputArray); return aRecordsOrientation.reduce(function (agg, oElement) { if (agg[oElement[sXXX]]==undefined) { agg[oElement[sXXX]] = oElement; } else { if (!Array.isArray(agg[oElement[sXXX]])) { agg[oElement[sXXX]] = [agg[oElement[sXXX]]].concat(oElement) } else { agg[oElement[sXXX]] = agg[oElement[sXXX]].concat(oElement) } } return agg; }, {}); }
 
 isVO = function(a) { return Array.isArray(a[0]); }; isValuesOriented = function(a) { return isVO(a); }
