@@ -13,9 +13,7 @@ count=function(s, c) { var result = 0, i = 0; for(i;i<s.length;i++)if(s[i]==c)re
 // count=function(c) { var result = 0, i = 0; for(i;i<this.length;i++)if(this[i]==c)result++; return result; };
 // Array.prototype.unique = function() { var a = []; for (var i=0, l=this.length; i<l; i++) if (a.indexOf(this[i]) === -1) a.push(this[i]); return a; };
 unique = function(aArray) { var a = []; for (var i=0, l=aArray.length; i<l; i++) if (a.indexOf(aArray[i]) === -1) a.push(aArray[i]); return a; };
-// Object.prototype.toArray = function () { var _this = this; var array = []; Object.keys(this).map(function (key) { array.push(_this[key]); }); return array; };
-// sCF = String.fromCharCode(13); sLF = String.fromCharCode(10); sTB = String.fromCharCode(9);
-// sCarriageReturn = sCF; sLineFeed = sLF; sTab = sTB;                                                                       
+// Object.prototype.toArray = function () { var _this = this; var array = []; Object.keys(this).map(function (key) { array.push(_this[key]); }); return array; };                                                                 
 /* END no brainer / polyfilles for es5 */
 
 /* BEGIN values oriented / records oriented / tab delimited converter functions */
@@ -80,7 +78,11 @@ ObjectValuesRegex = function(oObject, rRegexKey) {
 function ObjectValueRegex(oObject,rRegexKey) { return ObjectValuesRegex(oObject,rRegexKey)[0]; }
 Arrayify = function(aArray) { if (Array.isArray(aArray)) {} else { aArray = [aArray]; } }
 toVO = function(aInputArray, aColumns) {
-    if (isVO(aInputArray)) { return aInputArray; }
+    if (typeof aInputArray=="object" && !Array.isArray(aInputArray)) { // checks for objects.  note how toVO([{"one": "two", "three": "four"}] = [["one","three"],["two","four"]] and toVO({"one": "two", "three": "four"}) = [["one","two"],["three","four"]]
+        aInputArray = Object.keys(aInputArray).reduce(function(a,e,i,o) { a.push([e,aInputArray[e]]); return a; }, [] )
+    }
+    if (typeof(aInputArray)=="string") { return [[aInputArray]]; };
+    if (isVO(aInputArray)) { return aInputArray; };
     // REFACTOR: replace aArrayOfAllPossibleColumnTitles now that there's a normalizeRecordsOriented function?
     var aArrayOfAllPossibleColumnTitles = aInputArray.reduce(function(agg123, oElement123) {
         Object.keys(oElement123).forEach(function(oElement751) {
