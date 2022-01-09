@@ -349,6 +349,11 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
 
 } catch(e) { console.log("ERROR in domscripts.js " - e) }
 
+// domDEBUGGINGscripts //
+
+var copyS = function(o) { copy(JSON.stringify(o)); }
+var alertS = function(o) { alert(JSON.stringify(o)); }
+
 // domASCIIscripts (maybe dataASCIIscripts?)
 fStringFromCharCode = function() {
     // js's String.fromCharCode(10) vs gs's CHAR(10)
@@ -383,6 +388,8 @@ fStringFromCharCode = function() {
 // dom_LZString,Moment,date-fns_scripts?
 
 // domD3scripts, domP5scripts
+
+// d3_TreeMapify, d3_PieChartify, d3_Sankeyify, d3_ridgelinePlotify
 
 // domGSDSscripts => NEW googlesheets scripts
 // GSDS_CELL, GSDS_RANGE1D, GSDS_RANGE2D, GSDS_CELL_value, GSDS_CELL_valueParseInt, GSDS_RANGE1D_values, GSDS_RANGE2D_values
