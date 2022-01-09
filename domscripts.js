@@ -1,353 +1,352 @@
 // domBASICscripts => domscripts.serverUNsafe and ES5_UNsafe
-try { // domscripts.serverUNsafe and ES5_UNsafe
-  /* BEGIN - THESE FUNCTIONS SHOULD NEVER BE ADDED TO datascripts.js? */
-  // REFACTORING NOTES:
-  // make GSDS_disjointedRangeToArray es5 safe (I don't think Array.flat() is a function in es5?)
-  // bring googlesheets.convertOSRToHTMLTable() into domscripts (since toHTMLTable() is dependent on it?)?  then figure out how to bring domscripts functions into cajamotora backend without the NaN popup? Or it doesn't matter because domscripts.serversafe is minified into googlesheets' datascripts.js??
-  // vanilla-fy the jQuery() functions (eg $) out of this domscripts.js solution
-  // replace Array.prototype.slice.call and Array.from with $$$a?
-  // DONE - refactor: create $$$a(el) (which is the equivalent of Array.prototype.call($$$(el)) )?
-  // DONE - refactor: convertRecordsOrientedArrayToHTMLTable(), convertValuesOrientedToHTMLTable(), convertRecordsOrientedArrayToExcelXML(), convertaRecordsOrientedToInputBoxesForm(), oHTMLSelect() into DATASCRIPTS
-  // DONE - GSDS_disjointedRangeToAVO(), GSDS_disjointedRangeToArray(), Into datahtmlscripts.js?
-  // cellToColumn("C10") vs columnToLetter(convertCellToArray("C10")[0])?
-  // function consolelog(sReturn) {   setTimeout (console.log.bind(console, sReturn)); }
-  // function dumpCSSText(element){ var s = ''; var o = getComputedStyle(element); for(var i = 0; i < o.length; i++){ s+=o[i] + ':' + o.getPropertyValue(o[i])+';'; } return s; }
+// try { // domscripts.serverUNsafe and ES5_UNsafe
+/* BEGIN - THESE FUNCTIONS SHOULD NEVER BE ADDED TO datascripts.js? */
+// REFACTORING NOTES:
+// make GSDS_disjointedRangeToArray es5 safe (I don't think Array.flat() is a function in es5?)
+// bring googlesheets.convertOSRToHTMLTable() into domscripts (since toHTMLTable() is dependent on it?)?  then figure out how to bring domscripts functions into cajamotora backend without the NaN popup? Or it doesn't matter because domscripts.serversafe is minified into googlesheets' datascripts.js??
+// vanilla-fy the jQuery() functions (eg $) out of this domscripts.js solution
+// replace Array.prototype.slice.call and Array.from with $$$a?
+// DONE - refactor: create $$$a(el) (which is the equivalent of Array.prototype.call($$$(el)) )?
+// DONE - refactor: convertRecordsOrientedArrayToHTMLTable(), convertValuesOrientedToHTMLTable(), convertRecordsOrientedArrayToExcelXML(), convertaRecordsOrientedToInputBoxesForm(), oHTMLSelect() into DATASCRIPTS
+// DONE - GSDS_disjointedRangeToAVO(), GSDS_disjointedRangeToArray(), Into datahtmlscripts.js?
+// cellToColumn("C10") vs columnToLetter(convertCellToArray("C10")[0])?
+// function consolelog(sReturn) {   setTimeout (console.log.bind(console, sReturn)); }
+// function dumpCSSText(element){ var s = ''; var o = getComputedStyle(element); for(var i = 0; i < o.length; i++){ s+=o[i] + ':' + o.getPropertyValue(o[i])+';'; } return s; }
 
-    // BEGIN useful vanilla dom scripts - consider refactoring out the overloading prototypes?
-    
-    // BEGIN VANILLA-FIED JQUERY
-    // var $$$ = document.querySelectorAll.bind(document);
-    function $$$(el) { if (typeof(el) == "string") { return document.querySelectorAll(el) } else { return el; } ; };    
-    function $$$a(el) { return Array.prototype.slice.call($$$(el)); };  // vs Array.prototype.slice.call() vs Array.from()?
-    // var $$$$ = document.querySelector.bind(document);
-    function $$$$(el) { if (typeof(el) == "string") { return document.querySelector(el) } else { return el; } ; };    
+// BEGIN useful vanilla dom scripts - consider refactoring out the overloading prototypes?
 
-    // HTMLElement.prototype.$$$ = function (element) { return this.querySelectorAll(element); }; 
-    HTMLElement.prototype.$$$ = function (element) { if (typeof(element) == "string") { return this.querySelectorAll(element) } else { return element; } ; };
-    HTMLElement.prototype.$$$a = function (element) { return Array.prototype.slice.call(this.querySelectorAll(element)); }; 
-    // HTMLElement.prototype.$$$$ = function (element) { return this.querySelector(element); }; 
-    HTMLElement.prototype.$$$$ = function (element) { if (typeof(element) == "string") { return this.querySelector(element) } else { return element; } ; };
-    // END VANILLA-FIED JQUERY
-  
-    domRemoveNode = function(domEl) { domEl.parentNode.removeChild(domEl); }
-    domRemoveChildren = function(domEl) { Array.from(domEl.children).forEach(function(oEl) { domEl.removeChild(oEl); }) }
-    domTableAssumed = function(domTable) { ((domTable) ? "" : domTable = $$$$("table")); ((typeof(domTable) == "string") ? domTable = $$$(domTable)[0] : ""); return domTable; }
-    domTableToValuesOrientedTDs = function(domTable) { domTable = domTableAssumed(domTable); return Array.prototype.slice.call((domTable).$$$("tr")).map(function(oElement) { return Array.prototype.slice.call(oElement.$$$("th,td")); }) }
-    domTableToValuesOrientedDomTDs = domTableToValuesOrientedTDs;
+// BEGIN VANILLA-FIED JQUERY
+// var $$$ = document.querySelectorAll.bind(document);
+function $$$(el) { if (typeof(el) == "string") { return document.querySelectorAll(el) } else { return el; } ; };    
+function $$$a(el) { return Array.prototype.slice.call($$$(el)); };  // vs Array.prototype.slice.call() vs Array.from()?
+// var $$$$ = document.querySelector.bind(document);
+function $$$$(el) { if (typeof(el) == "string") { return document.querySelector(el) } else { return el; } ; };    
 
-    function domReplaceDom(oEl, oEl2) { // simplifies .replaceChild()
-        // domReplaceDom($$$("table")[0], '<div id="my_dataviz">test!</div>');
-        if (typeof(oEl) == "string") {
-            oEl = $$$(oEl)[0];
-        }
-        if (typeof(oEl2) == "string") {
-            var oElTemp = document.createElement("div");
-            oElTemp.innerHTML = oEl2;
-            oEl2 = oElTemp;
-        }
-        // oEl.parentElement.appendChild(oEl2);
-        // oEl.parentElement.replaceChild(oEl, oEl2);
-        document.body.insertBefore(oEl2, oEl)
-        document.body.removeChild(oEl);
+// HTMLElement.prototype.$$$ = function (element) { return this.querySelectorAll(element); }; 
+HTMLElement.prototype.$$$ = function (element) { if (typeof(element) == "string") { return this.querySelectorAll(element) } else { return element; } ; };
+HTMLElement.prototype.$$$a = function (element) { return Array.prototype.slice.call(this.querySelectorAll(element)); }; 
+// HTMLElement.prototype.$$$$ = function (element) { return this.querySelector(element); }; 
+HTMLElement.prototype.$$$$ = function (element) { if (typeof(element) == "string") { return this.querySelector(element) } else { return element; } ; };
+// END VANILLA-FIED JQUERY
+
+domRemoveNode = function(domEl) { domEl.parentNode.removeChild(domEl); }
+domRemoveChildren = function(domEl) { Array.from(domEl.children).forEach(function(oEl) { domEl.removeChild(oEl); }) }
+domTableAssumed = function(domTable) { ((domTable) ? "" : domTable = $$$$("table")); ((typeof(domTable) == "string") ? domTable = $$$(domTable)[0] : ""); return domTable; }
+domTableToValuesOrientedTDs = function(domTable) { domTable = domTableAssumed(domTable); return Array.prototype.slice.call((domTable).$$$("tr")).map(function(oElement) { return Array.prototype.slice.call(oElement.$$$("th,td")); }) }
+domTableToValuesOrientedDomTDs = domTableToValuesOrientedTDs;
+
+function domReplaceDom(oEl, oEl2) { // simplifies .replaceChild()
+    // domReplaceDom($$$("table")[0], '<div id="my_dataviz">test!</div>');
+    if (typeof(oEl) == "string") {
+        oEl = $$$(oEl)[0];
     }
-
-
-    domTableToValuesOriented = function(domTable) { return domTableToValuesOrientedDomTDs(domTable).map(function(oEl) { return oEl.map(function(oEl2) { return domGetTDTextOrValue(oEl2); }) }) }
-    convertHTMLTableToValuesOriented = domTableToValuesOriented; 
-
-    /* insertBefore DOM ? <element> ? appendHTML() ? prependHTML() ? </element> ? insertAfterDOM */
-    HTMLElement.prototype.prependHtml = function (element) {
-        const div = document.createElement('div');
-        div.innerHTML = element;
-        this.insertBefore(div, this.firstChild);
-    }; HTMLElement.prototype.prependHTML = HTMLElement.prototype.prependHtml;
-    HTMLElement.prototype.appendHtml = function (element) {
-        const div = document.createElement('div');
-        div.innerHTML = element;
-        while (div.children.length > 0) {
-            this.appendChild(div.children[0]);
-        }
-    }; HTMLElement.prototype.appendHTML = HTMLElement.prototype.appendHtml;  
-    HTMLElement.prototype.insertAfterDOM = function (newNode) {
-        if (typeof(newNode)=="string") {
-            var div = document.createElement('div');
-            div.innerHTML = newNode;
-            newNode = div;
-        }
-        this.parentNode.insertBefore(newNode, this.nextSibling);
-    };
-    HTMLElement.prototype.insertBeforeDOM = function (newNode) {
-        if (typeof(newNode)=="string") {
-            var div = document.createElement('div');
-            div.innerHTML = newNode;
-            newNode = div;
-        }
-        this.parentNode.insertBefore(newNode, this);
-    };
-    HTMLElement.prototype.getElementsByInnerText = function (text, escape) {
-        var nodes  = this.querySelectorAll("*"); //  this.$$$("*"); doesn't work
-        var matches = [];
-        for (var i = 0; i < nodes.length; i++) {
-            if (nodes[i].innerText == text) {
-                matches.push(nodes[i]);
-            }
-        }
-        if (escape) {
-            return matches;
-        }
-        var result = [];
-        for (var i = 0; i < matches.length; i++) {
-            var filter = matches[i].getElementsByInnerText(text, true);
-            if (filter.length == 0) {
-                result.push(matches[i]);
-            }
-        }
-        return result;
-    };
-    document.getElementsByInnerText = HTMLElement.prototype.getElementsByInnerText;
-    HTMLElement.prototype.getElementByInnerText = function (text) {
-        var result = this.getElementsByInnerText(text);
-        if (result.length == 0) return null;
-        return result[0];
+    if (typeof(oEl2) == "string") {
+        var oElTemp = document.createElement("div");
+        oElTemp.innerHTML = oEl2;
+        oEl2 = oElTemp;
     }
-    document.getElementByInnerText = HTMLElement.prototype.getElementByInnerText;
-    // END EXTREMELY USEFUL vanilla dom scripts
-    
-    // random vanilla DOM manipulation scripts
-    // // replace body tag's innerHTML with div
-    // document.getElementsByTagName('body')[0].innerHTML = "<div id='my'>blahHTML<div>"
-    // UNORGANIZED HTML TABLE LOOKUPS/FILTERS/MANIPULATIONS
-    function dom_lookupvalueHTMLTable(sTable, sRowValue, iColumn) {
-        // sTable = "cualquierPotencialidad"; sRowValue = "pdf dump"; iColumn = 1;
-        // dom_lookupvalueHTMLTable("cualquierPotencialidad", "pdf dump", 1);
-        return Array.from( $("#" + sTable)[0].children[0].children ).reduce(function(agg, oElement) {
-            if (oElement.children[0].innerText == sRowValue) {
-                return agg + oElement.children[iColumn].innerText;
+    // oEl.parentElement.appendChild(oEl2);
+    // oEl.parentElement.replaceChild(oEl, oEl2);
+    document.body.insertBefore(oEl2, oEl)
+    document.body.removeChild(oEl);
+}
+
+
+domTableToValuesOriented = function(domTable) { return domTableToValuesOrientedDomTDs(domTable).map(function(oEl) { return oEl.map(function(oEl2) { return domGetTDTextOrValue(oEl2); }) }) }
+convertHTMLTableToValuesOriented = domTableToValuesOriented; 
+
+/* insertBefore DOM ? <element> ? appendHTML() ? prependHTML() ? </element> ? insertAfterDOM */
+HTMLElement.prototype.prependHtml = function (element) {
+    const div = document.createElement('div');
+    div.innerHTML = element;
+    this.insertBefore(div, this.firstChild);
+}; HTMLElement.prototype.prependHTML = HTMLElement.prototype.prependHtml;
+HTMLElement.prototype.appendHtml = function (element) {
+    const div = document.createElement('div');
+    div.innerHTML = element;
+    while (div.children.length > 0) {
+        this.appendChild(div.children[0]);
+    }
+}; HTMLElement.prototype.appendHTML = HTMLElement.prototype.appendHtml;  
+HTMLElement.prototype.insertAfterDOM = function (newNode) {
+    if (typeof(newNode)=="string") {
+        var div = document.createElement('div');
+        div.innerHTML = newNode;
+        newNode = div;
+    }
+    this.parentNode.insertBefore(newNode, this.nextSibling);
+};
+HTMLElement.prototype.insertBeforeDOM = function (newNode) {
+    if (typeof(newNode)=="string") {
+        var div = document.createElement('div');
+        div.innerHTML = newNode;
+        newNode = div;
+    }
+    this.parentNode.insertBefore(newNode, this);
+};
+HTMLElement.prototype.getElementsByInnerText = function (text, escape) {
+    var nodes  = this.querySelectorAll("*"); //  this.$$$("*"); doesn't work
+    var matches = [];
+    for (var i = 0; i < nodes.length; i++) {
+        if (nodes[i].innerText == text) {
+            matches.push(nodes[i]);
+        }
+    }
+    if (escape) {
+        return matches;
+    }
+    var result = [];
+    for (var i = 0; i < matches.length; i++) {
+        var filter = matches[i].getElementsByInnerText(text, true);
+        if (filter.length == 0) {
+            result.push(matches[i]);
+        }
+    }
+    return result;
+};
+document.getElementsByInnerText = HTMLElement.prototype.getElementsByInnerText;
+HTMLElement.prototype.getElementByInnerText = function (text) {
+    var result = this.getElementsByInnerText(text);
+    if (result.length == 0) return null;
+    return result[0];
+}
+document.getElementByInnerText = HTMLElement.prototype.getElementByInnerText;
+// END EXTREMELY USEFUL vanilla dom scripts
+
+// random vanilla DOM manipulation scripts
+// // replace body tag's innerHTML with div
+// document.getElementsByTagName('body')[0].innerHTML = "<div id='my'>blahHTML<div>"
+// UNORGANIZED HTML TABLE LOOKUPS/FILTERS/MANIPULATIONS
+function dom_lookupvalueHTMLTable(sTable, sRowValue, iColumn) {
+    // sTable = "cualquierPotencialidad"; sRowValue = "pdf dump"; iColumn = 1;
+    // dom_lookupvalueHTMLTable("cualquierPotencialidad", "pdf dump", 1);
+    return Array.from( $("#" + sTable)[0].children[0].children ).reduce(function(agg, oElement) {
+        if (oElement.children[0].innerText == sRowValue) {
+            return agg + oElement.children[iColumn].innerText;
+        } else {
+            return agg;
+        }
+        console.log()
+        return agg + oElement;
+    }, "")
+}
+
+function filterHTMLTable(sTable, iColumn, aAcceptableValues) {
+    // aAcceptableValues = ["aOrderItemsALL", "POST daterange", "buttons"]; filterHTMLTable("cualquierPotencialidad", 0, aAcceptableValues);
+    iColumn = 0; //first column
+    //Array.from($("#cualquierPotencialidad")[0].children[iColumn].children).forEach(function(oElement) {
+    Array.from($("#" + sTable + "")[0].children[iColumn].children).forEach(function(oElement) {
+        //gObject = oElement;
+        var bDecision = aAcceptableValues.reduce(function(agg098, oElement098) { return agg098 && (oElement.children[0].innerText != oElement098);}, true);
+
+        if (bDecision) {
+            oElement.style.display = "none";
+        }
+        //console.log(Array.from(oElement.children))
+    })
+}
+// remove first column, consider refractoring to something cooler
+function removeHTMLTableColumn(sTable, iColumn) {
+    // removeHTMLTableColumn('cualquierPotencialidad', 0);
+    Array.from($("#" + sTable + "")[0].children[0].children).forEach(function(oElement) {
+        oElement.children[iColumn].style.display = "none"
+    })
+}
+// END UNORGANIZED HTML FILTERS/LOOKUPS/MANIPULATIONS
+
+/* refactored this on 7/16/2021 in favor of
+convertHTMLTableToValuesOriented = function(sHTMLTable) {
+    // convertHTMLTableToValuesOriented(".convertValuesOrientedToHTMLTable");
+    // sHTMLTable = ".convertValuesOrientedToHTMLTable";
+    return Array.prototype.slice.call($(sHTMLTable)[0].querySelectorAll("tr")).map(function(oElement) {
+        return Array.prototype.slice.call(oElement.querySelectorAll("th, td")).map(function(oElement0) {
+            if (oElement0.querySelectorAll("select")[0]) {
+                return oElement0.querySelectorAll("select")[0].value; //[0].value;
             } else {
-                return agg;
+                return oElement0.innerText; // | oElement0.value;
             }
-            console.log()
-            return agg + oElement;
-        }, "")
+        });
+    })
+} */
+
+// BEGIN animate.css scripts
+function addAnimateCSSToHover(sSelector, sClass) {  // jQuery-dependent
+   sClass = 'animated animate__animated animate__' + sClass; 
+   $(sSelector).hover(function(){
+       $(this).addClass(sClass);
+   });
+   $(sSelector).bind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd",function(){
+      $(this).removeClass(sClass);
+   });
+}
+
+function getAnimateCSSAnimations() {
+    return "bounce\nflash\npulse\nrubberBand\nshakeX\nshakeY\nheadShake\nswing\ntada\nwobble\njello\nheartBeat\nbackInDown\nbackInLeft\nbackInRight\nbackInUp\nbackOutDown\nbackOutLeft\nbackOutRight\nbackOutUp\nbounceIn\nbounceInDown\nbounceInLeft\nbounceInRight\nbounceInUp\nbounceOut\nbounceOutDown\nbounceOutLeft\nbounceOutRight\nbounceOutUp\nfadeIn\nfadeInDown\nfadeInDownBig\nfadeInLeft\nfadeInLeftBig\nfadeInRight\nfadeInRightBig\nfadeInUp\nfadeInUpBig\nfadeInTopLeft\nfadeInTopRight\nfadeInBottomLeft\nfadeInBottomRight\nfadeOut\nfadeOutDown\nfadeOutDownBig\nfadeOutLeft\nfadeOutLeftBig\nfadeOutRight\nfadeOutRightBig\nfadeOutUp\nfadeOutUpBig\nfadeOutTopLeft\nfadeOutTopRight\nfadeOutBottomRight\nfadeOutBottomLeft\nflip\nflipInX\nflipInY\nflipOutX\nflipOutY\nlightSpeedInRight\nlightSpeedInLeft\nlightSpeedOutRight\nlightSpeedOutLeft\nrotateIn\nrotateInDownLeft\nrotateInDownRight\nrotateInUpLeft\nrotateInUpRight\nrotateOut\nrotateOutDownLeft\nrotateOutDownRight\nrotateOutUpLeft\nrotateOutUpRight\nhinge\njackInTheBox\nrollIn\nrollOut\nzoomIn\nzoomInDown\nzoomInLeft\nzoomInRight\nzoomInUp\nzoomOut\nzoomOutDown\nzoomOutLeft\nzoomOutRight\nzoomOutUp\nslideInDown\nslideInLeft\nslideInRight\nslideInUp\nslideOutDown\nslideOutLeft\nslideOutRight\nslideOutUp".split("\n");
+
+}
+
+function toggleAnimationVisbDisp(o,sVHvsDN,animation,i) {
+    // sVHvsDN is sVisibilityHiddenVsDisplayNone
+    if (sVHvsDN == "none") {
+        sVHvsDN = "displaynone";
+    } else {
+        sVHvsDN = "displayhidden";
+    }
+    if (o) {} else { o="*"; }
+    if (i) {} else { i=0; }
+    if (animation) {
+
+    } else {
+        sInAnimation = getRandomArrayToken(getAnimateCSSAnimationsMatch("In"));
+        sOutAnimation = getRandomArrayToken(getAnimateCSSAnimationsMatch("Out"));
+    }
+    if ($$$$(o).style.visibility == "hidden" || $$$$(o).style.display == "none") {
+
+        $$$animate(o, sInAnimation, i, "display");
+
+    } else {
+        $$$animate(o, sOutAnimation, i, sVHvsDN)
     }
 
-    function filterHTMLTable(sTable, iColumn, aAcceptableValues) {
-        // aAcceptableValues = ["aOrderItemsALL", "POST daterange", "buttons"]; filterHTMLTable("cualquierPotencialidad", 0, aAcceptableValues);
-        iColumn = 0; //first column
-        //Array.from($("#cualquierPotencialidad")[0].children[iColumn].children).forEach(function(oElement) {
-        Array.from($("#" + sTable + "")[0].children[iColumn].children).forEach(function(oElement) {
-            //gObject = oElement;
-            var bDecision = aAcceptableValues.reduce(function(agg098, oElement098) { return agg098 && (oElement.children[0].innerText != oElement098);}, true);
+}
 
-            if (bDecision) {
-                oElement.style.display = "none";
-            }
-            //console.log(Array.from(oElement.children))
-        })
+function getAnimateCSSAnimationsMatch(s) { return getAnimateCSSAnimations().filter(o=>o.match(new RegExp(s, "g"))); }
+getRandomArrayToken = function(a,i) { // consider refactoring this into datascripts.js?  make es5-friendly
+    if (i) {} else (i = 1);
+    if (i==1) {
+        return a[getRandomInt(0,a.length-1)];
+    } else {
+        return getRange(0, i-1).map(o=>{ return a[getRandomInt(0,a.length-1)]; });
     }
-    // remove first column, consider refractoring to something cooler
-    function removeHTMLTableColumn(sTable, iColumn) {
-        // removeHTMLTableColumn('cualquierPotencialidad', 0);
-        Array.from($("#" + sTable + "")[0].children[0].children).forEach(function(oElement) {
-            oElement.children[iColumn].style.display = "none"
-        })
+}      
+var animateCSS = (element, animation, prefix = 'animate__') =>
+  // We create a Promise and return it
+  new Promise((resolve, reject) => {
+    if (animation) {} else { animation = "bounce"; }
+    if (animation=="random") {
+      // animation = getAnimateCSSAnimations()[getRandomInt(0,96)];
+      animation = getRandomArrayToken(getAnimateCSSAnimations());
+      console.log(animation);
     }
-    // END UNORGANIZED HTML FILTERS/LOOKUPS/MANIPULATIONS
-  
-    /* refactored this on 7/16/2021 in favor of
-    convertHTMLTableToValuesOriented = function(sHTMLTable) {
-        // convertHTMLTableToValuesOriented(".convertValuesOrientedToHTMLTable");
-        // sHTMLTable = ".convertValuesOrientedToHTMLTable";
-        return Array.prototype.slice.call($(sHTMLTable)[0].querySelectorAll("tr")).map(function(oElement) {
-            return Array.prototype.slice.call(oElement.querySelectorAll("th, td")).map(function(oElement0) {
-                if (oElement0.querySelectorAll("select")[0]) {
-                    return oElement0.querySelectorAll("select")[0].value; //[0].value;
-                } else {
-                    return oElement0.innerText; // | oElement0.value;
-                }
-            });
-        })
-    } */
+    const animationName = `${prefix}${animation}`;
 
-    // BEGIN animate.css scripts
-    function addAnimateCSSToHover(sSelector, sClass) {  // jQuery-dependent
-       sClass = 'animated animate__animated animate__' + sClass; 
-       $(sSelector).hover(function(){
-           $(this).addClass(sClass);
-       });
-       $(sSelector).bind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd",function(){
-          $(this).removeClass(sClass);
-       });
-    }
-    
-    function getAnimateCSSAnimations() {
-        return "bounce\nflash\npulse\nrubberBand\nshakeX\nshakeY\nheadShake\nswing\ntada\nwobble\njello\nheartBeat\nbackInDown\nbackInLeft\nbackInRight\nbackInUp\nbackOutDown\nbackOutLeft\nbackOutRight\nbackOutUp\nbounceIn\nbounceInDown\nbounceInLeft\nbounceInRight\nbounceInUp\nbounceOut\nbounceOutDown\nbounceOutLeft\nbounceOutRight\nbounceOutUp\nfadeIn\nfadeInDown\nfadeInDownBig\nfadeInLeft\nfadeInLeftBig\nfadeInRight\nfadeInRightBig\nfadeInUp\nfadeInUpBig\nfadeInTopLeft\nfadeInTopRight\nfadeInBottomLeft\nfadeInBottomRight\nfadeOut\nfadeOutDown\nfadeOutDownBig\nfadeOutLeft\nfadeOutLeftBig\nfadeOutRight\nfadeOutRightBig\nfadeOutUp\nfadeOutUpBig\nfadeOutTopLeft\nfadeOutTopRight\nfadeOutBottomRight\nfadeOutBottomLeft\nflip\nflipInX\nflipInY\nflipOutX\nflipOutY\nlightSpeedInRight\nlightSpeedInLeft\nlightSpeedOutRight\nlightSpeedOutLeft\nrotateIn\nrotateInDownLeft\nrotateInDownRight\nrotateInUpLeft\nrotateInUpRight\nrotateOut\nrotateOutDownLeft\nrotateOutDownRight\nrotateOutUpLeft\nrotateOutUpRight\nhinge\njackInTheBox\nrollIn\nrollOut\nzoomIn\nzoomInDown\nzoomInLeft\nzoomInRight\nzoomInUp\nzoomOut\nzoomOutDown\nzoomOutLeft\nzoomOutRight\nzoomOutUp\nslideInDown\nslideInLeft\nslideInRight\nslideInUp\nslideOutDown\nslideOutLeft\nslideOutRight\nslideOutUp".split("\n");
+    if (typeof(element) == "string") { var node = document.querySelector(element); } else { var node = element; }
 
+    node.classList.add(`${prefix}animated`, animationName);
+
+    // When the animation ends, we clean the classes and resolve the Promise
+    function handleAnimationEnd(event) {
+      event.stopPropagation();
+      node.classList.remove(`${prefix}animated`, animationName);
+      // resolve('Animation ended');
+      resolve(event.target);
     }
-    
-    function toggleAnimationVisbDisp(o,sVHvsDN,animation,i) {
-        // sVHvsDN is sVisibilityHiddenVsDisplayNone
-        if (sVHvsDN == "none") {
-            sVHvsDN = "displaynone";
+
+    node.addEventListener('animationend', handleAnimationEnd, {once: true});
+  });      
+
+  function $$$animate(el,animation,idelay, fFunction1, fFunction2) {
+      // fFunction1=fFunction_beforeAnimation, fFunction2=fFunction2_afterAnimation
+      // fFunction = function(o) { o.style.display=""; }
+      if (animation) {} else { animation = "random"; }
+      if (el) {} else { el = "*"; }
+      if (idelay != undefined) {} else { idelay = 10; }
+      fNada = function(o) {};
+      oAnimateFunctions = {
+          "display": { "fFunction1": function(o) { o.style.display=""; o.style.visibility="visible" }, "fFunction2": function(o) { o.style.display=""; o.style.visibility="visible" } },
+          "displaynone": { "fFunction1": fNada, "fFunction2": function(o) { o.style.display="none"; } },
+          "displayhidden": { "fFunction1": fNada, "fFunction2": function(o) { o.style.visibility="hidden"; } },
+
+          "displaynonedisplay": { "fFunction1": fNada, "fFunction2": fNada, },
+          "displayhiddendisplay": { "fFunction1": fNada, "fFunction2": fNada, },
+          "displaydisplaynone": { "fFunction1": fNada, "fFunction2": fNada, },
+          "displaydisplayhidden": { "fFunction1": fNada, "fFunction2": fNada, },
+
+          // "displaynonedisplay": function(o) { o.style.display="none"; setTimeout(() => { o.style.display=""; ; o.style.visibility=""; }, idelay) },
+          // "displayhiddendisplay": function(o) { o.style.visibility="hidden"; setTimeout(() => { o.style.visibility=""; }, idelay) } ,
+          // "displaydisplaynone": function(o) { o.style.display=""; o.style.visibility=""; setTimeout(() => { o.style.display="none"; }, idelay) },
+          // "displaydisplayhidden": function(o) { o.style.display=""; o.style.visibility=""; setTimeout(() => { o.style.visibility="hidden"; }, idelay) },
+          "": function(o) {},
+      }
+
+      if (typeof(fFunction1)=="string") {
+          if (oAnimateFunctions[fFunction1]) {} else { fFunction1 = ""; }
+          fFunction2 = oAnimateFunctions[fFunction1]["fFunction2"];
+          fFunction1 = oAnimateFunctions[fFunction1]["fFunction1"];
+      } else {};
+
+      if (fFunction1) {} else { fFunction1 = fNada; }
+      if (fFunction2) {} else { fFunction2 = fNada; }
+      $$$a(el).forEach((o,i)=>{
+          setTimeout(() => {
+              fFunction1(o)
+              animateCSS(o,animation).then(o=>fFunction2(o)); // o.addEventListener('animationend', () => {
+          }, i*idelay);
+      });
+  }; function $$$a_animate(el,animation,idelay,fFunction1,fFunction2) { return $$$animate(el,animation,idelay,fFunction1,fFunction2); };
+
+// END animate.css scripts
+
+// random vanilla DOM manipulation scripts
+// // replace body tag's innerHTML with div
+// document.getElementsByTagName('body')[0].innerHTML = "<div id='my'>blahHTML<div>"
+function theadify(sTable) { // USES JQUERY
+    // sTable = "table.RecordsOrientedArrayToHTML";
+    // theadify(table.RecordsOrientedArrayToHTML);
+    theadify = $(sTable)[0].$$$("tr th, tr td")[0].parentNode;
+    $(sTable)[0].createTHead();
+    theadify.remove()
+    $(sTable)[0].$$$("thead")[0].appendChild(theadify)
+}
+function dom_lookupvalueHTMLTable(sTable, sRowValue, iColumn) { // WARNING USES JQUERY
+    // sTable = "cualquierPotencialidad"; sRowValue = "pdf dump"; iColumn = 1;
+    // dom_lookupvalueHTMLTable("cualquierPotencialidad", "pdf dump", 1);
+    return Array.from( $("#" + sTable)[0].children[0].children ).reduce(function(agg, oElement) {
+        if (oElement.children[0].innerText == sRowValue) {
+            return agg + oElement.children[iColumn].innerText;
         } else {
-            sVHvsDN = "displayhidden";
+            return agg;
         }
-        if (o) {} else { o="*"; }
-        if (i) {} else { i=0; }
-        if (animation) {
+        console.log()
+        return agg + oElement;
+    }, "")
+}
 
-        } else {
-            sInAnimation = getRandomArrayToken(getAnimateCSSAnimationsMatch("In"));
-            sOutAnimation = getRandomArrayToken(getAnimateCSSAnimationsMatch("Out"));
+function filterHTMLTable(sTable, iColumn, aAcceptableValues) { // WARNING USES JQUERY
+    // aAcceptableValues = ["aOrderItemsALL", "POST daterange", "buttons"]; filterHTMLTable("cualquierPotencialidad", 0, aAcceptableValues);
+    iColumn = 0; //first column
+    //Array.from($("#cualquierPotencialidad")[0].children[iColumn].children).forEach(function(oElement) {
+    Array.from($("#" + sTable + "")[0].children[iColumn].children).forEach(function(oElement) {
+        //gObject = oElement;
+        var bDecision = aAcceptableValues.reduce(function(agg098, oElement098) { return agg098 && (oElement.children[0].innerText != oElement098);}, true);
+
+        if (bDecision) {
+            oElement.style.display = "none";
         }
-        if ($$$$(o).style.visibility == "hidden" || $$$$(o).style.display == "none") {
-
-            $$$animate(o, sInAnimation, i, "display");
-
-        } else {
-            $$$animate(o, sOutAnimation, i, sVHvsDN)
-        }
-
+        //console.log(Array.from(oElement.children))
+    })
+}
+// remove first column, consider refractoring to something cooler
+function removeHTMLTableColumn(sTable, iColumn) { // WARNING USES JQUERY
+    // removeHTMLTableColumn('cualquierPotencialidad', 0);
+    Array.from($("#" + sTable + "")[0].children[0].children).forEach(function(oElement) {
+        oElement.children[iColumn].style.display = "none"
+    })
+}
+domTableToValuesOrientedDomTDs = function(domTable) { // domTableToValuesOrientedDomTDs("table.gsws")
+    if (typeof(domTable) == "string") { // eg "table.gsws"
+        domTable = $$$(domTable)[0]
     }
-    
-    function getAnimateCSSAnimationsMatch(s) { return getAnimateCSSAnimations().filter(o=>o.match(new RegExp(s, "g"))); }
-    getRandomArrayToken = function(a,i) { // consider refactoring this into datascripts.js?  make es5-friendly
-        if (i) {} else (i = 1);
-        if (i==1) {
-            return a[getRandomInt(0,a.length-1)];
-        } else {
-            return getRange(0, i-1).map(o=>{ return a[getRandomInt(0,a.length-1)]; });
-        }
-    }      
-    var animateCSS = (element, animation, prefix = 'animate__') =>
-      // We create a Promise and return it
-      new Promise((resolve, reject) => {
-        if (animation) {} else { animation = "bounce"; }
-        if (animation=="random") {
-          // animation = getAnimateCSSAnimations()[getRandomInt(0,96)];
-          animation = getRandomArrayToken(getAnimateCSSAnimations());
-          console.log(animation);
-        }
-        const animationName = `${prefix}${animation}`;
-
-        if (typeof(element) == "string") { var node = document.querySelector(element); } else { var node = element; }
-
-        node.classList.add(`${prefix}animated`, animationName);
-
-        // When the animation ends, we clean the classes and resolve the Promise
-        function handleAnimationEnd(event) {
-          event.stopPropagation();
-          node.classList.remove(`${prefix}animated`, animationName);
-          // resolve('Animation ended');
-          resolve(event.target);
-        }
-
-        node.addEventListener('animationend', handleAnimationEnd, {once: true});
-      });      
-
-      function $$$animate(el,animation,idelay, fFunction1, fFunction2) {
-          // fFunction1=fFunction_beforeAnimation, fFunction2=fFunction2_afterAnimation
-          // fFunction = function(o) { o.style.display=""; }
-          if (animation) {} else { animation = "random"; }
-          if (el) {} else { el = "*"; }
-          if (idelay != undefined) {} else { idelay = 10; }
-          fNada = function(o) {};
-          oAnimateFunctions = {
-              "display": { "fFunction1": function(o) { o.style.display=""; o.style.visibility="visible" }, "fFunction2": function(o) { o.style.display=""; o.style.visibility="visible" } },
-              "displaynone": { "fFunction1": fNada, "fFunction2": function(o) { o.style.display="none"; } },
-              "displayhidden": { "fFunction1": fNada, "fFunction2": function(o) { o.style.visibility="hidden"; } },
-
-              "displaynonedisplay": { "fFunction1": fNada, "fFunction2": fNada, },
-              "displayhiddendisplay": { "fFunction1": fNada, "fFunction2": fNada, },
-              "displaydisplaynone": { "fFunction1": fNada, "fFunction2": fNada, },
-              "displaydisplayhidden": { "fFunction1": fNada, "fFunction2": fNada, },
-
-              // "displaynonedisplay": function(o) { o.style.display="none"; setTimeout(() => { o.style.display=""; ; o.style.visibility=""; }, idelay) },
-              // "displayhiddendisplay": function(o) { o.style.visibility="hidden"; setTimeout(() => { o.style.visibility=""; }, idelay) } ,
-              // "displaydisplaynone": function(o) { o.style.display=""; o.style.visibility=""; setTimeout(() => { o.style.display="none"; }, idelay) },
-              // "displaydisplayhidden": function(o) { o.style.display=""; o.style.visibility=""; setTimeout(() => { o.style.visibility="hidden"; }, idelay) },
-              "": function(o) {},
-          }
-
-          if (typeof(fFunction1)=="string") {
-              if (oAnimateFunctions[fFunction1]) {} else { fFunction1 = ""; }
-              fFunction2 = oAnimateFunctions[fFunction1]["fFunction2"];
-              fFunction1 = oAnimateFunctions[fFunction1]["fFunction1"];
-          } else {};
-
-          if (fFunction1) {} else { fFunction1 = fNada; }
-          if (fFunction2) {} else { fFunction2 = fNada; }
-          $$$a(el).forEach((o,i)=>{
-              setTimeout(() => {
-                  fFunction1(o)
-                  animateCSS(o,animation).then(o=>fFunction2(o)); // o.addEventListener('animationend', () => {
-              }, i*idelay);
-          });
-      }; function $$$a_animate(el,animation,idelay,fFunction1,fFunction2) { return $$$animate(el,animation,idelay,fFunction1,fFunction2); };
-      
-    // END animate.css scripts
-
-    // random vanilla DOM manipulation scripts
-    // // replace body tag's innerHTML with div
-    // document.getElementsByTagName('body')[0].innerHTML = "<div id='my'>blahHTML<div>"
-    function theadify(sTable) { // USES JQUERY
-        // sTable = "table.RecordsOrientedArrayToHTML";
-        // theadify(table.RecordsOrientedArrayToHTML);
-        theadify = $(sTable)[0].$$$("tr th, tr td")[0].parentNode;
-        $(sTable)[0].createTHead();
-        theadify.remove()
-        $(sTable)[0].$$$("thead")[0].appendChild(theadify)
-    }
-    function dom_lookupvalueHTMLTable(sTable, sRowValue, iColumn) { // WARNING USES JQUERY
-        // sTable = "cualquierPotencialidad"; sRowValue = "pdf dump"; iColumn = 1;
-        // dom_lookupvalueHTMLTable("cualquierPotencialidad", "pdf dump", 1);
-        return Array.from( $("#" + sTable)[0].children[0].children ).reduce(function(agg, oElement) {
-            if (oElement.children[0].innerText == sRowValue) {
-                return agg + oElement.children[iColumn].innerText;
-            } else {
-                return agg;
-            }
-            console.log()
-            return agg + oElement;
-        }, "")
-    }
-
-    function filterHTMLTable(sTable, iColumn, aAcceptableValues) { // WARNING USES JQUERY
-        // aAcceptableValues = ["aOrderItemsALL", "POST daterange", "buttons"]; filterHTMLTable("cualquierPotencialidad", 0, aAcceptableValues);
-        iColumn = 0; //first column
-        //Array.from($("#cualquierPotencialidad")[0].children[iColumn].children).forEach(function(oElement) {
-        Array.from($("#" + sTable + "")[0].children[iColumn].children).forEach(function(oElement) {
-            //gObject = oElement;
-            var bDecision = aAcceptableValues.reduce(function(agg098, oElement098) { return agg098 && (oElement.children[0].innerText != oElement098);}, true);
-
-            if (bDecision) {
-                oElement.style.display = "none";
-            }
-            //console.log(Array.from(oElement.children))
+    if (domTable == undefined) { domTable = $$$("table")[0]; }
+    if (domTable != undefined) {
+        return Array.prototype.slice.call((domTable).$$$("tr")).map(function(oElement) {
+            return Array.prototype.slice.call(oElement.$$$("th, td"));
         })
-    }
-    // remove first column, consider refractoring to something cooler
-    function removeHTMLTableColumn(sTable, iColumn) { // WARNING USES JQUERY
-        // removeHTMLTableColumn('cualquierPotencialidad', 0);
-        Array.from($("#" + sTable + "")[0].children[0].children).forEach(function(oElement) {
-            oElement.children[iColumn].style.display = "none"
-        })
-    }
-    domTableToValuesOrientedDomTDs = function(domTable) { // domTableToValuesOrientedDomTDs("table.gsws")
-        if (typeof(domTable) == "string") { // eg "table.gsws"
-            domTable = $$$(domTable)[0]
-        }
-        if (domTable == undefined) { domTable = $$$("table")[0]; }
-        if (domTable != undefined) {
-            return Array.prototype.slice.call((domTable).$$$("tr")).map(function(oElement) {
-                return Array.prototype.slice.call(oElement.$$$("th, td"));
-            })
-        } else {
+    } else {
 
-        }
     }
-
-} catch(e) { console.log("ERROR in domscripts.js " - e) }
+}
+// } catch(e) { console.log("ERROR in domscripts.js " - e) }
 
 // domDEBUGGINGscripts //
 
