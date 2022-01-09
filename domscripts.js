@@ -55,7 +55,7 @@ function domReplaceDom(oEl, oEl2) { // simplifies .replaceChild()
 domTableToValuesOriented = function(domTable) { return domTableToValuesOrientedDomTDs(domTable).map(function(oEl) { return oEl.map(function(oEl2) { return domGetTDTextOrValue(oEl2); }) }) }
 convertHTMLTableToValuesOriented = domTableToValuesOriented; 
 
-/* insertBefore DOM ? <element> ? appendHTML() ? prependHTML() ? </element> ? insertAfterDOM */
+/* insertBeforeDOM ? <element> ? prependHTML() ? <other elements></other elements> ? appendHTML() ? </element> ? insertAfterDOM */
 HTMLElement.prototype.prependHtml = function (element) {
     const div = document.createElement('div');
     div.innerHTML = element;
