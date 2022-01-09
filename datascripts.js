@@ -147,6 +147,7 @@ convertTabDelimitedToRecordsOriented = function(sText) { return toRO(convertTabD
 
 // 01/09/2022 - place beside datascripts.convertTabDelimitedToValuesOriented
 function fCSVToVO(sCSV) { return sCSV.split("\n").map(o=>o.split(",")); }; convertCSVToValuesOriented = function(s) { return fCSVToVO(s); }
+function fCSVToRO(sCSV) { return toRO(fCSVToVO(sCSV)); }; convertCSVToRecordsOriented = function(s) { return fCSVToRO(s); }
 
 toXXXOrientated = function (aInputArray, sXXX) { var aRecordsOrientation = JSONPS(aInputArray); return aRecordsOrientation.reduce(function (agg, oElement) { if (agg[oElement[sXXX]]==undefined) { agg[oElement[sXXX]] = oElement; } else { if (!Array.isArray(agg[oElement[sXXX]])) { agg[oElement[sXXX]] = [agg[oElement[sXXX]]].concat(oElement) } else { agg[oElement[sXXX]] = agg[oElement[sXXX]].concat(oElement) } } return agg; }, {}); }
 
