@@ -520,7 +520,7 @@ try { // remove try/catch when es5ified 100%
     }
 } catch(e) {}
 
-/* dataLODASHscripts => BEGIN PANDAS-INSPIRED, LODASH-DEPENDENT FUNCTIONS */
+/* dataLODASH?PANDASscripts => BEGIN PANDAS-INSPIRED, LODASH-DEPENDENT FUNCTIONS */
 
 
 // these lodash-related functions are minified into datascripts so I can keep datascripts under 50000 characters, also so I can focus on the "lodash"-ness of these data-related functions.
