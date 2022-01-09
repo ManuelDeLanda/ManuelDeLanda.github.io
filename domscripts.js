@@ -169,123 +169,6 @@ convertHTMLTableToValuesOriented = function(sHTMLTable) {
     })
 } */
 
-// BEGIN animate.css scripts
-function addAnimateCSSToHover(sSelector, sClass) {  // jQuery-dependent
-   sClass = 'animated animate__animated animate__' + sClass; 
-   $(sSelector).hover(function(){
-       $(this).addClass(sClass);
-   });
-   $(sSelector).bind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd",function(){
-      $(this).removeClass(sClass);
-   });
-}
-
-function getAnimateCSSAnimations() {
-    return 'bounce;flash;pulse;rubberBand;shakeX;shakeY;headShake;swing;tada;wobble;jello;heartBeat;backInDown;backInLeft;backInRight;backInUp;backOutDown;backOutLeft;backOutRight;backOutUp;bounceIn;bounceInDown;bounceInLeft;bounceInRight;bounceInUp;bounceOut;bounceOutDown;bounceOutLeft;bounceOutRight;bounceOutUp;fadeIn;fadeInDown;fadeInDownBig;fadeInLeft;fadeInLeftBig;fadeInRight;fadeInRightBig;fadeInUp;fadeInUpBig;fadeInTopLeft;fadeInTopRight;fadeInBottomLeft;fadeInBottomRight;fadeOut;fadeOutDown;fadeOutDownBig;fadeOutLeft;fadeOutLeftBig;fadeOutRight;fadeOutRightBig;fadeOutUp;fadeOutUpBig;fadeOutTopLeft;fadeOutTopRight;fadeOutBottomRight;fadeOutBottomLeft;flip;flipInX;flipInY;flipOutX;flipOutY;lightSpeedInRight;lightSpeedInLeft;lightSpeedOutRight;lightSpeedOutLeft;rotateIn;rotateInDownLeft;rotateInDownRight;rotateInUpLeft;rotateInUpRight;rotateOut;rotateOutDownLeft;rotateOutDownRight;rotateOutUpLeft;rotateOutUpRight;hinge;jackInTheBox;rollIn;rollOut;zoomIn;zoomInDown;zoomInLeft;zoomInRight;zoomInUp;zoomOut;zoomOutDown;zoomOutLeft;zoomOutRight;zoomOutUp;slideInDown;slideInLeft;slideInRight;slideInUp;slideOutDown;slideOutLeft;slideOutRight;slideOutUp'.split(";");
-}
-
-function toggleAnimationVisbDisp(o,sVHvsDN,animation,i) {
-    // sVHvsDN is sVisibilityHiddenVsDisplayNone
-    if (sVHvsDN == "none") {
-        sVHvsDN = "displaynone";
-    } else {
-        sVHvsDN = "displayhidden";
-    }
-    if (o) {} else { o="*"; }
-    if (i) {} else { i=0; }
-    if (animation) {
-
-    } else {
-        sInAnimation = getRandomArrayToken(getAnimateCSSAnimationsMatch("In"));
-        sOutAnimation = getRandomArrayToken(getAnimateCSSAnimationsMatch("Out"));
-    }
-    if ($$$$(o).style.visibility == "hidden" || $$$$(o).style.display == "none") {
-
-        $$$animate(o, sInAnimation, i, "display");
-
-    } else {
-        $$$animate(o, sOutAnimation, i, sVHvsDN)
-    }
-
-}
-
-function getAnimateCSSAnimationsMatch(s) { return getAnimateCSSAnimations().filter(o=>o.match(new RegExp(s, "g"))); }
-getRandomArrayToken = function(a,i) { // consider refactoring this into datascripts.js?  make es5-friendly
-    if (i) {} else (i = 1);
-    if (i==1) {
-        return a[getRandomInt(0,a.length-1)];
-    } else {
-        return getRange(0, i-1).map(o=>{ return a[getRandomInt(0,a.length-1)]; });
-    }
-}      
-var animateCSS = (element, animation, prefix = 'animate__') =>
-  // We create a Promise and return it
-  new Promise((resolve, reject) => {
-    if (animation) {} else { animation = "bounce"; }
-    if (animation=="random") {
-      // animation = getAnimateCSSAnimations()[getRandomInt(0,96)];
-      animation = getRandomArrayToken(getAnimateCSSAnimations());
-      console.log(animation);
-    }
-    const animationName = `${prefix}${animation}`;
-
-    if (typeof(element) == "string") { var node = document.querySelector(element); } else { var node = element; }
-
-    node.classList.add(`${prefix}animated`, animationName);
-
-    // When the animation ends, we clean the classes and resolve the Promise
-    function handleAnimationEnd(event) {
-      event.stopPropagation();
-      node.classList.remove(`${prefix}animated`, animationName);
-      // resolve('Animation ended');
-      resolve(event.target);
-    }
-
-    node.addEventListener('animationend', handleAnimationEnd, {once: true});
-  });      
-
-  function $$$animate(el,animation,idelay, fFunction1, fFunction2) {
-      // fFunction1=fFunction_beforeAnimation, fFunction2=fFunction2_afterAnimation
-      // fFunction = function(o) { o.style.display=""; }
-      if (animation) {} else { animation = "random"; }
-      if (el) {} else { el = "*"; }
-      if (idelay != undefined) {} else { idelay = 10; }
-      fNada = function(o) {};
-      oAnimateFunctions = {
-          "display": { "fFunction1": function(o) { o.style.display=""; o.style.visibility="visible" }, "fFunction2": function(o) { o.style.display=""; o.style.visibility="visible" } },
-          "displaynone": { "fFunction1": fNada, "fFunction2": function(o) { o.style.display="none"; } },
-          "displayhidden": { "fFunction1": fNada, "fFunction2": function(o) { o.style.visibility="hidden"; } },
-
-          "displaynonedisplay": { "fFunction1": fNada, "fFunction2": fNada, },
-          "displayhiddendisplay": { "fFunction1": fNada, "fFunction2": fNada, },
-          "displaydisplaynone": { "fFunction1": fNada, "fFunction2": fNada, },
-          "displaydisplayhidden": { "fFunction1": fNada, "fFunction2": fNada, },
-
-          // "displaynonedisplay": function(o) { o.style.display="none"; setTimeout(() => { o.style.display=""; ; o.style.visibility=""; }, idelay) },
-          // "displayhiddendisplay": function(o) { o.style.visibility="hidden"; setTimeout(() => { o.style.visibility=""; }, idelay) } ,
-          // "displaydisplaynone": function(o) { o.style.display=""; o.style.visibility=""; setTimeout(() => { o.style.display="none"; }, idelay) },
-          // "displaydisplayhidden": function(o) { o.style.display=""; o.style.visibility=""; setTimeout(() => { o.style.visibility="hidden"; }, idelay) },
-          "": function(o) {},
-      }
-
-      if (typeof(fFunction1)=="string") {
-          if (oAnimateFunctions[fFunction1]) {} else { fFunction1 = ""; }
-          fFunction2 = oAnimateFunctions[fFunction1]["fFunction2"];
-          fFunction1 = oAnimateFunctions[fFunction1]["fFunction1"];
-      } else {};
-
-      if (fFunction1) {} else { fFunction1 = fNada; }
-      if (fFunction2) {} else { fFunction2 = fNada; }
-      $$$a(el).forEach((o,i)=>{
-          setTimeout(() => {
-              fFunction1(o)
-              animateCSS(o,animation).then(o=>fFunction2(o)); // o.addEventListener('animationend', () => {
-          }, i*idelay);
-      });
-  }; function $$$a_animate(el,animation,idelay,fFunction1,fFunction2) { return $$$animate(el,animation,idelay,fFunction1,fFunction2); };
-
-// END animate.css scripts
-
 // random vanilla DOM manipulation scripts
 // // replace body tag's innerHTML with div
 // document.getElementsByTagName('body')[0].innerHTML = "<div id='my'>blahHTML<div>"
@@ -820,8 +703,7 @@ fStringFromCharCode = function() {
     }
     
     function getAnimateCSSAnimations() {
-        return "bounce\nflash\npulse\nrubberBand\nshakeX\nshakeY\nheadShake\nswing\ntada\nwobble\njello\nheartBeat\nbackInDown\nbackInLeft\nbackInRight\nbackInUp\nbackOutDown\nbackOutLeft\nbackOutRight\nbackOutUp\nbounceIn\nbounceInDown\nbounceInLeft\nbounceInRight\nbounceInUp\nbounceOut\nbounceOutDown\nbounceOutLeft\nbounceOutRight\nbounceOutUp\nfadeIn\nfadeInDown\nfadeInDownBig\nfadeInLeft\nfadeInLeftBig\nfadeInRight\nfadeInRightBig\nfadeInUp\nfadeInUpBig\nfadeInTopLeft\nfadeInTopRight\nfadeInBottomLeft\nfadeInBottomRight\nfadeOut\nfadeOutDown\nfadeOutDownBig\nfadeOutLeft\nfadeOutLeftBig\nfadeOutRight\nfadeOutRightBig\nfadeOutUp\nfadeOutUpBig\nfadeOutTopLeft\nfadeOutTopRight\nfadeOutBottomRight\nfadeOutBottomLeft\nflip\nflipInX\nflipInY\nflipOutX\nflipOutY\nlightSpeedInRight\nlightSpeedInLeft\nlightSpeedOutRight\nlightSpeedOutLeft\nrotateIn\nrotateInDownLeft\nrotateInDownRight\nrotateInUpLeft\nrotateInUpRight\nrotateOut\nrotateOutDownLeft\nrotateOutDownRight\nrotateOutUpLeft\nrotateOutUpRight\nhinge\njackInTheBox\nrollIn\nrollOut\nzoomIn\nzoomInDown\nzoomInLeft\nzoomInRight\nzoomInUp\nzoomOut\nzoomOutDown\nzoomOutLeft\nzoomOutRight\nzoomOutUp\nslideInDown\nslideInLeft\nslideInRight\nslideInUp\nslideOutDown\nslideOutLeft\nslideOutRight\nslideOutUp".split("\n");
-
+        return 'bounce;flash;pulse;rubberBand;shakeX;shakeY;headShake;swing;tada;wobble;jello;heartBeat;backInDown;backInLeft;backInRight;backInUp;backOutDown;backOutLeft;backOutRight;backOutUp;bounceIn;bounceInDown;bounceInLeft;bounceInRight;bounceInUp;bounceOut;bounceOutDown;bounceOutLeft;bounceOutRight;bounceOutUp;fadeIn;fadeInDown;fadeInDownBig;fadeInLeft;fadeInLeftBig;fadeInRight;fadeInRightBig;fadeInUp;fadeInUpBig;fadeInTopLeft;fadeInTopRight;fadeInBottomLeft;fadeInBottomRight;fadeOut;fadeOutDown;fadeOutDownBig;fadeOutLeft;fadeOutLeftBig;fadeOutRight;fadeOutRightBig;fadeOutUp;fadeOutUpBig;fadeOutTopLeft;fadeOutTopRight;fadeOutBottomRight;fadeOutBottomLeft;flip;flipInX;flipInY;flipOutX;flipOutY;lightSpeedInRight;lightSpeedInLeft;lightSpeedOutRight;lightSpeedOutLeft;rotateIn;rotateInDownLeft;rotateInDownRight;rotateInUpLeft;rotateInUpRight;rotateOut;rotateOutDownLeft;rotateOutDownRight;rotateOutUpLeft;rotateOutUpRight;hinge;jackInTheBox;rollIn;rollOut;zoomIn;zoomInDown;zoomInLeft;zoomInRight;zoomInUp;zoomOut;zoomOutDown;zoomOutLeft;zoomOutRight;zoomOutUp;slideInDown;slideInLeft;slideInRight;slideInUp;slideOutDown;slideOutLeft;slideOutRight;slideOutUp'.split(";");
     }
     
     function toggleAnimationVisbDisp(o,sVHvsDN,animation,i) {
@@ -925,7 +807,6 @@ fStringFromCharCode = function() {
       }; function $$$a_animate(el,animation,idelay,fFunction1,fFunction2) { return $$$animate(el,animation,idelay,fFunction1,fFunction2); };
       
     // END animate.css scripts
-
 
 // domINJECTIFYscripts => domLoadStyles_CSS, domLoadStyles_Link, etc
     // 3 SCRIPTS - INJECT STYLES AND SCRIPTS (TO DEPRECATE) 
