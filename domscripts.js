@@ -18,7 +18,7 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
     // BEGIN VANILLA-FIED JQUERY
     // var $$$ = document.querySelectorAll.bind(document);
     function $$$(el) { if (typeof(el) == "string") { return document.querySelectorAll(el) } else { return el; } ; };    
-    function $$$a(el) { return Array.prototype.slice.call($$$(el)); };    
+    function $$$a(el) { return Array.prototype.slice.call($$$(el)); };  // vs Array.prototype.slice.call() vs Array.from()?
     // var $$$$ = document.querySelector.bind(document);
     function $$$$(el) { if (typeof(el) == "string") { return document.querySelector(el) } else { return el; } ; };    
 
@@ -53,14 +53,14 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
 
 
     domTableToValuesOriented = function(domTable) { return domTableToValuesOrientedDomTDs(domTable).map(function(oEl) { return oEl.map(function(oEl2) { return domGetTDTextOrValue(oEl2); }) }) }
-    convertHTMLTableToValuesOriented = domTableToValuesOriented;    
-    
+    convertHTMLTableToValuesOriented = domTableToValuesOriented; 
+
+    /* insertBefore DOM ? <element> ? appendHTML() ? prependHTML() ? </element> ? insertAfterDOM */
     HTMLElement.prototype.prependHtml = function (element) {
         const div = document.createElement('div');
         div.innerHTML = element;
         this.insertBefore(div, this.firstChild);
     }; HTMLElement.prototype.prependHTML = HTMLElement.prototype.prependHtml;
-
     HTMLElement.prototype.appendHtml = function (element) {
         const div = document.createElement('div');
         div.innerHTML = element;
@@ -76,7 +76,6 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
         }
         this.parentNode.insertBefore(newNode, this.nextSibling);
     };
-
     HTMLElement.prototype.insertBeforeDOM = function (newNode) {
         if (typeof(newNode)=="string") {
             var div = document.createElement('div');
@@ -350,6 +349,27 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
 
 } catch(e) { console.log("ERROR in domscripts.js " - e) }
 
+// domASCIIscripts (maybe dataASCIIscripts?)
+fStringFromCharCode = function() {
+    // js's String.fromCharCode(10) vs gs's CHAR(10)
+    // "?".charCodeAt()
+    // "? ? ? ? ? ? ? ? ? ? ".split("").filter(o=>o.trim()).map(o=>`String.fromCharCode(${o.charCodeAt()})`).join("+")
+    return {
+        "interpunct": `String.fromCharCode("183")`, // for replacing dots in googlesheet cells to prevent hyperlink-ification; An interpunct, ?, also known as an interpoint, middle dot, middot and centered dot or centred dot, is a punctuation mark consisting of a vertically centered dot used for interword separation in ancient Latin script.
+        "interrobang": `String.fromCharCode(11800)+String.fromCharCode(8253)`,
+        "exclamation": `String.fromCharCode(161)+String.fromCharCode(33)`,
+        "question": `String.fromCharCode(191)+String.fromCharCode(63)`,
+        "r": `String.fromCharCode("13")`,
+        "cr": `String.fromCharCode("13")`, // carriage return
+        "n": `String.fromCharCode("10")`,
+        "lf": `String.fromCharCode("10")`, // line feed
+        "rn": `String.fromCharCode("13")+String.fromCharCode("10")`,
+        "crlf": `String.fromCharCode("13")+String.fromCharCode("10")`,
+        "nbsp": `String.fromCharCode("160")`, // CQP.pushToGithub's 
+        "bullets": 'String.fromCharCode(8226)+String.fromCharCode(9702)+String.fromCharCode(8226)+String.fromCharCode(8227)+String.fromCharCode(8259)+String.fromCharCode(9675)+String.fromCharCode(9689)+String.fromCharCode(10686)+String.fromCharCode(10687)+String.fromCharCode(164)',
+    }
+}
+
 // domJQUERYscripts
 
 // add List
@@ -361,6 +381,8 @@ try { // domscripts.serverUNsafe and ES5_UNsafe
 // add $FETCH?  it's just $.ajax(), pretty simple right?
 
 // dom_LZString,Moment,date-fns_scripts?
+
+// domD3scripts, domP5scripts
 
 // domGSDSscripts => NEW googlesheets scripts
 // GSDS_CELL, GSDS_RANGE1D, GSDS_RANGE2D, GSDS_CELL_value, GSDS_CELL_valueParseInt, GSDS_RANGE1D_values, GSDS_RANGE2D_values
