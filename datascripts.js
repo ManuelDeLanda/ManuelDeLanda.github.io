@@ -987,15 +987,18 @@ pivottable=function(aInputArray, aPivotInstructions, bReplaceColumnNames) {
 
 /* dataENCODEscripts => superhtmlEntities/superencode/superHtmlDecode.minified.js */
 // encode encodes apostrophes too!
-superencode = function (str){ // superencode("~!.*()-_") is the same, consider refractoring?
+superencode = function (s){ // superencode("~!.*()-_") is the same, consider refractoring? DONE -> refactored this into supersuperencode if needed.
   // superencode = function (str){  return encodeURIComponent(str).replace(/'/g, "%27"); }
   // return w.replace(/[^]/g,function(w){return '%'+w.charCodeAt(0).toString(16)})
-  return encodeURIComponent(str).replace(/'/g, "%27");
+  return encodeURIComponent(s).replace(/'/g, "%27");
+}
+supersuperencode = function(s) {
+  return superencode(s).replace(/\!/g, "%21").replace(/\*/g, "%2A").replace(/\(/g, "%28").replace(/\)/g, "%29").replace(/\`/g, "%60")
 }
 
-superhtmlEntities = function(str) {
+superhtmlEntities = function(s) {
   // superhtmlEntities=function(e){return String(e).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&apos;").replace(/`/,"&#96;")};
-  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;').replace(/`/g, '&#96;'); //.replace(/?/g, '&#xB4;');
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;').replace(/`/g, '&#96;'); //.replace(/?/g, '&#xB4;');
 }
 
 
@@ -1024,8 +1027,11 @@ superHtmlDecode = function(sString) {
 }
 
 // need to "supervariablize()" the columns in _pivot()'s input aRO data because columns with symbols (such as <> or ampersand) in them I get a "Error Result was not automatically expanded, please insert more columns (4052)".  supervariableize() is just a wrapper around superencode() and probably needs have better replacement logic than "PERCENTANGESIGN", maybe btoa("PERCENTAGESIGN")?
-supervariableize = function(s) { return superencode(s).replace(/\%/g, "PERCENTANGESIGN").replace(/\&/g, "AMPERSANDSIGN").replace(/\?/g, "QUESTIONSIGN"); }
-superdevariableize = function(s) { return decodeURIComponent(s.replace(/PERCENTANGESIGN/g, "%").replace(/AMPERSANDSIGN/g, "&").replace(/QUESTIONSIGN/g, "?")); }
+supervariableize = function(s) {
+  return supersuperencode(s).replace(/\~/g, "TILDESIGN").replace(/\./g, "PERIODSIGN").replace(/\%/g, "PERCENTANGESIGN").replace(/-/g, "DASHSIGN").replace(/\&/g, "AMPERSANDSIGN").replace(/\?/g, "QUESTIONSIGN");
+}
+superdevariableize = function(s) { return decodeURIComponent(s.replace(/TILDESIGN/g, "~").replace(/PERIODSIGN/g, ".").replace(/PERCENTANGESIGN/g, "%").replace(/DASHSIGN/g, "-").replace(/PERCENTANGESIGN/g, "%").replace(/AMPERSANDSIGN/g, "&").replace(/QUESTIONSIGN/g, "?")); }
+
 
 // domDATAHTML.es5.scripts
 // THE FOLLOWING CODE USED TO BE "domscripts.serversafe", but now its just part of domDATAHTML.es.js scripts
