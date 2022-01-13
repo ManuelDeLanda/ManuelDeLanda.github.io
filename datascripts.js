@@ -987,7 +987,7 @@ pivottable=function(aInputArray, aPivotInstructions, bReplaceColumnNames) {
 
 /* dataENCODEscripts => superhtmlEntities/superencode/superHtmlDecode.minified.js */
 // encode encodes apostrophes too!
-superencode = function (s){ // superencode("~!.*()-_") is the same, consider refractoring? DONE -> refactored this into supersuperencode if needed.
+superencode = function(s){ // superencode("~!.*()-_") is the same, consider refractoring? DONE -> refactored this into supersuperencode if needed.
   // superencode = function (str){  return encodeURIComponent(str).replace(/'/g, "%27"); }
   // return w.replace(/[^]/g,function(w){return '%'+w.charCodeAt(0).toString(16)})
   return encodeURIComponent(s).replace(/'/g, "%27");
@@ -1000,8 +1000,6 @@ superhtmlEntities = function(s) {
   // superhtmlEntities=function(e){return String(e).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&apos;").replace(/`/,"&#96;")};
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;').replace(/`/g, '&#96;'); //.replace(/?/g, '&#xB4;');
 }
-
-
 
 superHtmlDecode = function(sString) {
   // superHtmlDecode("blah blah blah &lt;whatever&gt;");
