@@ -986,17 +986,19 @@ pivottable=function(aInputArray, aPivotInstructions, bReplaceColumnNames) {
 
 
 /* dataENCODEscripts => superhtmlEntities/superencode/superHtmlDecode.minified.js */
-superhtmlEntities = function(str) {
-  // superhtmlEntities=function(e){return String(e).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&apos;").replace(/`/,"&#96;")};
-  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;').replace(/`/g, '&#96;'); //.replace(/?/g, '&#xB4;');
-}
-
 // encode encodes apostrophes too!
 superencode = function (str){ // superencode("~!.*()-_") is the same, consider refractoring?
   // superencode = function (str){  return encodeURIComponent(str).replace(/'/g, "%27"); }
   // return w.replace(/[^]/g,function(w){return '%'+w.charCodeAt(0).toString(16)})
   return encodeURIComponent(str).replace(/'/g, "%27");
 }
+
+superhtmlEntities = function(str) {
+  // superhtmlEntities=function(e){return String(e).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&apos;").replace(/`/,"&#96;")};
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;').replace(/`/g, '&#96;'); //.replace(/?/g, '&#xB4;');
+}
+
+
 
 superHtmlDecode = function(sString) {
   // superHtmlDecode("blah blah blah &lt;whatever&gt;");
@@ -1020,6 +1022,10 @@ superHtmlDecode = function(sString) {
   }
   return sString;
 }
+
+// need to "supervariablize()" the columns in _pivot()'s input aRO data because columns with symbols (such as <> or ampersand) in them I get a "Error Result was not automatically expanded, please insert more columns (4052)".  supervariableize() is just a wrapper around superencode() and probably needs have better replacement logic than "PERCENTANGESIGN", maybe btoa("PERCENTAGESIGN")?
+supervariableize = function(s) { return superencode(s).replace(/\%/g, "PERCENTANGESIGN").replace(/\&/g, "AMPERSANDSIGN").replace(/\?/g, "QUESTIONSIGN"); }
+superdevariableize = function(s) { return decodeURIComponent(s.replace(/PERCENTANGESIGN/g, "%").replace(/AMPERSANDSIGN/g, "&").replace(/QUESTIONSIGN/g, "?")); }
 
 // domDATAHTML.es5.scripts
 // THE FOLLOWING CODE USED TO BE "domscripts.serversafe", but now its just part of domDATAHTML.es.js scripts
