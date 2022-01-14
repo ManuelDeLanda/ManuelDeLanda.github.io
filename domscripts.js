@@ -743,6 +743,68 @@ function d3_StreamGraphify(data) {
 
 
 
+// dom_highcharts.js_scripts //
+
+function highchartsBarPlotify(data, sTitle, sYAxis) {
+    // var sTitle = "Stockland Inventory";
+    var sSubtitle = ""; // "(updated every 15 minutes)"
+    var sYAxisText = sYAxis; // "quantity";
+    var sYAxisName = sYAxis; //"quantity";
+    var sDataName = "data";
+
+    Highcharts.chart('container', {
+      chart: {
+        type: 'column'
+      },
+      title: {
+        text: sTitle
+      },
+      subtitle: {
+        text: sSubtitle
+      },
+      xAxis: {
+        type: 'category',
+        labels: {
+          rotation: -45,
+          style: {
+            fontSize: '13px',
+            fontFamily: 'Verdana, sans-serif'
+          }
+        }
+      },
+      yAxis: {
+        // type: "logarithmic", 
+        min: 0,
+        title: {
+          text: sYAxisText
+        }
+      },
+      legend: {
+        enabled: false
+      },
+      tooltip: {
+        pointFormat: sYAxisName
+      },
+      series: [{
+        name: sDataName,
+        data: data,
+        dataLabels: {
+          enabled: true,
+          rotation: -90,
+          color: '#FFFFFF',
+          align: 'right',
+          format: '{point.y:.1f}', // one decimal
+          y: 10, // 10 pixels down from the top
+          style: {
+            fontSize: '12px',
+            fontFamily: 'Verdana, sans-serif'
+          }
+        }
+      }]
+    });
+
+}
+
 // dom_P5.js_scripts
 
 // p5 sound? - https://p5js.org/examples/sound-oscillator-frequency.html?
