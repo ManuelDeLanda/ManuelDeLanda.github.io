@@ -257,6 +257,9 @@ fStringFromCharCode = function() {
 }
 
 // domJQUERYscripts
+// beauseph/battk 1 hour ago seems like "define.amd" evaluates to {"JQuery": true}?  I didn't even realize the the Rhino or GraalVM engine is using JQuery? jquery was popular enough when amd was written that it got its own standardized name
+
+// add ajax/xml functionality (or can this be done strictly vanilla?)
 
 // add List
 
@@ -268,7 +271,7 @@ fStringFromCharCode = function() {
 
 // dom_LZString,Moment,date-fns_scripts?
 
-// domD3scripts - where charts, graphs, maps, grams and plots reign supreme
+// dom_D3.js_scripts - where charts, graphs, maps, grams and plots reign supreme
 // d3_PieChartify, d3_histogramify, d3_barPlotify, d3_StreamGraphify
 
 /* wishlist:
@@ -740,7 +743,9 @@ function d3_StreamGraphify(data) {
 
 
 
-// domP5scripts
+// dom_P5.js_scripts
+
+// p5 sound? - https://p5js.org/examples/sound-oscillator-frequency.html?
 
 // domGSDSscripts => NEW googlesheets scripts
 // GSDS_CELL, GSDS_RANGE1D, GSDS_RANGE2D, GSDS_CELL_value, GSDS_CELL_valueParseInt, GSDS_RANGE1D_values, GSDS_RANGE2D_values
@@ -1143,7 +1148,9 @@ function d3_StreamGraphify(data) {
         if (Array.isArray(oElements)) { } else { oElements = [oElements]; }
         oElements.forEach(oElement=>{
             oElement.addEventListener(sType, function (evt) {
-                if (evt.detail === iIndex) {
+                
+                if (evt.detail === iIndex || iIndex == undefined) {
+                  
                   if (typeof(fFunction)=="string") {
                      eval(fFunction);
                   } else {
@@ -1160,7 +1167,7 @@ function d3_StreamGraphify(data) {
         addEL(o, "click", i, f);
     }
 
-// domANIMATEscripts => animate.css
+// dom_animate.css_scripts => animate.css
     // BEGIN animate.css scripts
     function addAnimateCSSToHover(sSelector, sClass) {  // jQuery-dependent
        sClass = 'animated animate__animated animate__' + sClass; 
