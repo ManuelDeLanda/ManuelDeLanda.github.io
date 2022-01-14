@@ -745,9 +745,9 @@ function d3_StreamGraphify(data) {
 
 // dom_highcharts.js_scripts //
 
-function highchartsBarPlotify(data, sTitle, sYAxis) {
+function highchartsBarPlotify(data, sTitle, sSubtitle, sYAxis) {
     // var sTitle = "Stockland Inventory";
-    var sSubtitle = ""; // "(updated every 15 minutes)"
+    // var sSubtitle = ""; // "(updated every 15 minutes)"
     var sYAxisText = sYAxis; // "quantity";
     var sYAxisName = sYAxis; //"quantity";
     var sDataName = "data";
