@@ -149,6 +149,24 @@ toTabDelimited = function (aInputArray, sDelimiter, sQualifier) {
   }
 }
 
+toCSVDelimited = function (a) {
+  // toCSVDelimited([["Country","Value"],["United States","12394"],["Russia","6148"],["Germany (FRG)","1653"],["France","2162"],["United Kingdom","1214"],["China","1131"],["Spain","814"],["Netherlands","1167"],["Italy","660"],["Israel","1263"]])
+  a = toRO(aInputArray);
+  // get rid of stray tabs in array so it doesn't create duplciate tabs in tab delimited data
+  Object.keys(normalizeRecordsOriented(a)[0]).forEach(function(oElement) {
+      a.forEach(function(oElement0) {
+          if (typeof(oElement0[oElement]) == "string") {
+              oElement0[oElement] = oElement0[oElement].replace(/,/g, "<comma>");
+          }
+      })
+  })
+  if (Object.prototype.toString.call(aInputArray[0]) == '[object Array]') { // hack for aValuesOriented
+      return toDelimited(aInputArray, ",", "").split(String.fromCharCode(10)).splice(1,aInputArray.length+1).join(String.fromCharCode(10));
+  } else { // else return aRecordsOriented
+      return toDelimited(aInputArray, ",", "");
+  }
+}
+
 // begin csv/tabs functions
 toDelimited = function(aInputArray, sDelimiter, sQualifier) { function returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented) { return aRecordsOriented.reduce(function(agg, oElement313) { agg = agg.concat(Object.keys(oElement313)); agg = unique(agg); return agg; }, []) } var aColumns = returnAllKeysAmongAllObjectsInRecordsOrientedArray(aInputArray); return aInputArray.reduce(function(agg, oElement) { return agg + "\n" + aColumns.filter(function(oElement777) { return oElement777.trim() != "" }).reduce(function(agg001, oElement001, iIndex001) { return agg001 + ((iIndex001 == 0) ? "" : sDelimiter) + sQualifier + ((oElement[oElement001] == undefined ? "" : oElement[oElement001])).toString().replace(/\r\n/g, "<br>").replace(/\n/g, "<br>") + sQualifier; }, "") }, aColumns.map(function(oElement002) { return sQualifier + oElement002 + sQualifier; }).join(sDelimiter)) }
 
@@ -985,6 +1003,8 @@ pivottable=function(aInputArray, aPivotInstructions, bReplaceColumnNames) {
 /* END PANDAS-INSPIRED, LODASH-DEPENDENT FUNCTIONS */
 
 
+/* data Tidy.js dplyr and the tidyverse in R */
+
 /* dataENCODEscripts => superhtmlEntities/superencode/superHtmlDecode.minified.js */
 // encode encodes apostrophes too!
 superencode = function(s){ // superencode("~!.*()-_") is the same, consider refractoring? DONE -> refactored this into supersuperencode if needed.
@@ -992,7 +1012,7 @@ superencode = function(s){ // superencode("~!.*()-_") is the same, consider refr
   // return w.replace(/[^]/g,function(w){return '%'+w.charCodeAt(0).toString(16)})
   return encodeURIComponent(s).replace(/'/g, "%27");
 }
-supersuperencode = function(s) {
+supersuperencode = function(s) { // this is a more zealous version of superencode where it attempts to encodeURIComponent as much as possible (rather than just apostraphes)
   return superencode(s).replace(/\!/g, "%21").replace(/\*/g, "%2A").replace(/\(/g, "%28").replace(/\)/g, "%29").replace(/\`/g, "%60")
 }
 
