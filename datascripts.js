@@ -180,6 +180,30 @@ fTABToVO=fromTABToVO;fTABToRO=fromTABToRO;fCSVToVO=fromCSVToVO;fCSVToRO=fromCSVT
 // end csv/tabs functions
 
 isVO = function(a) { return Array.isArray(a[0]); }; isValuesOriented = function(a) { return isVO(a); }
+isRO = function(a) { return (Array.isArray(a) && !Array.isArray(a[0]) && typeof(a[0]) == "object"); }; isRecordsOriented = function(a) { return isRO(a); }
+isTAB = function(s) { return (typeof(s) == "string" && s.indexOf(String.fromCharCode(9)) > -1) }; isTabDelimited = function(a) { return isTAB(a); }
+isCSV = function(s) { return (typeof(s) == "string" && s.indexOf(",") > -1) }; isCSVDelimited = function(a) { return isTAB(a); }
+
+typeofdata = function (s) {
+    // typeofData([{"to": "wat"}])
+    // typeofData({"to": "wat"})
+    if (Array.isArray(s) && !Array.isArray(s[0]) && typeof(s[0]) == "object") {
+        return "isRO";
+    } else if (Array.isArray(s[0])) {
+        return "isVO";
+    } else if ((typeof(s) == "string" && s.indexOf(String.fromCharCode(9)) > -1)) {
+        return "isTAB";
+    } else if ((typeof(s) == "string" && s.indexOf(",") > -1)) {
+        return "isCSV";
+    } else if (Array.isArray(s) == "isArray") {
+    } else if (typeof(s) == "string") {
+        return "string";
+    // } else if (typeof(s) == "string") {
+    //    return "object";
+    } else {
+        return "idk"; // return undefined
+    }
+}
 /* END values oriented / records oriented / tab delimited converter functions */
 
 /* BEGIN CLEANER/NORMALIZER/SANITIZER FUNCTIONS */
