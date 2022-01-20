@@ -283,6 +283,9 @@ d3_CirclePackify - 3 attempts (1 sort-of working)
 
 d3_BubbleChartify
 
+d3_swarmPlotify, d3_stripPlotify() (scatterplots where one variable is categorical) - https://www.chartfleau.com/tutorials/d3swarm
+
+d3_ParallelCoordinatePlotify()
 
 */
 
@@ -804,6 +807,8 @@ function highchartsBarPlotify(data, sTitle, sSubtitle, sYAxis) {
     });
 
 }
+
+// dom_chart.js_scripts
 
 // dom_P5.js_scripts
 
@@ -1582,7 +1587,7 @@ function oSetAParameter_CLIENT(oParameters) {
 }
 
 // domENCRYPTscripts => superencrypt and decrypt (CryptoJS,LZString)
-function superencrypt(aVO, sPassword) {
+function superencrypt(aVO, sPassword) { // need to fix oo.toString() to JSON.stringify(oo) if I want to convert objects?  or nah?
   // domLoadScripts_Link("https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js")
   // copy(superencrypt([["a", "b", "c"],["d - 1", "e - 2", "f - 3"]], "hint"))
   try {
@@ -1599,12 +1604,12 @@ function superencrypt(aVO, sPassword) {
             // if (i>0) {
               if (sPassword) {} else {sPassword="AES.encrypt"}
               if (sPassword.toUpperCase()=="SUPERENCODE" || sPassword.toUpperCase()=="ENCODE") {
-                return superencode(oo);
+                return superencode( oo.toString() );
               // } else if (sPassword=="hint") {
               //  return "";
               } else if (sPassword.toUpperCase()=="BTOA" || sPassword.toUpperCase()=="BASE64") {
                 try {
-                    return btoa(oo);
+                    return btoa( oo.toString() );
                 } catch(e) {
                     return "unknown system/engine without base64Encode...Utilities.base64Encode()?";
                     /*
@@ -1615,20 +1620,20 @@ function superencrypt(aVO, sPassword) {
                 }
               } else if (sPassword.toUpperCase()=="LZ" || sPassword.toUpperCase()=="LZSTRING") {
                 try {
-                    return LZString.compress(oo);
+                    return LZString.compress( oo.toString() );
                 } catch(e) {
                     return "unknown system/engine without LZString...domLoadScripts_Link('https://cdn.jsdelivr.net/gh/pieroxy/lz-string/libs/lz-string.js')";
                 }
               } else if (sPassword.toUpperCase()=="JSONH" || sPassword.toUpperCase()=="HPACK") {
                 // https://stackoverflow.com/questions/11160941/is-it-worth-the-effort-to-try-to-reduce-json-size
                 try {
-                    return JSONH.pack(oo);
+                    return JSONH.pack( oo.toString() );
                 } catch(e) {
                     return "unknown system/engine without JSONH...domLoadScripts_Link('https://cdn.jsdelivr.net/npm/jsonh@0.0.6/js/jsonh.min.js')";
                 }
               } else {
                 try {
-                    return CryptoJS.AES.encrypt(superencode(oo), sPassword).toString(); 
+                    return CryptoJS.AES.encrypt(superencode( oo.toString() ), sPassword).toString(); 
                 } catch(e) {
                     return "unknown system/engine without CryptoJS...domLoadScripts_Link('https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js')";
                 }
