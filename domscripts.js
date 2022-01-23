@@ -1329,6 +1329,8 @@ dom_jsSpreadsheetify = function(data, dom) {
         }
 
     }
+    function toggleAnimationDisp(o,animation,i) { return toggleAnimationVisbDisp(o, "display", animation, i);  }
+    function toggleAnimationVisb(o,animation,i) { return toggleAnimationVisbDisp(o, "visibility", animation, i);  }
     
     function getAnimateCSSAnimationsMatch(s) { return getAnimateCSSAnimations().filter(o=>o.match(new RegExp(s, "g"))); }
     getRandomArrayToken = function(a,i) { // consider refactoring this into datascripts.js?  make es5-friendly
