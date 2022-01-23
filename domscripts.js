@@ -1221,30 +1221,54 @@ dom_jsSpreadsheetify = function(data, dom) {
 }
 
 // domADDELscripts =>
-    function addEL(oElements, sType, iIndex, fFunction) { // vs addEventListenerClickXYZ's o, i, f
-        if (fFunction) {} else { f = function() { alert("undefined ? and ?"); } }
-        if (typeof(oElements) == "string") { oElements = $$$a(oElements); }
-        if (Array.isArray(oElements)) { } else { oElements = [oElements]; }
-        oElements.forEach(oElement=>{
+    function addEL(aElements, sType, eventDotDetail, fFunction) { // vs addEventListenerClickXYZ's o, i, f
+        if (eventDotDetail) {
+            // ctrlKey shiftKey altKey metaKey
+            eventDotDetail = eventDotDetail.toString(); // convert integer to string since this solution now looks for string instead of strictly integer
+            var iIndex = parseInt(eventDotDetail.toUpperCase().match(/[0-9]+/g)?.[0]); if (iIndex) {} else { iIndex = undefined; } // convert NaN to undefined
+
+            var bCtrlKey = (eventDotDetail.toUpperCase().match(/CTRL/g) != null);
+            var bShiftKey = (eventDotDetail.toUpperCase().match(/SHIFT/g) != null);
+            var bAltKey = (eventDotDetail.toUpperCase().match(/ALT/g) != null);
+            var bMetaKey = (eventDotDetail.toUpperCase().match(/META/g) != null);
+
+        } else { var eventDotDetail = undefined; }
+
+
+        if (fFunction) {} else { fFunction = function() { alert("undefined ? and ?"); } }
+        if (typeof(aElements) == "string") { aElements = $$$a(aElements); }
+        if (Array.isArray(aElements)) { } else { aElements = [aElements]; }
+        aElements.forEach(oElement=>{
             oElement.addEventListener(sType, function (evt) {
-                
-                if (evt.detail === iIndex || iIndex == undefined) {
-                  
+                var bKey = (
+                    (!bCtrlKey && !bShiftKey && !bAltKey && !bMetaKey && (evt.detail === iIndex) ) ||
+                    ((bCtrlKey || bShiftKey || bAltKey || bMetaKey) &&
+                    (
+                        (evt.ctrlKey && bCtrlKey) || (evt.shiftKey && bShiftKey) || (evt.altKey && bAltKey) || (evt.metaKey && bMetaKey)    ) &&
+                        (evt.detail === iIndex)
+                    )
+                );
+                bKey = bKey || eventDotDetail == undefined;
+                if (bKey) {
+
                   if (typeof(fFunction)=="string") {
                      eval(fFunction);
                   } else {
                      fFunction();
                   }
+                   
                 } 
             })
         })
     }; // DO NOT USE - overrides addEventListener: addEventListener = function(oElements, sType, iIndex, fFunction) { return addEL(oElements, sType, iIndex, fFunction); }
-    function addEventListenerClickXYZ(o,i,f) { // vs addEL's o, t, i, f
+    function addELClick(o,i,f) { // vs addEL's o, t, i, f
+        // addEventListenerClickXYZ("td", "shift1", function() { alert("wee"); })
         // defaults
         if (o) {} else { o = "body"; }
         if (i) {} else { i=2; }
         addEL(o, "click", i, f);
-    }
+    }; function addEventListenerClickXYZ(o,i,f) { return addELClick(o,i,f); }
+
 
 // dom_animate.css_scripts => animate.css
     // BEGIN animate.css scripts
