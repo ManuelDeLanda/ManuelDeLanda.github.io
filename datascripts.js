@@ -151,7 +151,7 @@ toTabDelimited = function (aInputArray, sDelimiter, sQualifier) {
 
 toCSVDelimited = function (a) {
   // toCSVDelimited([["Country","Value"],["United States","12394"],["Russia","6148"],["Germany (FRG)","1653"],["France","2162"],["United Kingdom","1214"],["China","1131"],["Spain","814"],["Netherlands","1167"],["Italy","660"],["Israel","1263"]])
-  a = toRO(aInputArray);
+  a = toRO(a);
   // get rid of stray tabs in array so it doesn't create duplciate tabs in tab delimited data
   Object.keys(normalizeRecordsOriented(a)[0]).forEach(function(oElement) {
       a.forEach(function(oElement0) {
