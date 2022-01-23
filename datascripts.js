@@ -160,10 +160,10 @@ toCSVDelimited = function (a) {
           }
       })
   })
-  if (Object.prototype.toString.call(aInputArray[0]) == '[object Array]') { // hack for aValuesOriented
-      return toDelimited(aInputArray, ",", "").split(String.fromCharCode(10)).splice(1,aInputArray.length+1).join(String.fromCharCode(10));
+  if (Object.prototype.toString.call(a[0]) == '[object Array]') { // hack for aValuesOriented
+      return toDelimited(a, ",", "").split(String.fromCharCode(10)).splice(1,a.length+1).join(String.fromCharCode(10));
   } else { // else return aRecordsOriented
-      return toDelimited(aInputArray, ",", "");
+      return toDelimited(a, ",", "");
   }
 }; toCSV = function(s) { return toCSVDelimited(s); }
 
