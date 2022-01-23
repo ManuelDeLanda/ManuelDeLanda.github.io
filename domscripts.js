@@ -228,6 +228,25 @@ domTableToValuesOrientedDomTDs = function(domTable) { // domTableToValuesOriente
 
     }
 }
+
+
+
+
+
+
+// added 01/23/2022
+function dom_BindVariable(sVariable) { // sVariable is the name of the globalvariable AND the element.id (form, div, etc) containing the sub-inputs
+    // consider instantiating the variable with the form.input's (or #whatever.input's) values
+    if (window[sVariable]) {} else { window[sVariable] = {}; }
+    addEL(`#${sVariable} input, #${sVariable} textarea`, "input", undefined, function() { 
+        // console.log(this.event.target);
+        // eval(sVariable + `["${this.event.target.id}"] = decodeURIComponent("${superencode(this.event.target.value)}")`)
+        window[sVariable][this.event.target.id] = this.event.target.value;
+    })
+}
+
+
+
 // } catch(e) { console.log("ERROR in domscripts.js " - e) }
 
 // domDEBUGGINGscripts //
