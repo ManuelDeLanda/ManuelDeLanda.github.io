@@ -147,7 +147,7 @@ toTabDelimited = function (aInputArray, sDelimiter, sQualifier) {
   } else { // else return aRecordsOriented
       return toDelimited(aInputArray, String.fromCharCode(9), "");
   }
-}
+}; toTab = function(a,b,c) { return toTabDelimited(a,b,c); }; toTAB = function(a,b,c) { return toTabDelimited(a,b,c); }
 
 toCSVDelimited = function (a) {
   // toCSVDelimited([["Country","Value"],["United States","12394"],["Russia","6148"],["Germany (FRG)","1653"],["France","2162"],["United Kingdom","1214"],["China","1131"],["Spain","814"],["Netherlands","1167"],["Italy","660"],["Israel","1263"]])
@@ -165,7 +165,7 @@ toCSVDelimited = function (a) {
   } else { // else return aRecordsOriented
       return toDelimited(aInputArray, ",", "");
   }
-}
+}; toCSV = function(s) { return toCSVDelimited(s); }
 
 // begin csv/tabs functions
 toDelimited = function(aInputArray, sDelimiter, sQualifier) { function returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented) { return aRecordsOriented.reduce(function(agg, oElement313) { agg = agg.concat(Object.keys(oElement313)); agg = unique(agg); return agg; }, []) } var aColumns = returnAllKeysAmongAllObjectsInRecordsOrientedArray(aInputArray); return aInputArray.reduce(function(agg, oElement) { return agg + "\n" + aColumns.filter(function(oElement777) { return oElement777.trim() != "" }).reduce(function(agg001, oElement001, iIndex001) { return agg001 + ((iIndex001 == 0) ? "" : sDelimiter) + sQualifier + ((oElement[oElement001] == undefined ? "" : oElement[oElement001])).toString().replace(/\r\n/g, "<br>").replace(/\n/g, "<br>") + sQualifier; }, "") }, aColumns.map(function(oElement002) { return sQualifier + oElement002 + sQualifier; }).join(sDelimiter)) }
@@ -1027,7 +1027,7 @@ pivottable=function(aInputArray, aPivotInstructions, bReplaceColumnNames) {
 /* END PANDAS-INSPIRED, LODASH-DEPENDENT FUNCTIONS */
 
 
-/* data Tidy.js dplyr and the tidyverse in R */
+/* data JMP Tidy.js dplyr and the tidyverse in R */
 
 /* dataENCODEscripts => superhtmlEntities/superencode/superHtmlDecode.minified.js */
 // encode encodes apostrophes too!
