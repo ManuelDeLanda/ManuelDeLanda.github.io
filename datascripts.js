@@ -839,7 +839,11 @@ pivottable=function(aInputArray, aPivotInstructions, bReplaceColumnNames) {
        aValuesaOriented[0] = aValuesaOriented[0].map(function(oElement) { if (oElement.match(/^[0-9]/g)) { oElement = "num_" + oElement } return oElement; })
        aRecordsOrientation = toRO(aValuesaOriented);
 
-      // aPivotInstructions = "2 4,5 7 listaggU";
+      if (aPivotInstructions) {} else { // if aPivotInstructions is null then do a random pivot
+        aPivotInstructions = getRandomInt(0, Object.keys(aRecordsOrientation[0]).length-1) + "  * listaggU";
+      }
+      
+      // aPivotInstructions = "2 4,5 7 listaggU";      
       if (typeof(aPivotInstructions) == "string") {
         
         aPivotInstructions = aPivotInstructions.split(" ").map(function(oEl, iIn) {
