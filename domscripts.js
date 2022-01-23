@@ -55,7 +55,7 @@ function domReplaceDom(oEl, oEl2) { // simplifies .replaceChild()
 domTableToValuesOriented = function(domTable) { return domTableToValuesOrientedDomTDs(domTable).map(function(oEl) { return oEl.map(function(oEl2) { return domGetTDTextOrValue(oEl2); }) }) }
 convertHTMLTableToValuesOriented = domTableToValuesOriented; 
 
-/* insertBeforeDOM ? <element> ? prependHTML() ? <other elements></other elements> ? appendHTML() ? </element> ? insertAfterDOM */
+/* insertBeforeDOM() ? <element> ? prependHTML() ? <other elements></other elements> ? appendHTML() ? </element> ? insertAfterDOM() */
 HTMLElement.prototype.prependHtml = function (element) {
     const div = document.createElement('div');
     div.innerHTML = element;
@@ -1207,6 +1207,18 @@ function highchartsBarPlotify(data, sTitle, sSubtitle, sYAxis) {
 // } catch(e) { console.log(e); }
 // END NEW googlesheets.scripts.js
 
+
+// dom Spreadsheet functions 
+
+dom_jsSpreadsheetify = function(data, dom) {
+   if (dom) {} else { dom = $$$$("body"); }
+   if (!isVO(data)) { data = toVO(data); }
+   data = normalizeValuesOriented(data);
+
+   jspreadsheet($$$$(dom), {
+       data:data,
+   });
+}
 
 // domADDELscripts =>
     function addEL(oElements, sType, iIndex, fFunction) { // vs addEventListenerClickXYZ's o, i, f
