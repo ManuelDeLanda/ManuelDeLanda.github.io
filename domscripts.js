@@ -1307,7 +1307,7 @@ dom_jsSpreadsheetify = function(data, dom) {
     
     function toggleAnimationVisbDisp(o,sVHvsDN,animation,i) {
         // sVHvsDN is sVisibilityHiddenVsDisplayNone
-        if (sVHvsDN == "none") {
+        if (sVHvsDN == "none" || sVHvsDN == "displaynone" || sVHvsDN == "display") {
             sVHvsDN = "displaynone";
         } else {
             sVHvsDN = "displayhidden";
