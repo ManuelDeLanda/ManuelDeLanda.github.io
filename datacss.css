@@ -1,4 +1,4 @@
-/* responsive, colored buttons*/
+/* BUTTONS - responsive, colored buttons*/
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:400, 300, 600, 700);
 
  .btn {
@@ -56,7 +56,7 @@
 .black {
     background-color: #5c6166;
 }
-.gray {
+.gray, .grey {
     color: black;
     background-color: #d2d2d2;
 }
@@ -78,9 +78,170 @@
 .purple {
     background-color: #564f8a;
 }
+/* added in 2022 */
+.seafoamgreen {
+    background-color: #9FE2BF;
+}
+.caribbeangreen {
+    background-color: #15E2BF;
+}
 
 
-/* .nsstyle is for tables with alternating blueish nsstyle colors */
+
+/* BUTTONS - .minesweeper, .windows00, .windows95 */
+
+.minesweeper {
+    font-family: 'Space Mono', monospace;
+    outline: none; 
+    height: 50px;
+    margin: 15px;
+    padding: 0 20px; 
+    font-weight: 400;
+    font-size: 15px; 
+    line-height: 7px; 
+    vertical-align: middle;
+    background-color: #BFBFBF;
+    border-top: 3px solid #FFF;
+    border-left: 3px solid #FFF; 
+    border-right: 3px solid #707070;
+          border-bottom: 3px solid #707070;
+}
+
+.minesweeper:hover {
+    background-color: #BBB; 
+    border-right: 3px solid #333;
+    border-bottom: 3px solid #333; 
+}
+
+.minesweeper:active { 
+    background-color: #BFBFBF; 
+    border-top: 3px solid #707070;
+    border-left: 3px solid #707070; 
+    border-right: 3px solid #CCC;
+    border-bottom: 3px solid #CCC; 
+}
+
+.windows95 {
+    outline: none; 
+    font-family: Helvetica; 
+    background: #c0c0c0;
+    width: 120px;
+    margin: 15px;
+    padding: 0 20px 1px 20px;  
+    font-size: 15px; 
+    line-height: 12px; 
+    vertical-align: middle;
+    border-bottom: 1px solid #808080;
+    border-right: 1px solid #808080;
+    border-left: 1px solid #c0c0c0;
+    border-top: 1px solid #c0c0c0;
+          box-shadow: -1px -1px white, 0px -1px white, -1px 0px white, 2px 2px black, -2px 2px black, 2px -2px black, -2px -2px black;  
+}
+
+.windows95:hover {
+    outline: none;  
+    background: #ccc;
+    margin: 0 15px 0 15px;  
+    border-bottom: 1px solid #333;
+    border-right: 1px solid #808080;
+    border-left: 1px solid #fff;
+    border-top: 1px solid #fff;
+        box-shadow: -1px -1px white, 0px -1px white, -1px 0px white, 2px 2px black, -2px 2px black, 2px -2px black, -2px -2px black;  
+}
+
+.windows95:active {
+    outline: none;  
+    background: #bbb; 
+    border-bottom: 1px solid #bbb;
+    border-right: 1px solid #bbb;
+    border-left: 1px solid #bbb;
+    border-top: 1px solid #bbb; 
+} 
+
+.windows98 {
+    font-family: Arial;
+    -webkit-font-smoothing: antialiased;
+    font-size: 15px;
+    line-height: 14px; 
+    vertical-align: middle;
+    width: 120px;
+    margin: 15px; 
+    box-sizing: border-box;
+    border: 1px solid #003c74;
+    background: linear-gradient(180deg,#fff,#ecebe5 86%,#d8d0c4);
+    box-shadow: none;
+    border-radius: 3px;
+}
+
+.windows98:hover {
+    box-shadow: inset -1px 1px #fff0cf, inset 1px 2px #fdd889, inset -2px 2px #fbc761, inset 2px -2px #e5a01a;
+}
+
+.windows98:active {
+    outline: 1px dotted #000;
+    outline-offset: -4px; 
+    box-shadow: none;
+    background: linear-gradient(180deg,#cdcac3,#e3e3db 8%,#e5e5de 94%,#f2f2f1); 
+}
+
+.windows00 {
+    outline: none;
+    width: 120px;  
+    -webkit-border-radius: 16px;
+    -moz-border-radius: 16px; 
+    position: relative;  
+    font-weight: 600;
+    color: #fff;
+    font-size: 15px; 
+    line-height: 12px; 
+    margin: 15px; 
+    border-radius: 30px;
+    text-shadow: #3d79be 1px 2px 2px;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+    text-overflow: ellipsis; 
+    overflow: hidden; 
+    background-color: #3c83c6;
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 90%, from(#1b5a9b), to(#6cbfff));
+    border: 2px solid #447dbc;        
+    -webkit-box-shadow: rgba(66, 140, 240, 0.4) 0px 10px 16px;
+    -moz-box-shadow: rgba(66, 140, 240, 0.4) 0px 10px 16px; 
+}
+ 
+.windows00::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 5px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    height: 1px;
+    width: 105px;  
+    padding: 8px 0;
+    background-color: rgba(255, 255, 255, 0.2);
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 95%, from(rgba(255, 255, 255, 0.7)), to(rgba(255, 255, 255, 0)));
+}
+
+.windows00:hover {  
+    text-shadow: #3d79be 1px 2px 2px; 
+    background-color: #3c83c6;
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 90%, from(#165698), to(#7ec7ff));
+    border: 2px solid #366dab;        
+    -webkit-box-shadow: rgba(66, 140, 240, 0.6) 0px 10px 20px;
+    -moz-box-shadow: rgba(66, 140, 240, 0.6) 0px 10px 16px; 
+}
+
+.windows00:active {
+    text-shadow: #3d79be 1px 2px 2px;
+    background-color: #3c83c6;
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 90%, from(#1b5a9b), to(#52abef));
+    border: 2px solid #447dbc;        
+    -webkit-box-shadow: rgba(66, 140, 240, 0.4) 0px 10px 16px;
+    -moz-box-shadow: rgba(66, 140, 240, 0.4) 0px 10px 16px; 
+}
+
+/* TABLE .nsstyle is for tables with alternating blueish nsstyle colors */
 .nsstyle *, .nsstyle *:before, .nsstyle *:after {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -136,7 +297,7 @@ table.nsstyle {
   color: #8a97a0;
 }
 
-/* horizontalnavmenu - allowing multirow? */
+/* UL horizontalnavmenu - allowing multirow? */
 ul.horizontalnavmenu {
     width: 100%;
     float: left;
@@ -173,7 +334,7 @@ ul.horizontalnavmenu li a.active {
     background-color: rgb(201, 205, 248);
 }
 
-<!-- ????? CSS snowflakes ?? -->
+/* ????? CSS snowflakes ?? */
 
 /* customizable snowflake styling */
 .snowflake {
