@@ -243,6 +243,15 @@
     -moz-box-shadow: rgba(66, 140, 240, 0.4) 0px 10px 16px; 
 }
 
+/* hovergrow effect */
+
+.hovergrow {
+  transition: all .5s ease-in-out;
+}
+.hovergrow:hover {
+  transform: scale(2.5);
+}
+
 /* TABLE .nsstyle is for tables with alternating blueish nsstyle colors */
 .nsstyle *, .nsstyle *:before, .nsstyle *:after {
   -moz-box-sizing: border-box;
