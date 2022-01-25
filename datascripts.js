@@ -79,7 +79,7 @@ function ObjectValueRegex(oObject,rRegexKey) { return ObjectValuesRegex(oObject,
 Arrayify = function(aArray) { if (Array.isArray(aArray)) {} else { aArray = [aArray]; } }
 
 toVO = function(aInputArray, aColumns) {
-    if (typeof aInputArray=="object" && !Array.isArray(aInputArray)) { // checks for objects.  note how toVO([{"one": "two", "three": "four"}] = [["one","three"],["two","four"]] and toVO({"one": "two", "three": "four"}) = [["one","two"],["three","four"]]
+    if (isOBJ(aInputArray)) { // checks for objects.  note how toVO([{"one": "two", "three": "four"}] = [["one","three"],["two","four"]] and toVO({"one": "two", "three": "four"}) = [["one","two"],["three","four"]]
         aInputArray = Object.keys(aInputArray).reduce(function(a,e,i,o) { a.push([e,aInputArray[e]]); return a; }, [] )
     }
     if (typeof(aInputArray)=="string") { return [[aInputArray]]; };
@@ -183,6 +183,7 @@ isVO = function(a) { return Array.isArray(a[0]); }; isValuesOriented = function(
 isRO = function(a) { return (Array.isArray(a) && !Array.isArray(a[0]) && typeof(a[0]) == "object"); }; isRecordsOriented = function(a) { return isRO(a); }
 isTAB = function(s) { return (typeof(s) == "string" && s.indexOf(String.fromCharCode(9)) > -1) }; isTabDelimited = function(a) { return isTAB(a); }
 isCSV = function(s) { return (typeof(s) == "string" && s.indexOf(",") > -1) }; isCSVDelimited = function(a) { return isTAB(a); }
+isOBJ = function(a) { return (typeof a=="object" && !Array.isArray(a)); }; isObj = function(a) { return isOBJ(a); }
 
 typeofdata = function (s) {
     // typeofData([{"to": "wat"}])
@@ -309,7 +310,7 @@ JSONObjectify.sample=function() { return 'JSONObjectify("branch:main,folder:data
 JSONPS = function(o) { return JSON.parse(JSON.stringify(o)); }
 /* END JSON.whatever scripts */
 
-// unique2D vs uniqueLodash
+// unique2D vs uniqueLodash vs unique vs unique_getdupes/unique2D_getdupes
 function unique2D(aArray) { return unique(aArray.map(function(o){ return JSON.stringify(o); })).map(function(o) { return JSON.parse(o); }) }
 function unique2D_getdupes(aArray) {
     var bIsRO = true; if (isVO(aArray)) { aArray = toRO(aArray); bIsRO = false; }; //   if (!bIsRO) { aReturn = toValuesOriented(aReturn); }
@@ -339,6 +340,12 @@ function unique2D_getdupesOverOne(aArray) {
   if (!bIsRO) { aArrayWDupesOverOne = toVO(aArrayWDupesOverOne); }
   return aArrayWDupesOverOne;
 }
+// 1D de-duplicating functions...note how 1D getdupes() is derivative of 2D by converting 1D array to a simple 2D array via the new f1Dto2D function
+f1Dto2D = function(a) { return a.map(function(oo) { return [oo]; }); }
+unique_getdupes = function(a) { return unique2D_getdupes(f1Dto2D(["col"].concat(a)) ); }; unique1D_getdupes = function(a) { return unique_getdupes(a) } 
+unique_getdupesOverOne = function(a) { return unique2D_getdupesOverOne(f1Dto2D(["col"].concat(a)) ); }; unique1D_getdupesOverOne = function(a) { return unique_getdupesOverOne(a) } 
+// var aArray = 
+
 
 cartesian = function(args) { // args = aArrayOfArarys
     // permutations / combinations?
