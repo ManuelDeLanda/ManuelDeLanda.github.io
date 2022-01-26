@@ -1854,6 +1854,24 @@ function aGet2DIslands (aVO) {
     return allValues;
 }
 
+
+
+aGet2DIslandsRanges = function(aVO) {
+    // searches a large set of 2D / VO data and outputs a list of SQUARE ranges that the data occupies (eg output: ['A1:D4', 'O1:T10', 'V1:Z10', 'I2:K10', 'E8:E8'])
+    aVO_A1Notations = aVO.map((o,i)=>o.map((oo,ii)=>{ if (oo) { return convertArrayToCell([ii+1 , i+1]) } else { return ""; } }))
+    aVO_A1Notations_Islands = aGet2DIslands(aVO_A1Notations);
+    aVO_A1Notations_Islands_Ranges = aVO_A1Notations_Islands.map(aVOIsland=>{
+        console.log(aVOIsland);
+        // aVOIsland = aVO_A1Notations_Islands[0];
+        iHeight = aVOIsland.length;
+        iWidth = aVOIsland[0].length;
+        sFirstCell = aVOIsland.map(o=>o[0]).reduce((a,e,i)=>{ return a || cellToColumn(e) }, "") + aVOIsland[0].reduce((a,e,i)=>{ return a || cellToRow(e) }, "");
+        sLastCell = aVOIsland.map(o=>o[iWidth-1]).reduce((a,e,i)=>{ return a || cellToColumn(e) }, "") + aVOIsland[iHeight-1].reduce((a,e,i)=>{ return a || cellToRow(e) }, "");
+        return sFirstCell + ":" + sLastCell;
+    });
+    return aVO_A1Notations_Islands_Ranges;
+}
+
 // domDATAHTML.es6.scripts (aka domscripts.2.js)
 /* domDATAHTMLscripts (superset of dataHTMLscripts.js) => datahtmlscripts.js => isomorphic, vanilla, es5-ish datascripts that are related to HTML and datascripts, without needing libraries (the dom, jquery, or lodash */
 // refactor this whole solution into dataDATAHTMLscripts?  or dataHTMLscripts?  why dom?  because es5?
