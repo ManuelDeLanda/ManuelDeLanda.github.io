@@ -464,8 +464,8 @@ try { // remove try/catch when es5ified 100%
     sortAlphaNum = function (a, b) { // converts ["A10", "A1", "A20"] to ["A1", "A10", "A20"]
       return a.localeCompare(b, 'en', { numeric: true });
     };
-    cellToColumn = function(sCell) { return sCell.toUpperCase().match(/^[A-Z]+/g)[0] }
-    cellToRow = function(sCell) { return sCell.toUpperCase().match(/[0-9]+$/g)[0] }
+    cellToColumn = function(sCell) { try { return sCell.toUpperCase().match(/^[A-Z]+/g)[0]; } catch(e) { return undefined; } }
+    cellToRow = function(sCell) { try { return sCell.toUpperCase().match(/[0-9]+$/g)[0]; } catch(e) { return undefined; }  }
     // cellToRow("AH378"); cellToColumn("AH378")
     columnToLetter = function(column) {
       // column = column.toUpperCase().match(/[A-Z]+/)[0];
