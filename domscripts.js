@@ -1861,7 +1861,6 @@ aGet2DIslandsRanges = function(aVO) {
     aVO_A1Notations = aVO.map((o,i)=>o.map((oo,ii)=>{ if (oo) { return convertArrayToCell([ii+1 , i+1]) } else { return ""; } }))
     aVO_A1Notations_Islands = aGet2DIslands(aVO_A1Notations);
     aVO_A1Notations_Islands_Ranges = aVO_A1Notations_Islands.map(aVOIsland=>{
-        console.log(aVOIsland);
         // aVOIsland = aVO_A1Notations_Islands[0];
         iHeight = aVOIsland.length;
         iWidth = aVOIsland[0].length;
