@@ -252,9 +252,9 @@
   transform: scale(2.5);
 }
 
-/* supercenter */
+/* supercenter - an (over)zealous attempt to center everything */
 
-.supercenter { justify-content:center; text-align:center; margin:auto; }
+.supercenter { justify-content:center !mportant; text-align:center !important; margin:auto !important; }
 
 /* TABLE .nsstyle is for tables with alternating blueish nsstyle colors */
 .nsstyle *, .nsstyle *:before, .nsstyle *:after {
