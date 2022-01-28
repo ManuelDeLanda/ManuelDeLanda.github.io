@@ -252,6 +252,10 @@
   transform: scale(2.5);
 }
 
+/* supercenter */
+
+.supercenter { justify-content:center; text-align:center; margin:auto; }
+
 /* TABLE .nsstyle is for tables with alternating blueish nsstyle colors */
 .nsstyle *, .nsstyle *:before, .nsstyle *:after {
   -moz-box-sizing: border-box;
