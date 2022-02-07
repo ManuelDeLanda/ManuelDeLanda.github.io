@@ -177,6 +177,7 @@ function fromCSVToRO(sCSV) { return toRO(fromCSVToVO(sCSV)); }; convertCSVToReco
 fromTABToVO = function(sText) { return sText.split(String.fromCharCode(10)).map(function(oElement) { return oElement.split(String.fromCharCode(9)); }); }; convertTabDelimitedToValuesOriented = function(s) { return fromTABToVO(s); }
 fromTABToRO = function(sText) { return toRO(fromTABToVO(sText)); }; convertTabDelimitedToRecordsOriented = function(s) { return fromTABToRO(s); }
 fTABToVO=fromTABToVO;fTABToRO=fromTABToRO;fCSVToVO=fromCSVToVO;fCSVToRO=fromCSVToRO;
+f8SpaceToVO = function(s) { return fTABToVO(s.replace(/        /g, String.fromCharCode(9) )); }
 // end csv/tabs functions
 
 isVO = function(a) { return Array.isArray(a[0]); }; isValuesOriented = function(a) { return isVO(a); }
@@ -616,6 +617,15 @@ _join = function(a, b, match, type, merger) {
   aLodashJoinsFormulas = toRO([["type","lodashJoins_formula"],["outer","FullOuterJoin"],["inner","InnerJoin"],["left","LeftOuterJoin"],["leftsemi","LeftSemiJoin"],["leftanti","LeftAntiJoin"],["right","RightOuterJoin"],["rightsemi","RightSemiJoin"],["rightanti","RightAntiJoin"]]);
   type = type.toLowerCase();
   type = type.replace(/semiright/, "rightsemi").replace(/semileft/, "leftsemi").replace(/antiright/, "rightanti").replace(/antileft/, "leftanti").replace(/outerright/, "right").replace(/rightouter/, "right").replace(/outerleft/, "left").replace(/leftouter/, "left").replace(/fullouter/, "outer");
+  /* PIVOT LOGIC FOR COMBINING PIVOT AND JOIN
+  aLodashJoinsFormulas = toRO([["type","lodashJoins_formula"],["outer","FullOuterJoin"],["inner","InnerJoin"],["left","LeftOuterJoin"],["leftsemi","LeftSemiJoin"],["leftanti","LeftAntiJoin"],["right","RightOuterJoin"],["rightsemi","RightSemiJoin"],["rightanti","RightAntiJoin"]]);
+  type = type.toLowerCase();
+  if type.match(/pivot/g) {
+    type = type.replace(/pivot/g, "");
+    iIndexA = Object.keys(a[0]).reduce([match_a]
+    a = pivottable(a, 
+  } else { }
+  */
   if (type.match(/^h\_/)) {
       type = type.replace(/^h\_/, "");
       sImplementationAndType = "hash"
