@@ -254,9 +254,9 @@
 
 /* supercenter - an (over)zealous attempt to center everything */
 
-.supercenter { justify-content:center !mportant; text-align:center !important; margin:auto !important; }
+.supercenter { justify-content:center !important; text-align:center !important; margin:auto !important; align-items: center !important; }
 
-/* TABLE .nsstyle is for tables with alternating blueish nsstyle colors */
+/* TABLE .nsstyle is for tables with alternating blue/grey nsstyle colors */
 .nsstyle *, .nsstyle *:before, .nsstyle *:after {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
