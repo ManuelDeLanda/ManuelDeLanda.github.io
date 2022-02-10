@@ -249,6 +249,22 @@ function dom_BindVariable(sVariable) { // sVariable is the name of the globalvar
 
 // } catch(e) { console.log("ERROR in domscripts.js " - e) }
 
+// domCOLORS //
+
+function getRandomLightColor() {
+// Excellent answer. Worked great for me because I was also wanting to avoid white and grey. ? 
+  color = "hsl(" + Math.random() * 360 + ", 100%, 75%)";
+  return color;
+}
+
+function getRandomDarkColor() {
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+        color += Math.floor(Math.random() * 10);
+    }
+    return color;
+}
+
 // domDEBUGGINGscripts //
 
 var copyS = function(o) { copy(JSON.stringify(o)); }
