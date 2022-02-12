@@ -268,6 +268,8 @@ function getRandomDarkColor() {
 // domDEBUGGINGscripts //
 
 var copyS = function(o) { copy(JSON.stringify(o)); }
+var copyF = function(f) { copy( f.toString() ) }
+
 var alertS = function(o) { alert(JSON.stringify(o)); }
 
 // domASCIIscripts (maybe dataASCIIscripts?)
