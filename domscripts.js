@@ -2149,7 +2149,7 @@ convertRecordsOrientedArrayToHTMLTable = function(aRecordsOriented, aColumns, sT
     }, 
         "<thead><tr>" + aColumns.reduce(function(agg001, oElement001, iIndex001) {
             var sCell = columnToLetter(iIndex001+1) + "1";
-            var sClasses = "gsws gscell gsws_" + sTableID + " " + sCell + " row1 column" + columnToLetter(iIndex001+1) + " cellcolumn" + iIndex001;
+            var sClasses = "gsws gscell gsws_" + sRawTableID + " " + sCell + " row1 column" + columnToLetter(iIndex001+1) + " cellcolumn" + iIndex001;
             // var sClasses = "gsws row1 column" + columnToLetter(iIndex001+1) + " cellcolumn" + iIndex001;
             return agg001 + "<th title='" + sCell + "' class='" + sClasses + "'>" + oElement001 + "</th>"; // style='border-right: 1px solid black; border-left: 1px solid black;'
         }, "") + "</tr></thead><tbody>"
