@@ -2126,17 +2126,22 @@ convertRecordsOrientedArrayToHTMLTable = function(aRecordsOriented, aColumns, sT
     // sTableID = "#blah.testing_12.hello"; sTableID = "asdfasf";
     var sTableID = returnIDAndOrClasses(sTableIDOrClasses).id;
     var sTableClasses = (returnIDAndOrClasses(sTableIDOrClasses).classes + " aRO aRecordsOriented convertRecordsOrientedArrayToHTMLTable convertRecordsOrientedToHTMLTable RecordsOrientedArrayToHTML _gsws gsws").trim();
-    if (sTableID) { sTableID = " id='" + sTableID + "'"; }
+    var sRawTableID = ""; // consider refactoring this redundant variable out?
+    if (sTableID) { sRawTableID = sTableID; sTableID = " id='" + sTableID + "'"; }
+    
+    console.log(sRawTableID);
     // convertRecordsOrientedArrayToHTMLTable(aRecordsOriented)
     function returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented) { return aRecordsOriented.reduce(function(agg, oElement313) { agg = agg.concat(Object.keys(oElement313)); agg = unique(agg); return agg; }, []) }
     if (aColumns == undefined) {
         // var aColumns = Object.keys(aRecordsOriented[0]);
-                 aColumns = returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented);
+        aColumns = returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented);
     }
+
     sHTMLTable = "<table " + sTableID + " class='" + sTableClasses + "' style='margin: 0 auto; text-align: center;'>" + aRecordsOriented.reduce(function(agg, oElement, iIndex) {
         agg = agg + "<tr>" + aColumns.reduce(function(agg000, oElement000, iIndex000) {
             var sCell = columnToLetter(iIndex000+1) + (iIndex+2);
-            var sClasses = "gsws gscell gsws_" + sTableID + " " + sCell + " row" + (iIndex+2) + " column" + columnToLetter(iIndex000+1) + " cellcolumn" + iIndex000;
+            var sClasses = "gsws gscell gsws_" + sRawTableID + " " + sCell + " row" + (iIndex+2) + " column" + columnToLetter(iIndex000+1) + " cellcolumn" + iIndex000;
+            console.log(sClasses);
             agg000 = agg000 + "<td title='" + sCell + "' class='" + sClasses + "'>" + oElement[oElement000] + "</td>"; // style='text-align:left'
             return agg000;
         }, "") + "</tr>";
