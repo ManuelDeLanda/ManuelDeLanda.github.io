@@ -16,6 +16,8 @@ unique = function(aArray) { var a = []; for (var i=0, l=aArray.length; i<l; i++)
 // Object.prototype.toArray = function () { var _this = this; var array = []; Object.keys(this).map(function (key) { array.push(_this[key]); }); return array; };                                                                 
 /* END no brainer / polyfilles for es5 */
 
+parseInt0 = function(sNum, iDefault) { if (sNum) {} else {sNum = 0;} var iNum; if (iDefault) {} else {iDefault = 0;} if (!isNaN(sNum)) { iNum = parseInt(sNum); } else { iNum = parseInt(iDefault); } return iNum; }
+
 /* BEGIN values oriented / records oriented / tab delimited converter functions */
 // toValuesOriented = function(aInputArray) { var aArrayOfAllPossibleColumnTitles = aInputArray.reduce(function(agg123, oElement123) { Object.keys(oElement123).forEach(function(oElement751) { if (!agg123.includes(oElement751)) { agg123.push(oElement751); } else {} }); return agg123; }, Object.keys(aInputArray[0])); var aValuesOrientation = aInputArray.map(function(oElement123, iIndex123) { return aArrayOfAllPossibleColumnTitles.reduce(function(agg751, oElement751) { if (oElement123[oElement751] == undefined) { agg751.push(); } else { agg751.push(oElement123[oElement751]); } return agg751; }, []) }); aValuesOrientation.unshift(aArrayOfAllPossibleColumnTitles); return aValuesOrientation; }
 // findKey = function(aData,sKey,sVal) { return aData[_.findKey(aData, o=>o[sKey]==sVal)] }
@@ -1152,17 +1154,22 @@ convertRecordsOrientedArrayToHTMLTable = function(aRecordsOriented, aColumns, sT
     // sTableID = "#blah.testing_12.hello"; sTableID = "asdfasf";
     var sTableID = returnIDAndOrClasses(sTableIDOrClasses).id;
     var sTableClasses = (returnIDAndOrClasses(sTableIDOrClasses).classes + " aRO aRecordsOriented convertRecordsOrientedArrayToHTMLTable convertRecordsOrientedToHTMLTable RecordsOrientedArrayToHTML _gsws gsws").trim();
-    if (sTableID) { sTableID = " id='" + sTableID + "'"; }
+    var sRawTableID = ""; // consider refactoring this redundant variable out?
+    if (sTableID) { sRawTableID = sTableID; sTableID = " id='" + sTableID + "'"; }
+    
+    console.log(sRawTableID);
     // convertRecordsOrientedArrayToHTMLTable(aRecordsOriented)
     function returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented) { return aRecordsOriented.reduce(function(agg, oElement313) { agg = agg.concat(Object.keys(oElement313)); agg = unique(agg); return agg; }, []) }
     if (aColumns == undefined) {
         // var aColumns = Object.keys(aRecordsOriented[0]);
-                 aColumns = returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented);
+        aColumns = returnAllKeysAmongAllObjectsInRecordsOrientedArray(aRecordsOriented);
     }
+
     sHTMLTable = "<table " + sTableID + " class='" + sTableClasses + "' style='margin: 0 auto; text-align: center;'>" + aRecordsOriented.reduce(function(agg, oElement, iIndex) {
         agg = agg + "<tr>" + aColumns.reduce(function(agg000, oElement000, iIndex000) {
             var sCell = columnToLetter(iIndex000+1) + (iIndex+2);
-            var sClasses = "gsws gscell gsws_" + sTableID + " " + sCell + " row" + (iIndex+2) + " column" + columnToLetter(iIndex000+1) + " cellcolumn" + iIndex000;
+            var sClasses = "gsws gscell gsws_" + sRawTableID + " " + sCell + " row" + (iIndex+2) + " column" + columnToLetter(iIndex000+1) + " cellcolumn" + iIndex000;
+            console.log(sClasses);
             agg000 = agg000 + "<td title='" + sCell + "' class='" + sClasses + "'>" + oElement[oElement000] + "</td>"; // style='text-align:left'
             return agg000;
         }, "") + "</tr>";
@@ -1170,7 +1177,7 @@ convertRecordsOrientedArrayToHTMLTable = function(aRecordsOriented, aColumns, sT
     }, 
         "<thead><tr>" + aColumns.reduce(function(agg001, oElement001, iIndex001) {
             var sCell = columnToLetter(iIndex001+1) + "1";
-            var sClasses = "gsws gscell gsws_" + sTableID + " " + sCell + " row1 column" + columnToLetter(iIndex001+1) + " cellcolumn" + iIndex001;
+            var sClasses = "gsws gscell gsws_" + sRawTableID + " " + sCell + " row1 column" + columnToLetter(iIndex001+1) + " cellcolumn" + iIndex001;
             // var sClasses = "gsws row1 column" + columnToLetter(iIndex001+1) + " cellcolumn" + iIndex001;
             return agg001 + "<th title='" + sCell + "' class='" + sClasses + "'>" + oElement001 + "</th>"; // style='border-right: 1px solid black; border-left: 1px solid black;'
         }, "") + "</tr></thead><tbody>"
