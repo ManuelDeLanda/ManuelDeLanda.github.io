@@ -1059,6 +1059,7 @@ superencode = function(s){ // superencode("~!.*()-_") is the same, consider refr
   // return w.replace(/[^]/g,function(w){return '%'+w.charCodeAt(0).toString(16)})
   return encodeURIComponent(s).replace(/'/g, "%27");
 }
+
 supersuperencode = function(s) { // this is a more zealous version of superencode where it attempts to encodeURIComponent as much as possible (rather than just apostraphes)
   return superencode(s).replace(/\!/g, "%21").replace(/\*/g, "%2A").replace(/\(/g, "%28").replace(/\)/g, "%29").replace(/\`/g, "%60")
 }
@@ -1067,6 +1068,12 @@ superhtmlEntities = function(s) {
   // superhtmlEntities=function(e){return String(e).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&apos;").replace(/`/,"&#96;")};
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;').replace(/`/g, '&#96;'); //.replace(/?/g, '&#xB4;');
 }
+
+
+superencodeS = function (s) { return superencode(s); }
+supersuperencodeS = function (s) { return supersuperencode(s); }
+superhtmlEntitiesS = function (s) { return superhtmlEntities(s); }
+
 
 superHtmlDecode = function(sString) {
   // superHtmlDecode("blah blah blah &lt;whatever&gt;");
