@@ -458,6 +458,21 @@ function strip_tags(str) {
 strip_tags.sample=function() { return '"<table><tr><td>blah</td></tr><tr><td>blah2</td></tr></table"'; }
 /* END string cleanup functions */
 
+/* dataREGEXscripts */
+
+function regexCurlyBracesExtract(s) { // via forcewake's gist
+    var found = [],          // an array to collect the strings that are found
+    rCurlyBraces = /{([^}]+)}/g,
+    // str = "a {string} with {curly} braces",
+    curMatch;
+    
+    while( curMatch = rCurlyBraces.exec( s ) ) {
+        found.push( curMatch[1] );
+    }
+    return found;
+    // console.log( found );    // ["string", "curly"]
+}
+
 /* dataGSDSscripts.js => isomorphic, maybe es5 idk, maybe vanilla idk functions that are inspired by and complement googlesheets functions */
 // REMOVE dataGSscripts.js from github in favor of datagsscripts.js (make sure I dont do a "Border Gateway Protocol fiasco" like Facebook did)
 // 12/15/21 - REMOVE datagsscripts.js entirely from existence and refactor it into permanent part of datascripts.js
