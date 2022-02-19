@@ -368,6 +368,19 @@ ul.horizontalnavmenu li a.active {
     background-color: rgb(201, 205, 248);
 }
 
+.superbold {
+    /* For some sort of weird reason this doesn't look as pretty as it did over an year ago. It only works with text-shadow of 1px (on most common fonts, other thicker fonts might still work with 2px). And with text-shadow of only 1px, there's no need for such a large letter-spacing. */
+    text-shadow: 0px 1px, 1px 0px, 1px 1px; /* To add to Gogutz answer, you can go even bolder by stacking up the text-shadows in a grid. Comma separate each on the line: you can also try this: text-shadow: -1px 1px, 1px 1px, 1px 1px; */
+}
+
+.superboldblack {
+    color:#888888;    
+    text-shadow: 1px 0 #888888;
+    letter-spacing:1px;
+    font-weight:bold;
+    text-shadow: 0px 1px, 1px 0px, 1px 1px; /* To add to Gogutz answer, you can go even bolder by stacking up the text-shadows in a grid. Comma separate each on the line: you can also try this: text-shadow: -1px 1px, 1px 1px, 1px 1px; */
+}
+
 .astrodivider {
   margin:64px auto;
   width:400px; 
