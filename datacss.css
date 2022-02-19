@@ -252,9 +252,28 @@
   transform: scale(2.5);
 }
 
-/* supercenter - an (over)zealous attempt to center everything */
+/* .retrofont */
+/* https://youtu.be/yeCQW9S81PI */
+@import url('https://fonts.googleapis.com/css?family=Montserrat:900i&display=swap');
 
-.supercenter { justify-content:center !important; text-align:center !important; margin:auto !important; align-items: center !important; }
+.retrofont {
+    font-family: 'Montserrat', sans-serif;
+    text-transform: uppercase;
+    font-size:100px;
+    letter-spacing:15px;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke-width: 4px;
+    -webkit-text-stroke-color: #f110de;
+    text-shadow: -6px 6px #f1ed10, -15px 10px cyan;
+}
+
+/* supercenter - an (over)zealous attempt to center everything */
+.supercenter {
+    justify-content: center !important;
+    text-align: center !important;
+    margin: auto !important;
+    align-items: center !important;
+}
 
 /* TABLE .nsstyle is for tables with alternating blue/grey nsstyle colors */
 .nsstyle *, .nsstyle *:before, .nsstyle *:after {
@@ -347,6 +366,45 @@ ul.horizontalnavmenu li a:hover {
 }
 ul.horizontalnavmenu li a.active {
     background-color: rgb(201, 205, 248);
+}
+
+.astrodivider {
+  margin:64px auto;
+  width:400px; 
+  max-width: 100%;
+  position:relative;
+}
+
+.astrodividermask { 
+    overflow:hidden; height:20px; 
+}
+
+.astrodividermask:after { 
+      content:''; 
+      display:block; margin:-25px auto 0;
+      width:100%; height:25px;  
+        border-radius:125px / 12px;
+       box-shadow:0 0 8px #312450;
+}
+.astrodivider span {
+    width:50px; height:50px; 
+    position:absolute; 
+    bottom:100%; margin-bottom:-25px;
+    left:50%; margin-left:-25px;
+    border-radius:100%;
+   box-shadow:0 2px 4px #312450;
+    background:#fff;
+}
+.astrodivider i {
+    position:absolute;
+    top:4px; bottom:4px;
+    left:4px; right:4px;
+    border-radius:100%;
+    border:1px dashed #312450;
+    text-align:center;
+    line-height:40px;
+    font-style:normal;
+     color:#312450;
 }
 
 /* ????? CSS snowflakes ?? */
